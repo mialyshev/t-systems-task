@@ -1,6 +1,7 @@
 package com.javaschool.repository.impl;
 
 import com.javaschool.entity.User;
+import com.javaschool.entity.User_;
 import com.javaschool.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findById(int id) {
+    public User findById(long id) {
         return entityManager.find(User.class, id);
     }
 
@@ -46,14 +47,14 @@ public class UserRepositoryImpl implements UserRepository {
 
         criteriaQuery
                 .select(root)
-                .where(criteriaBuilder.equal(root.get("email"), email));
+                .where(criteriaBuilder.equal(root.get(User_.email), email));
         TypedQuery<User> selectByEmail = entityManager.createQuery(criteriaQuery);
 
         return selectByEmail.getResultStream().findFirst().orElse(null);
     }
 
     @Override
-    public void add(User user) {
+    public void save(User user) {
         entityManager.persist(user);
     }
 }

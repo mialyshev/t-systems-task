@@ -1,10 +1,13 @@
 package com.javaschool.entity;
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 
@@ -12,12 +15,9 @@ import java.util.Set;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
-@NamedQuery(
-        name = "findUserWithEmail",
-        query = "SELECT u from User u where u.email = :userEmail"
-)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "dob")
+    @Column(name = "date")
     private LocalDate dob;
 
     @Column(name = "email")
@@ -50,9 +50,9 @@ public class User {
     )
     private Set<Role> roleSet;
 
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-//    private List<Card> cards;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Card> cards;
 //
 //    @LazyCollection(LazyCollectionOption.FALSE)
 //    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)

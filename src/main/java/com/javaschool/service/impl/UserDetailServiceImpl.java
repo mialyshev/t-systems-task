@@ -1,4 +1,4 @@
-package com.javaschool.service;
+package com.javaschool.service.impl;
 
 import com.javaschool.entity.Role;
 import com.javaschool.entity.User;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;

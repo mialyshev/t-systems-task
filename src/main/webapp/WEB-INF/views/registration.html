@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/registration}" th:object="${userRegister}">
+    <h2>Registration</h2>
+    <table>
+        <tr>
+            <td>First Name:</td>
+            <td><input type="text" th:field="*{firstName}"/></td>
+            <div style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" >email error</div>
+        </tr>
+
+        <tr>
+            <td>Last Name:</td>
+            <td><input type="text" th:field="*{lastName}"/></td>
+            <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" >email error</div>
+        </tr>
+
+        <tr>
+            <td>Date of birth:</td>
+            <td><input type="date" th:field="*{dob}"/></td>
+            <div style="color:red" th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" >email error</div>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td><input type="email" th:field="*{email}"/></td>
+            <div th:if="${userError}">
+                <div style="color: red" th:text="${userError}"></div>
+            </div>
+            <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" >email error</div>
+        </tr>
+
+        <tr>
+            <td>Confirm email:</td>
+            <td><input type="email" th:field="*{confirmEmail}"/></td>
+            <div th:if="${emailError}">
+                <div style="color: red" th:text="${emailError}"></div>
+            </div>
+            <div style="color:red" th:if="${#fields.hasErrors('confirmEmail')}" th:errors="*{confirmEmail}" >email error</div>
+        </tr>
+
+        <tr>
+            <td>Password:</td>
+            <td><input type="password" th:field="*{password}"/></td>
+            <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" >email error</div>
+        </tr>
+
+        <tr>
+            <td>Confirm Password:</td>
+            <td><input type="password" th:field="*{confirmPassword}"/></td>
+            <div th:if="${passwordError}">
+                <div style="color: red" th:text="${passwordError}"></div>
+            </div>
+            <div style="color:red" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" >email error</div>
+        </tr>
+
+        <tr>
+            <td><input name="submit" type="submit" value="Register!" /></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

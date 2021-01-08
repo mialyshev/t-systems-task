@@ -19,7 +19,7 @@ public interface UserRepository {
      * @param id the id
      * @return the user entity
      */
-    User findById(int id);
+    User findById(long id);
 
     /**
      * Find by email user entity.
@@ -35,5 +35,5 @@ public interface UserRepository {
      * @param user the user entity
      * @return the user entity
      */
-    void add(User user);
+    void save(User user);
 }
