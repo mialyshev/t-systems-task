@@ -1,14 +1,9 @@
 package com.javaschool.controller;
 
-import com.javaschool.dto.user.UserDto;
 import com.javaschool.dto.user.UserRegistrationDto;
-import com.javaschool.entity.User;
-import com.javaschool.service.UserService;
-import com.javaschool.service.impl.UserServiceImpl;
+import com.javaschool.service.user.UserService;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 
 @Data
 @Controller

@@ -1,4 +1,4 @@
-package com.javaschool.mapper;
+package com.javaschool.mapper.user;
 
 import com.javaschool.dto.user.UserDto;
 import com.javaschool.dto.user.UserRegistrationDto;

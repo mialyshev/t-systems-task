@@ -1,4 +1,4 @@
-package com.javaschool.service;
+package com.javaschool.service.user;
 
 public interface RoleService {
 

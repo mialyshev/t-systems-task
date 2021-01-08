@@ -1,13 +1,13 @@
-package com.javaschool.service.impl;
+package com.javaschool.service.impl.user;
 
 import com.javaschool.dto.user.UserDto;
 import com.javaschool.dto.user.UserRegistrationDto;
 import com.javaschool.entity.User;
 
-import com.javaschool.mapper.UserMapperImpl;
+import com.javaschool.mapper.user.UserMapperImpl;
 import com.javaschool.repository.RoleRepository;
 import com.javaschool.repository.UserRepository;
-import com.javaschool.service.UserService;
+import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

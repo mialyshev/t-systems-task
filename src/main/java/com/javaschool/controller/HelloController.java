@@ -1,6 +1,5 @@
 package com.javaschool.controller;
 
-import com.javaschool.service.impl.RoleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.javaschool.service;
+package com.javaschool.service.user;
 
 import com.javaschool.dto.user.UserDto;
 import com.javaschool.dto.user.UserRegistrationDto;

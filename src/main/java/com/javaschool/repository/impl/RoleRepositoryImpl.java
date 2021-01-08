@@ -1,7 +1,9 @@
 package com.javaschool.repository.impl;
 
 import com.javaschool.entity.Role;
+import com.javaschool.entity.Role_;
 import com.javaschool.entity.User;
+import com.javaschool.entity.User_;
 import com.javaschool.repository.RoleRepository;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +32,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
         criteriaQuery
                 .select(root)
-                .where(criteriaBuilder.equal(root.get("name"), name));
+                .where(criteriaBuilder.equal(root.get(Role_.name), name));
         TypedQuery<Role> selectByName = entityManager.createQuery(criteriaQuery);
 
         return selectByName.getSingleResult();
@@ -42,11 +44,11 @@ public class RoleRepositoryImpl implements RoleRepository {
         CriteriaQuery<Role> criteriaQuery = criteriaBuilder.createQuery(Role.class);
         Root<Role> root = criteriaQuery.from(Role.class);
 
-        Join<Role, User> userEntityJoin = root.join("userSet");
+        Join<Role, User> userEntityJoin = root.join(Role_.userSet);
 
         criteriaQuery
                 .select(root)
-                .where(criteriaBuilder.equal(userEntityJoin.get("email"), email));
+                .where(criteriaBuilder.equal(userEntityJoin.get(User_.email), email));
         TypedQuery<Role> selectByUserLogin = entityManager.createQuery(criteriaQuery);
 
         return selectByUserLogin.getResultStream().collect(Collectors.toSet());
