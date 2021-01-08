@@ -2,7 +2,7 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.SeasonDto;
 import com.javaschool.entity.Season;
-import com.javaschool.repository.SeasonRepository;
+import com.javaschool.repository.product.SeasonRepository;
 import com.javaschool.service.product.SeasonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

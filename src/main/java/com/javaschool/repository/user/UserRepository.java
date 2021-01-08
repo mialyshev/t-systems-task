@@ -1,4 +1,4 @@
-package com.javaschool.repository;
+package com.javaschool.repository.user;
 
 import com.javaschool.entity.User;
 

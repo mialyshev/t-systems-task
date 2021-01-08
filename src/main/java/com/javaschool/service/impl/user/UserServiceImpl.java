@@ -5,8 +5,8 @@ import com.javaschool.dto.user.UserRegistrationDto;
 import com.javaschool.entity.User;
 
 import com.javaschool.mapper.user.UserMapperImpl;
-import com.javaschool.repository.RoleRepository;
-import com.javaschool.repository.UserRepository;
+import com.javaschool.repository.user.RoleRepository;
+import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

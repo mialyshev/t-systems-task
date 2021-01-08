@@ -1,8 +1,8 @@
-package com.javaschool.repository.impl;
+package com.javaschool.repository.impl.user;
 
 import com.javaschool.entity.User;
 import com.javaschool.entity.User_;
-import com.javaschool.repository.UserRepository;
+import com.javaschool.repository.user.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

@@ -2,7 +2,7 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.BrandDto;
 import com.javaschool.entity.Brand;
-import com.javaschool.repository.BrandRepository;
+import com.javaschool.repository.product.BrandRepository;
 import com.javaschool.service.product.BrandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

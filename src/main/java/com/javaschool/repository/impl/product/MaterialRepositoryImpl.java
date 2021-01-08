@@ -1,8 +1,8 @@
-package com.javaschool.repository.impl;
+package com.javaschool.repository.impl.product;
 
 import com.javaschool.entity.Material;
 import com.javaschool.entity.Material_;
-import com.javaschool.repository.MaterialRepository;
+import com.javaschool.repository.product.MaterialRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

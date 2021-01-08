@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8"/>
@@ -9,13 +9,19 @@
 </head>
 
 <body>
-<div class="red-text">
-    Red text
-</div>
-<br>
-<div class="green-text">
-    Green text
-</div>
+    <div class="red-text">
+        Red text
+    </div>
+    <br>
+    <div class="green-text">
+        Green text
+    </div>
+    <span sec:authorize="isAuthenticated()">
+        <h1>Welcome, <span sec:authentication="name">Username</span></h1>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Log out"/>
+        </form>
+    </span>
 <br>
 
 <input type="button" class="button" onclick="sayHello();"

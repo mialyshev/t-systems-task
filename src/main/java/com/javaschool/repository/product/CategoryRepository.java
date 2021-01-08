@@ -1,4 +1,4 @@
-package com.javaschool.repository;
+package com.javaschool.repository.product;
 
 import com.javaschool.entity.Category;
 

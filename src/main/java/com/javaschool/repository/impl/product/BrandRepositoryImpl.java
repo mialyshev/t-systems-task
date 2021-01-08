@@ -1,8 +1,8 @@
-package com.javaschool.repository.impl;
+package com.javaschool.repository.impl.product;
 
 import com.javaschool.entity.Brand;
 import com.javaschool.entity.Brand_;
-import com.javaschool.repository.BrandRepository;
+import com.javaschool.repository.product.BrandRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

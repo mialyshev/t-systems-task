@@ -1,8 +1,8 @@
-package com.javaschool.repository.impl;
+package com.javaschool.repository.impl.product;
 
 import com.javaschool.entity.Color;
 import com.javaschool.entity.Color_;
-import com.javaschool.repository.ColorRepository;
+import com.javaschool.repository.product.ColorRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

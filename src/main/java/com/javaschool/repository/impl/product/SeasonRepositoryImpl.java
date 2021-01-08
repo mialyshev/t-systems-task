@@ -1,8 +1,8 @@
-package com.javaschool.repository.impl;
+package com.javaschool.repository.impl.product;
 
 import com.javaschool.entity.Season;
 import com.javaschool.entity.Season_;
-import com.javaschool.repository.SeasonRepository;
+import com.javaschool.repository.product.SeasonRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

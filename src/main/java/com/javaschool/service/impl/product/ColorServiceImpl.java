@@ -2,7 +2,7 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.ColorDto;
 import com.javaschool.entity.Color;
-import com.javaschool.repository.ColorRepository;
+import com.javaschool.repository.product.ColorRepository;
 import com.javaschool.service.product.ColorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

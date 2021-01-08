@@ -1,7 +1,7 @@
 package com.javaschool.service.impl.user;
 
 import com.javaschool.entity.Role;
-import com.javaschool.repository.RoleRepository;
+import com.javaschool.repository.user.RoleRepository;
 import com.javaschool.service.user.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

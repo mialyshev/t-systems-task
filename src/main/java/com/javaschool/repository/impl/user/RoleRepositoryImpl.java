@@ -1,10 +1,10 @@
-package com.javaschool.repository.impl;
+package com.javaschool.repository.impl.user;
 
 import com.javaschool.entity.Role;
 import com.javaschool.entity.Role_;
 import com.javaschool.entity.User;
 import com.javaschool.entity.User_;
-import com.javaschool.repository.RoleRepository;
+import com.javaschool.repository.user.RoleRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -14,7 +14,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.stream.Collectors;
 

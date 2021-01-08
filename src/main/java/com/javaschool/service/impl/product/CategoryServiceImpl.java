@@ -2,7 +2,7 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.CategoryDto;
 import com.javaschool.entity.Category;
-import com.javaschool.repository.CategoryRepository;
+import com.javaschool.repository.product.CategoryRepository;
 import com.javaschool.service.product.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

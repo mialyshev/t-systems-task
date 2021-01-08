@@ -1,8 +1,8 @@
-package com.javaschool.repository.impl;
+package com.javaschool.repository.impl.product;
 
 import com.javaschool.entity.Category;
 import com.javaschool.entity.Category_;
-import com.javaschool.repository.CategoryRepository;
+import com.javaschool.repository.product.CategoryRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
