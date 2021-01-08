@@ -11,12 +11,31 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Repository
 public class SeasonRepositoryImpl implements SeasonRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Override
+    public List<Season> findAll() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Season> criteriaQuery = criteriaBuilder.createQuery(Season.class);
+        Root<Season> root = criteriaQuery.from(Season.class);
+
+        criteriaQuery
+                .select(root);
+        TypedQuery<Season> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
+    }
+
+    @Override
+    public Season findById(long id) {
+        return entityManager.find(Season.class, id);
+    }
 
     @Override
     public Season findByName(String seasonName) {

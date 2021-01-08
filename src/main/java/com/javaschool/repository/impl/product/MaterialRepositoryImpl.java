@@ -11,11 +11,30 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Repository
 public class MaterialRepositoryImpl implements MaterialRepository {
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Override
+    public List<Material> findAll() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Material> criteriaQuery = criteriaBuilder.createQuery(Material.class);
+        Root<Material> root = criteriaQuery.from(Material.class);
+
+        criteriaQuery
+                .select(root);
+        TypedQuery<Material> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
+    }
+
+    @Override
+    public Material findById(long id) {
+        return entityManager.find(Material.class, id);
+    }
 
     @Override
     public Material findByName(String materialName) {

@@ -11,12 +11,31 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.List;
 
 @Repository
 public class ColorRepositoryImpl implements ColorRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Override
+    public List<Color> findAll() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Color> criteriaQuery = criteriaBuilder.createQuery(Color.class);
+        Root<Color> root = criteriaQuery.from(Color.class);
+
+        criteriaQuery
+                .select(root);
+        TypedQuery<Color> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
+    }
+
+    @Override
+    public Color findById(long id) {
+        return entityManager.find(Color.class, id);
+    }
 
     @Override
     public Color findByName(String colorName) {

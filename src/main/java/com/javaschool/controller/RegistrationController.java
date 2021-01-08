@@ -2,7 +2,6 @@ package com.javaschool.controller;
 
 import com.javaschool.dto.user.UserRegistrationDto;
 import com.javaschool.service.user.UserService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

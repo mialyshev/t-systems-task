@@ -23,8 +23,8 @@ public class Material {
     @Column(name = "material_name")
     private String materialName;
 
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
-//    private List<Product> products;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
+    private List<Product> products;
 
 }

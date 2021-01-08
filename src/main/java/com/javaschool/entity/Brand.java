@@ -23,7 +23,7 @@ public class Brand {
     @Column(name = "brand_name")
     private String brandName;
 
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
-//    private List<Product> products;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
+    private List<Product> products;
 }

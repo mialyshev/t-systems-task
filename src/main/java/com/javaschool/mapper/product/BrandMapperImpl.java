@@ -4,6 +4,9 @@ import com.javaschool.dto.product.BrandDto;
 import com.javaschool.entity.Brand;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class BrandMapperImpl {
 
@@ -13,5 +16,18 @@ public class BrandMapperImpl {
         brandDto.brandName(brand.getBrandName());
 
         return brandDto.build();
+    }
+
+    public List<BrandDto> toDtoList(List<Brand> brandList) {
+        if (brandList == null) {
+            return null;
+        }
+
+        List<BrandDto> list = new ArrayList<BrandDto>(brandList.size());
+        for (Brand brand : brandList) {
+            list.add(toDto(brand));
+        }
+
+        return list;
     }
 }

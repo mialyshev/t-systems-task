@@ -25,8 +25,8 @@ public class Season {
     @Column(name = "season_name")
     private String seasonName;
 
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "season", cascade = CascadeType.ALL)
-//    private List<Product> products;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "season", cascade = CascadeType.ALL)
+    private List<Product> products;
 
 }

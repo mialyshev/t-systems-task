@@ -1,8 +1,11 @@
 package com.javaschool.entity;
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = false)
 @Entity
@@ -18,9 +21,9 @@ public class Size {
     private long id;
 
     @Column(name = "size")
-    private Float size;
+    private float size;
 
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
-//    private List<Product> products;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "size", cascade = CascadeType.ALL)
+    private List<Product> products;
 }

@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SizeDto {
 
-    private Float size;
+    private float size;
 }

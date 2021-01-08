@@ -23,7 +23,7 @@ public class Category {
     @Column(name = "category_name")
     private String categoryName;
 
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-//    private List<Product> products;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Product> products;
 }
