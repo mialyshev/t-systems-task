@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto getByEmail(String email) {
+    public UserDto getDtoByEmail(String email) {
         UserDto userDto = null;
         try {
             userDto = userMapper.toDto(userRepository.findByEmail(email));
@@ -49,6 +49,18 @@ public class UserServiceImpl implements UserService {
             log.error("Error getting a user by email", e);
         }
         return userDto;
+    }
+
+    @Override
+    @Transactional
+    public User getByEmail(String email){
+        User user = null;
+        try {
+            user = userRepository.findByEmail(email);
+        } catch (Exception e) {
+            log.error("Error getting a user by email", e);
+        }
+        return user;
     }
 
     @Override
