@@ -55,6 +55,7 @@ public class SizeServiceImpl implements SizeService {
     }
 
     @Override
+    @Transactional
     public void addSize(SizeDto sizeDto) {
         Size size = new Size();
         size.setSize(sizeDto.getSize());
