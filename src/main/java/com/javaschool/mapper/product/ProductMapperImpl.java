@@ -11,6 +11,9 @@ import java.util.List;
 public class ProductMapperImpl {
 
     public ProductDto toDto(Product product){
+        if (product == null) {
+            return null;
+        }
         ProductDto.ProductDtoBuilder productDto = ProductDto.builder();
 
         productDto.id(product.getId());

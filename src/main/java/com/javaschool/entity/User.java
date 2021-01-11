@@ -53,10 +53,10 @@ public class User {
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Card> cards;
-//
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-//    private List<Address> addresses;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Address> addresses;
 //
 //    @LazyCollection(LazyCollectionOption.FALSE)
 //    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)

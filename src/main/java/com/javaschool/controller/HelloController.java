@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class HelloController {
 
-    @GetMapping("/hello")
+    @GetMapping("/")
     public String sayHello() {
         return "index";
     }

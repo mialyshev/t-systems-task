@@ -10,6 +10,10 @@ import java.util.List;
 @Component
 public class SizeMapperImpl {
     public SizeDto toDto(Size size){
+
+        if (size == null) {
+            return null;
+        }
         SizeDto.SizeDtoBuilder sizeDto = SizeDto.builder();
 
         sizeDto.size(size.getSize());

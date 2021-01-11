@@ -10,6 +10,10 @@ import java.util.List;
 @Component
 public class SeasonMapperImpl {
     public SeasonDto toDto(Season season){
+
+        if (season == null) {
+            return null;
+        }
         SeasonDto.SeasonDtoBuilder seasonDto = SeasonDto.builder();
 
         seasonDto.seasonName(season.getSeasonName());

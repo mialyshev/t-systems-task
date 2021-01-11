@@ -11,6 +11,10 @@ import java.util.List;
 public class ColorMapperImpl {
 
     public ColorDto toDto(Color color){
+
+        if (color == null) {
+            return null;
+        }
         ColorDto.ColorDtoBuilder colorDto = ColorDto.builder();
 
         colorDto.colorName(color.getColorName());

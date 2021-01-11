@@ -11,6 +11,10 @@ import java.util.List;
 public class BrandMapperImpl {
 
     public BrandDto toDto(Brand brand){
+
+        if (brand == null) {
+            return null;
+        }
         BrandDto.BrandDtoBuilder brandDto = BrandDto.builder();
 
         brandDto.brandName(brand.getBrandName());

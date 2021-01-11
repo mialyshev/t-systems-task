@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:if="${lastAddress}">
+    <table>
+        <tr>
+            <td>Country:</td>
+            <td th:text="*{lastAddress.getCountry()}"></td>
+        </tr>
+
+        <tr>
+            <td>City:</td>
+            <td th:text="*{lastAddress.getCity()}"></td>
+        </tr>
+
+        <tr>
+            <td>Postal code:</td>
+            <td th:text="*{lastAddress.getPostalCode()}"></td>
+        </tr>
+
+        <tr>
+            <td>Street:</td>
+            <td th:text="*{lastAddress.getStreet()}"></td>
+        </tr>
+
+        <tr>
+            <td>House number:</td>
+            <td th:text="*{lastAddress.getHouseNumber()}"></td>
+        </tr>
+
+        <tr>
+            <td>Apartment number:</td>
+            <td th:text="*{lastAddress.getApartamentNumber()}"></td>
+        </tr>
+    </table>
+</div>
+<form th:method="POST" th:action="@{/address}" th:object="${addressForm}">
+    <h2>Card</h2>
+    <table>
+        <tr>
+            <td>Country:</td>
+            <td><input type="text" th:field="*{country}"/></td>
+        </tr>
+
+        <tr>
+            <td>City:</td>
+            <td><input type="text" th:field="*{city}"/></td>
+        </tr>
+
+        <tr>
+            <td>Postal code:</td>
+            <td><input type="text" th:field="*{postalCode}"/></td>
+        </tr>
+        <tr>
+            <td>Street:</td>
+            <td><input type="text" th:field="*{street}"/></td>
+        </tr>
+        <tr>
+            <td>House number:</td>
+            <td><input type="text" th:field="*{houseNumber}"/></td>
+        </tr>
+        <tr>
+            <td>Apartment number:</td>
+            <td><input type="text" th:field="*{apartamentNumber}"/></td>
+        </tr>
+
+        <tr>
+            <td>Save this address?</td>
+            <td><input type="checkbox" name="save"/></td>
+        </tr>
+
+        <tr>
+            <td><input name="submit" type="submit" value="Register!" /></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

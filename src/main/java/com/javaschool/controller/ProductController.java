@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -194,9 +191,6 @@ public class ProductController {
         List<SeasonDto> seasons = seasonService.getAll();
         model.addAttribute("seasons", seasons);
 
-        List<SizeDto> sizes = sizeService.getAll();
-        model.addAttribute("sizes", sizes);
-
         model.addAttribute("productForm", new ProductDto());
         return "create-product";
     }
@@ -210,9 +204,10 @@ public class ProductController {
 
     @PostMapping("/create")
     public String addNewProduct(@ModelAttribute("productForm") @Valid ProductDto productDto,
+                                @RequestParam("size") float size,
                                 BindingResult bindingResult,
                                 Model model){
-        productDto.setSize(41);
+        productDto.setSize(size);
         productService.addProduct(productDto);
         return "redirect:/product";
     }

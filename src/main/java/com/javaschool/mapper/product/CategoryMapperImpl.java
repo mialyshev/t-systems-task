@@ -10,6 +10,10 @@ import java.util.List;
 @Component
 public class CategoryMapperImpl {
     public CategoryDto toDto(Category category){
+
+        if (category == null) {
+            return null;
+        }
         CategoryDto.CategoryDtoBuilder categoryDto = CategoryDto.builder();
 
         categoryDto.categoryName(category.getCategoryName());

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new product</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/product/create}" th:object="${productForm}">
+
+    <label>
+        Choose category:
+        <select th:field="*{categoryName}">
+            <option value="">Choose category</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryName}"
+                    th:text="${category.categoryName}"></option>
+        </select>
+    </label>
+    <br>
+    <label>
+        Choose brand:
+        <select th:field="*{brandName}">
+            <option value="">Choose brand</option>
+            <option th:each="brand : ${brands}"
+                    th:value="${brand.brandName}"
+                    th:text="${brand.brandName}"></option>
+        </select>
+    </label>
+    <br>
+    <label>
+        Model:
+        <input type="text" th:field="*{model}"/>
+    </label>
+    <br>
+    <label>
+        Price:
+        <input type="number" th:field="*{price}"/>
+    </label>
+    <br>
+    <label>
+        Quantity:
+        <input type="number" th:field="*{quantity}"/>
+    </label>
+    <br>
+    <label>
+        Picture url:
+        <input type="text" th:field="*{url}"/>
+    </label>
+    <br>
+    <label>
+        Choose season:
+        <select th:field="*{seasonName}">
+            <option value="">Choose season</option>
+            <option th:each="season : ${seasons}"
+                    th:value="${season.seasonName}"
+                    th:text="${season.seasonName}"></option>
+        </select>
+    </label>
+    <br>
+    <label>
+        Choose material:
+        <select th:field="*{materialName}">
+            <option value="">Choose material</option>
+            <option th:each="material : ${materials}"
+                    th:value="${material.materialName}"
+                    th:text="${material.materialName}"></option>
+        </select>
+    </label>
+    <br>
+    <label>
+        Choose color:
+        <select th:field="*{colorName}">
+            <option value="">Choose color</option>
+            <option th:each="color : ${colors}"
+                    th:value="${color.colorName}"
+                    th:text="${color.colorName}"></option>
+        </select>
+    </label>
+    <br>
+    <label>
+        <input name="submit" type="submit" value="submit"/>
+    </label>
+    <br>
+    <label>
+        Choose size:
+        <select name="size">
+            <option value="">Choose size</option>
+            <option th:each="i: ${#numbers.sequence(66, 100)}"
+                    th:value="${i / 2.0}"
+                    th:text="${i / 2.0}"></option>
+        </select>
+    </label>
+</form>
+<p><a href="/">Home</a></p>
+</body>
+</html>
