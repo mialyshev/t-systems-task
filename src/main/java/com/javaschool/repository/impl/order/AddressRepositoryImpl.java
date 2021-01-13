@@ -27,8 +27,8 @@ public class AddressRepositoryImpl implements AddressRepository {
 
         criteriaQuery
                 .select(root)
-                .where(criteriaBuilder.equal(root.get(Address_.user).get("id"), userId))
-                .where(criteriaBuilder.equal(root.get(Address_.isSaved), true));
+                .where(criteriaBuilder.equal(root.get(Address_.user).get("id"), userId),
+                        criteriaBuilder.equal(root.get(Address_.isSaved), true));
         TypedQuery<Address> selectAll = entityManager.createQuery(criteriaQuery);
 
         return selectAll.getResultList();
