@@ -1,8 +1,10 @@
 package com.javaschool.service.impl.user;
 
+import com.javaschool.dto.card.CardDto;
 import com.javaschool.dto.card.CardRegisterDto;
 import com.javaschool.entity.Card;
 import com.javaschool.entity.User;
+import com.javaschool.mapper.user.CardMapperImpl;
 import com.javaschool.repository.user.CardRepository;
 import com.javaschool.service.user.CardService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -18,6 +21,7 @@ import java.time.LocalDate;
 public class CardServiceImpl implements CardService  {
 
     private final CardRepository cardRepository;
+    private final CardMapperImpl cardMapper;
 
     @Override
     @Transactional
@@ -29,6 +33,17 @@ public class CardServiceImpl implements CardService  {
         card.setValidatyDate(getDate(cardDto.getValidatyDate()));
         card.setUser(userOwner);
         cardRepository.save(card);
+    }
+
+    @Override
+    public List<CardDto> getAllByUserId(long userId) {
+        List<CardDto> cardDtos = null;
+        try {
+            cardDtos = cardMapper.toDtoList(cardRepository.findAllByUserId(userId));
+        } catch (Exception e) {
+            log.error("Error getting all saved card", e);
+        }
+        return cardDtos;
     }
 
     private LocalDate getDate(String date){

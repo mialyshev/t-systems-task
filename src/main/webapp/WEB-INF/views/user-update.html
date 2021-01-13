@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>User update</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/user/edit}" th:object="${userForm}">
+    <input type="hidden" th:field="*{id}">
+    <label for="firstName">Enter first name: </label>
+    <input type="text" th:field="*{firstName}" id="firstName"/>
+    <br>
+    <label for="lastName">Enter last name: </label>
+    <input type="text" th:field="*{lastName}" id="lastName"/>
+    <br>
+    <label for="dob">Enter date of birth: </label>
+    <input type="date" th:field="*{dob}" id="dob"/>
+    <br>
+    <label for="email">Enter email: </label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <div th:if="${userError}">
+        <div style="color: red" th:text="${userError}"></div>
+    </div>
+    <br>
+    <label for="confirmEmail">Confirm email: </label>
+    <input type="text" th:field="*{confirmEmail}" id="confirmEmail"/>
+    <div th:if="${emailError}">
+        <div style="color: red" th:text="${emailError}"></div>
+    </div>
+<!--    <br>-->
+<!--    <label for="password">Enter password: </label>-->
+<!--    <input type="password" th:field="*{password}" id="password"/>-->
+<!--    <br>-->
+<!--    <label for="confirmPassword">Confirm password: </label>-->
+<!--    <input type="password" th:field="*{confirmPassword}" id="confirmPassword"/>-->
+    <br>
+    <input name="submit" type="submit" value="Update!" />
+</form>
+</body>
+</html>

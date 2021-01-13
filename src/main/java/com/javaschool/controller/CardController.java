@@ -5,8 +5,8 @@ import com.javaschool.entity.User;
 import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.user.CardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,14 +32,14 @@ public class CardController {
 
     @PostMapping
     public String registerNewCard(@ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
-                                  @AuthenticationPrincipal UserDetails currentUser,
                                   BindingResult bindingResult,
                                   Model model){
         if (bindingResult.hasErrors()) {
             return "card-register";
         }
-
-        User userFromBd = userRepository.findByEmail(currentUser.getUsername());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        User userFromBd = userRepository.findByEmail(currentUser);
 
         String[] ownerDate = cardRegisterDto.getOwner().split(" ");
         if (ownerDate.length != 2){
@@ -48,6 +48,6 @@ public class CardController {
         }
 
         cardService.addCard(cardRegisterDto, userFromBd);
-        return "index";
+        return "redirect:/user";
     }
 }

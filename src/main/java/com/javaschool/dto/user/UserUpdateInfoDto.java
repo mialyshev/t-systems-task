@@ -5,18 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-
-@Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto implements Serializable {
+@Builder
+@Data
+public class UserUpdateInfoDto {
 
     private long id;
     private String firstName;
     private String lastName;
-    private LocalDate dob;
+    private String dob;
     private String email;
+    private String confirmEmail;
+
 }

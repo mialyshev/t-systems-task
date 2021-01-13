@@ -211,4 +211,10 @@ public class ProductController {
         productService.addProduct(productDto);
         return "redirect:/product";
     }
+
+    @GetMapping("/addp")
+    public String addProduct(){
+        productService.addProductToOrder(2, 1);
+        return "redirect:/product";
+    }
 }

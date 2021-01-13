@@ -2,9 +2,11 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.ColorDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.entity.Order;
 import com.javaschool.entity.Product;
 import com.javaschool.entity.Product_;
 import com.javaschool.mapper.product.ProductMapperImpl;
+import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.*;
 import com.javaschool.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -27,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
     private final MaterialRepository materialRepository;
     private final SeasonRepository seasonRepository;
     private final SizeRepository sizeRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public List<ProductDto> getAll() {
@@ -77,5 +83,15 @@ public class ProductServiceImpl implements ProductService {
         product.setSeason(seasonRepository.findByName(productDto.getSeasonName()));
         product.setSize(sizeRepository.findBySize(productDto.getSize()));
         productRepository.save(product);
+    }
+
+    @Override
+    @Transactional
+    public void addProductToOrder(long productID, long orderId) {
+        Product product = productRepository.findById(productID);
+        Set<Order> orders = new HashSet<>();
+        orders.add(orderRepository.findById(orderId));
+        product.setOrderSet(orders);
+        productRepository.updateProduct(product);
     }
 }

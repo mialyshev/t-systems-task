@@ -14,4 +14,6 @@ public interface ProductService {
     ProductDto getById(long id);
 
     void addProduct(ProductDto productDto);
+
+    void addProductToOrder(long productID, long orderId);
 }

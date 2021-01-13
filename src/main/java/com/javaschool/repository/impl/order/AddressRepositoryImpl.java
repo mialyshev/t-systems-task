@@ -1,8 +1,8 @@
 package com.javaschool.repository.impl.order;
 
-import com.javaschool.entity.*;
+import com.javaschool.entity.Address;
+import com.javaschool.entity.Address_;
 import com.javaschool.repository.order.AddressRepository;
-import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

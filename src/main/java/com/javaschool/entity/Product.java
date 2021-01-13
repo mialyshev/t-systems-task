@@ -3,9 +3,9 @@ package com.javaschool.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 
-@EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "products")
 @Getter
@@ -56,5 +56,17 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "size_id")
     private Size size;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinTable(
+            name = "product_order",
+            joinColumns = {
+                    @JoinColumn(name = "product_id", referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "order_id", referencedColumnName = "id")
+            }
+    )
+    private Set<Order> orderSet;
 }
 

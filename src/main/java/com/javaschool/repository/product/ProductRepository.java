@@ -14,4 +14,8 @@ public interface ProductRepository {
     Product findById(long id);
 
     void save(Product product);
+
+    List<Product> getProductByOrderId(long orderId);
+
+    void updateProduct(Product product);
 }

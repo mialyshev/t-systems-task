@@ -13,4 +13,6 @@ public interface UserRepository {
     User findByEmail(String email);
 
     void save(User user);
+
+    void update(User user);
 }
