@@ -1,9 +1,9 @@
-package com.javaschool.service;
+package com.javaschool.service.impl;
 
 import com.javaschool.entity.Role;
 import com.javaschool.entity.User;
-import com.javaschool.repository.RoleRepository;
-import com.javaschool.repository.UserRepository;
+import com.javaschool.repository.user.RoleRepository;
+import com.javaschool.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,12 +15,11 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;

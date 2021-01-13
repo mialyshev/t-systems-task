@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" type="text/css"
+          href="/styles/demo.css">
+    <title>Welcome</title>
+</head>
+
+<body>
+    <div class="red-text">
+        Red text
+    </div>
+    <br>
+    <div class="green-text">
+        Green text
+    </div>
+    <span sec:authorize="isAuthenticated()">
+        <h1>Welcome, <span sec:authentication="name">Username</span></h1>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Log out"/>
+        </form>
+<!--        <p><a th:href="@{/logout}">Logout</a></p>-->
+    </span>
+    <br>
+
+    <input type="button" class="button" onclick="sayHello();"
+       value="Click me!">
+<br>
+    <p><a th:href="@{/product}">All products</a></p>
+    <p><a th:href="@{/product/category}">All categories</a></p>
+    <p><a th:href="@{/product/brand}">All brands</a></p>
+    <p><a th:href="@{/product/color}">All colors</a></p>
+    <p><a th:href="@{/product/material}">All materials</a></p>
+    <p><a th:href="@{/product/season}">All seasons</a></p>
+    <p><a th:href="@{/product/size}">All sizes</a></p>
+
+</body>
+</html>

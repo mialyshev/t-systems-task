@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Materials</title>
+</head>
+<body>
+<h2>Materials</h2>
+<div th:each="material : ${materials}">
+    <p>
+        Name : <span th:text="*{material.materialName}"></span>
+    </p>
+</div>
+<h4>Add new material</h4>
+<div>
+    <form th:method="POST" th:action="@{/product/material}" th:object="${materialForm}">
+        <tr>
+            <td>Enter material:</td>
+            <td><input type="text" th:field="*{materialName}"/></td>
+            <div th:if="${materialError}">
+                <div style="color: red" th:text="${materialError}"></div>
+            </div>
+        </tr>
+        <tr>
+            <td><input name="submit" type="submit" value="submit" /></td>
+        </tr>
+    </form>
+</div>
+<p><a href="/">Home</a></p>
+</body>
+</html>

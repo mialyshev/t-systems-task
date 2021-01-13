@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+</head>
+<body>
+<h2>Products</h2>
+<div th:each="product : ${products}">
+    <p>
+        Brand : <span th:text="*{product.brandName}"></span>
+    </p>
+    <p>
+        Model : <span th:text="*{product.model}"></span>
+    </p>
+    <p>
+        Season : <span th:text="*{product.seasonName}"></span>
+    </p>
+    <p>
+        Color : <span th:text="*{product.colorName}"></span>
+    </p>
+    <p>
+        Material : <span th:text="*{product.materialName}"></span>
+    </p>
+    <p>
+        Size : <span th:text="*{product.size}"></span>
+    </p>
+    <p>
+        Category : <span th:text="*{product.categoryName}"></span>
+    </p>
+    <p>
+        Price : <span th:text="*{product.price}"></span>
+    </p>
+    <div>
+        <img th:src="*{product.url}"
+             width="189" height="255" alt="lorem">
+    </div>
+</div>
+<p><a href="/product/create">Add new product</a></p>
+<p><a href="/">Home</a></p>
+</body>
+</html>

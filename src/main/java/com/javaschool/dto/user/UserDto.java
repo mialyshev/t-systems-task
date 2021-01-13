@@ -1,4 +1,4 @@
-package com.javaschool.dto;
+package com.javaschool.dto.user;
 
 import lombok.*;
 
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserDto implements Serializable {
 
-    private int id;
+    private long id;
     private String firstName;
     private String lastName;
     private LocalDate dob;

@@ -1,8 +1,10 @@
-package com.javaschool.repository.impl;
+package com.javaschool.repository.impl.user;
 
 import com.javaschool.entity.Role;
+import com.javaschool.entity.Role_;
 import com.javaschool.entity.User;
-import com.javaschool.repository.RoleRepository;
+import com.javaschool.entity.User_;
+import com.javaschool.repository.user.RoleRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,7 +14,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class RoleRepositoryImpl implements RoleRepository {
 
         criteriaQuery
                 .select(root)
-                .where(criteriaBuilder.equal(root.get("name"), name));
+                .where(criteriaBuilder.equal(root.get(Role_.name), name));
         TypedQuery<Role> selectByName = entityManager.createQuery(criteriaQuery);
 
         return selectByName.getSingleResult();
@@ -42,11 +43,11 @@ public class RoleRepositoryImpl implements RoleRepository {
         CriteriaQuery<Role> criteriaQuery = criteriaBuilder.createQuery(Role.class);
         Root<Role> root = criteriaQuery.from(Role.class);
 
-        Join<Role, User> userEntityJoin = root.join("userSet");
+        Join<Role, User> userEntityJoin = root.join(Role_.userSet);
 
         criteriaQuery
                 .select(root)
-                .where(criteriaBuilder.equal(userEntityJoin.get("email"), email));
+                .where(criteriaBuilder.equal(userEntityJoin.get(User_.email), email));
         TypedQuery<Role> selectByUserLogin = entityManager.createQuery(criteriaQuery);
 
         return selectByUserLogin.getResultStream().collect(Collectors.toSet());
