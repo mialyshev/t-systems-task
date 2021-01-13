@@ -8,11 +8,11 @@ import javax.persistence.*;
 import java.util.List;
 
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = { "id", "country", "city", "postalCode", "street", "houseNumber", "apartamentNumber"})
 @Entity
 @Table(name = "addresses")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {

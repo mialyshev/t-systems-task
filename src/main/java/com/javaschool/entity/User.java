@@ -10,13 +10,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = { "id", "firstName", "lastName", "dob", "email"})
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class User {
     @Id

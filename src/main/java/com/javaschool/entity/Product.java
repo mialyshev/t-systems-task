@@ -5,11 +5,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Set;
 
-
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = { "id", "quantity", "price", "model"})
 @Entity
 @Table(name = "products")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {

@@ -7,11 +7,11 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = { "id", "size"})
 @Entity
 @Table(name = "sizes")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Size {

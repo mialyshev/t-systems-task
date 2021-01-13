@@ -7,11 +7,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = { "id", "number", "validatyDate", "owner", "code"})
 @Entity
 @Table(name = "cards")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Card {
