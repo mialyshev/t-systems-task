@@ -61,10 +61,10 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
-    public AddressDto getLast() {
+    public AddressDto getLastByUserId(long userId) {
         AddressDto addressDto = null;
         try {
-            addressDto = addressMapper.toDto(addressRepository.getLast());
+            addressDto = addressMapper.toDto(addressRepository.getLastByUserId(userId));
         } catch (Exception e) {
             log.error("Error getting a last address", e);
         }

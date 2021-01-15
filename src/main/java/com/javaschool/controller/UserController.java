@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/profile")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -62,7 +62,7 @@ public class UserController {
             return "user-update";
         }
         userService.updateUserInfo(userUpdateDto);
-        return "redirect:/user";
+        return "redirect:/profile";
     }
 
     @GetMapping("/editpass")
@@ -91,6 +91,9 @@ public class UserController {
             model.addAttribute("passwordError", "Password does not match");
             return "user-update-password";
         }
-        return "/login";
+        return "redirect:/login";
     }
+
+    //TODO: Add edit addresses
+
 }

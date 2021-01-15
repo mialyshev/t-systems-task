@@ -3,6 +3,8 @@ package com.javaschool.service.product;
 
 import com.javaschool.dto.product.ProductDto;
 
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ProductService {
@@ -15,5 +17,11 @@ public interface ProductService {
 
     void addProduct(ProductDto productDto);
 
-    void addProductToOrder(long productID, long orderId);
+    List<ProductDto>getSelectedList(Integer[] selected);
+
+    boolean isAvailable(List<ProductDto> productDtos);
+
+    void updateBucket(ArrayList<ProductDto> productDtos);
+
+    void updateProductQuantity(List<ProductDto> productDtoList);
 }

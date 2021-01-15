@@ -14,5 +14,5 @@ public interface AddressService {
 
     AddressDto getById(long id);
 
-    AddressDto getLast();
+    AddressDto getLastByUserId(long userId);
 }

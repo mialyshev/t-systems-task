@@ -11,4 +11,6 @@ public interface CardService {
     void addCard(CardRegisterDto cardDto, User userOwner);
 
     List<CardDto> getAllByUserId(long userId);
+
+    CardDto getById(long id);
 }

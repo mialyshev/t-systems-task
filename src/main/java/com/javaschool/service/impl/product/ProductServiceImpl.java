@@ -13,11 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -86,12 +84,48 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> getSelectedList(Integer[] selected) {
+        List<ProductDto> productDtos = new ArrayList<>();
+        for(Integer id : selected){
+            productDtos.add(getById(id));
+        }
+        return productDtos;
+    }
+
+    @Override
+    public boolean isAvailable(List<ProductDto> productDtos) {
+        for(ProductDto productDto : productDtos){
+            Product product = productRepository.findById(productDto.getId());
+            if(product.getQuantity() <= 0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void updateBucket(ArrayList<ProductDto> productDtos) {
+        List<Long> productId = new ArrayList<>();
+        for(ProductDto productDto : productDtos){
+            productId.add(productDto.getId());
+        }
+        productDtos.clear();
+        for (Long id : productId){
+            productDtos.add(getById(id));
+        }
+    }
+
+    @Override
     @Transactional
-    public void addProductToOrder(long productID, long orderId) {
-        Product product = productRepository.findById(productID);
-        Set<Order> orders = new HashSet<>();
-        orders.add(orderRepository.findById(orderId));
-        product.setOrderSet(orders);
-        productRepository.updateProduct(product);
+    public void updateProductQuantity(List<ProductDto> productDtoList) {
+        for(ProductDto productDto : productDtoList){
+            Product product = productRepository.findById(productDto.getId());
+            int quantity = product.getQuantity();
+            if (quantity <= 1){
+                product.setActive(false);
+            }
+            product.setQuantity(quantity - 1);
+            productRepository.updateProduct(product);
+        }
     }
 }

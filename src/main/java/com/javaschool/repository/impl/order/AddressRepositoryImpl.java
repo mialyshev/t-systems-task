@@ -45,12 +45,15 @@ public class AddressRepositoryImpl implements AddressRepository {
     }
 
     @Override
-    public Address getLast() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Address> q = cb.createQuery(Address.class);
-        Root<Address> b = q.from(Address.class);
-        q.select(b).orderBy(cb.desc(b.get("id")));
-        TypedQuery<Address> findAllSizes = entityManager.createQuery(q);
-        return findAllSizes.getResultStream().findFirst().orElse(null);
+    public Address getLastByUserId(long userId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Address> criteriaQuery = criteriaBuilder.createQuery(Address.class);
+        Root<Address> root = criteriaQuery.from(Address.class);
+        criteriaQuery
+                .select(root)
+                .orderBy(criteriaBuilder.desc(root.get("id")))
+                .where(criteriaBuilder.equal(root.get(Address_.user).get("id"), userId));
+        TypedQuery<Address> findAllAddressByUserId = entityManager.createQuery(criteriaQuery);
+        return findAllAddressByUserId.getResultStream().findFirst().orElse(null);
     }
 }

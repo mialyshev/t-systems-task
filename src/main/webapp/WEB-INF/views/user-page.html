@@ -18,8 +18,8 @@
     <div>
         Email: <span th:text="${userInfo.email}"></span>
     </div>
-    <p><a th:href="@{/user/edit}">Edit user info</a></p>
-    <p><a th:href="@{/user/editpass}">Update password</a></p>
+    <p><a th:href="@{/profile/edit}">Edit user info</a></p>
+    <p><a th:href="@{/profile/editpass}">Update password</a></p>
 
     <h3>Saved address</h3>
     <div th:each="address : ${savedAddress}">
@@ -31,7 +31,7 @@
             City: <span th:text="*{address.city}"></span>
         </p>
     </div>
-    <p><a th:href="@{/address}">Add new address</a></p>
+    <p><a th:href="@{/profile/add-address}">Add new address</a></p>
 
     <h3>Saved card</h3>
     <div th:each="card : ${savedCard}">
@@ -43,7 +43,7 @@
             Validate date: <span th:text="*{card.validatyDate}"></span>
         </p>
     </div>
-    <p><a th:href="@{/card}">Add new card</a></p>
+    <p><a th:href="@{/profile/add-card}">Add new card</a></p>
     <p><a th:href="@{/}">Home</a></p>
 </body>
 </html>

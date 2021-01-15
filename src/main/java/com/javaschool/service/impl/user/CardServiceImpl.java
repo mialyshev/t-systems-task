@@ -2,6 +2,7 @@ package com.javaschool.service.impl.user;
 
 import com.javaschool.dto.card.CardDto;
 import com.javaschool.dto.card.CardRegisterDto;
+import com.javaschool.dto.product.BrandDto;
 import com.javaschool.entity.Card;
 import com.javaschool.entity.User;
 import com.javaschool.mapper.user.CardMapperImpl;
@@ -44,6 +45,17 @@ public class CardServiceImpl implements CardService  {
             log.error("Error getting all saved card", e);
         }
         return cardDtos;
+    }
+
+    @Override
+    public CardDto getById(long id) {
+        CardDto cardDto = null;
+        try {
+            cardDto = cardMapper.toDto(cardRepository.findById(id));
+        } catch (Exception e) {
+            log.error("Error getting a card by id", e);
+        }
+        return cardDto;
     }
 
     private LocalDate getDate(String date){

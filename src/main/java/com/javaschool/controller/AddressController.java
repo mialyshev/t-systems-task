@@ -18,20 +18,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/address")
 @RequiredArgsConstructor
 public class AddressController {
 
     private final AddressService addressService;
     private final UserRepository userRepository;
 
-    @GetMapping
+    @GetMapping("/profile/add-address")
     public String getAddressForm(Model model){
         model.addAttribute("addressForm", new AddressAdditionDto());
         return "address";
     }
 
-    @PostMapping
+    @PostMapping("/profile/add-address")
     public String addNewAddress(@ModelAttribute("addressForm") @Valid AddressAdditionDto addressAdditionDto,
                                 BindingResult bindingResult,
                                 Model model){
@@ -40,6 +39,6 @@ public class AddressController {
         User userFromBd = userRepository.findByEmail(currentUser);
         addressAdditionDto.setSaved(true);
         addressService.addAddress(addressAdditionDto, userFromBd);
-        return "redirect:/user";
+        return "redirect:/profile";
     }
 }

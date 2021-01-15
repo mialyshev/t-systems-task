@@ -18,19 +18,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/card")
 @RequiredArgsConstructor
 public class CardController {
     private final CardService cardService;
     private final UserRepository userRepository;
 
-    @GetMapping
+    @GetMapping("/profile/add-card")
     public String getCardForm(Model model){
         model.addAttribute("cardForm", new CardRegisterDto());
         return "card-register";
     }
 
-    @PostMapping
+    @PostMapping("/profile/add-card")
     public String registerNewCard(@ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
                                   BindingResult bindingResult,
                                   Model model){
@@ -48,6 +47,6 @@ public class CardController {
         }
 
         cardService.addCard(cardRegisterDto, userFromBd);
-        return "redirect:/user";
+        return "redirect:/profile";
     }
 }

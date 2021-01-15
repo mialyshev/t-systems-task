@@ -57,16 +57,7 @@ public class Product {
     @JoinColumn(name = "size_id")
     private Size size;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    @JoinTable(
-            name = "product_order",
-            joinColumns = {
-                    @JoinColumn(name = "product_id", referencedColumnName = "id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "order_id", referencedColumnName = "id")
-            }
-    )
+    @ManyToMany(mappedBy = "productSet", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Order> orderSet;
 }
 

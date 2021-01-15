@@ -6,7 +6,6 @@
 </head>
 <body>
 <form th:method="POST" th:action="@{/product/create}" th:object="${productForm}">
-
     <label>
         Choose category:
         <select th:field="*{categoryName}">
@@ -17,6 +16,8 @@
         </select>
     </label>
     <br>
+    <p><a th:href="@{/product/category}">Add new category</a></p>
+    <br>
     <label>
         Choose brand:
         <select th:field="*{brandName}">
@@ -26,6 +27,8 @@
                     th:text="${brand.brandName}"></option>
         </select>
     </label>
+    <br>
+    <p><a th:href="@{/product/brand}">Add new brand</a></p>
     <br>
     <label>
         Model:
@@ -57,6 +60,8 @@
         </select>
     </label>
     <br>
+    <p><a th:href="@{/product/season}">Add new season</a></p>
+    <br>
     <label>
         Choose material:
         <select th:field="*{materialName}">
@@ -66,6 +71,8 @@
                     th:text="${material.materialName}"></option>
         </select>
     </label>
+    <br>
+    <p><a th:href="@{/product/material}">Add new material</a></p>
     <br>
     <label>
         Choose color:
@@ -77,9 +84,7 @@
         </select>
     </label>
     <br>
-    <label>
-        <input name="submit" type="submit" value="submit"/>
-    </label>
+    <p><a th:href="@{/product/color}">Add new color</a></p>
     <br>
     <label>
         Choose size:
@@ -89,6 +94,10 @@
                     th:value="${i / 2.0}"
                     th:text="${i / 2.0}"></option>
         </select>
+    </label>
+    <br>
+    <label>
+        <input name="submit" type="submit" value="submit"/>
     </label>
 </form>
 <p><a href="/">Home</a></p>
