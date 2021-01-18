@@ -30,4 +30,10 @@ public interface OrderService {
     void changePayment(long orderId);
 
     void setPaid(long orderId);
+
+    List<OrderDto> getOrdersByAddressId(long addressId);
+
+    void updatePaymentStatus(String paymentStatus, long orderId);
+
+    void updateOrderStatus(String orderStatus, long orderId);
 }

@@ -15,4 +15,6 @@ public interface OrderRepository {
     void updateOrder(Order order);
 
     List<Order> findByUserId(long userId);
+
+    List<Order> findByAddressId(long addressId);
 }

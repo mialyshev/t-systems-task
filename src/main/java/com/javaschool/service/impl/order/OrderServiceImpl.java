@@ -136,7 +136,9 @@ public class OrderServiceImpl implements OrderService {
     public void changePayment(long orderId) {
         Order order = orderRepository.findById(orderId);
         order.setPaymentType(PaymentType.CASH);
-        order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        if (order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT) {
+            order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        }
         orderRepository.updateOrder(order);
     }
 
@@ -145,7 +147,45 @@ public class OrderServiceImpl implements OrderService {
     public void setPaid(long orderId) {
         Order order = orderRepository.findById(orderId);
         order.setPaymentStatus(PaymentStatus.PAID);
-        order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        if (order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT) {
+            order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        }
+        orderRepository.updateOrder(order);
+    }
+
+    @Override
+    public List<OrderDto> getOrdersByAddressId(long addressId) {
+        List<OrderDto> orderDtoList = null;
+        try {
+            orderDtoList = orderMapper.toDtoList(orderRepository.findByAddressId(addressId));
+        } catch (Exception e) {
+            log.error("Error getting all orders by address id", e);
+        }
+        return orderDtoList;
+    }
+
+    @Override
+    @Transactional
+    public void updatePaymentStatus(String paymentStatus, long orderId) {
+        Order order = orderRepository.findById(orderId);
+        if(order.getPaymentStatus().toString().equals(paymentStatus)){
+            return;
+        }
+        order.setPaymentStatus(PaymentStatus.valueOf(paymentStatus));
+        if(order.getPaymentStatus() == PaymentStatus.PAID & order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT){
+            order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        }
+        orderRepository.updateOrder(order);
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderStatus(String orderStatus, long orderId) {
+        Order order = orderRepository.findById(orderId);
+        if(order.getOrderStatus().toString().equals(orderStatus)){
+            return;
+        }
+        order.setOrderStatus(OrderStatus.valueOf(orderStatus));
         orderRepository.updateOrder(order);
     }
 }

@@ -70,4 +70,9 @@ public class AddressRepositoryImpl implements AddressRepository {
 
         return selectAll.getResultList();
     }
+
+    @Override
+    public void update(Address address) {
+        entityManager.merge(address);
+    }
 }

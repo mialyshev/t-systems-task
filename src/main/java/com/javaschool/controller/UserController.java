@@ -1,10 +1,12 @@
 package com.javaschool.controller;
 
 import com.javaschool.dto.card.CardRegisterDto;
+import com.javaschool.dto.order.AddressDto;
 import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.user.UserDto;
 import com.javaschool.dto.user.UserUpdateInfoDto;
 import com.javaschool.dto.user.UserUpdatePassDto;
+import com.javaschool.entity.Order;
 import com.javaschool.entity.User;
 import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.order.AddressService;
@@ -165,6 +167,27 @@ public class UserController {
     }
 
 
-    //TODO: Add edit addresses
+    @GetMapping("/address/edit/{id}")
+    public String getPageForEditAddress(@PathVariable("id") long id,
+                                        Model model){
+        AddressDto addressDto = addressService.getById(id);
+        model.addAttribute("addressForm", addressDto);
+        return "user-address-edit";
+    }
 
+    @PostMapping("/address/edit")
+    public String editAddress(@ModelAttribute("addressForm") @Valid AddressDto addressDto,
+                              BindingResult bindingResult,
+                              Model model){
+        if(orderService.getOrdersByAddressId(addressDto.getId()).size() == 0){
+            addressService.updateAddress(addressDto);
+        }else {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentUser = authentication.getName();
+            User userFromBd = userService.getByEmail(currentUser);
+            addressService.updateSavedAddress(addressDto.getId());
+            addressService.addUpdateAddress(addressDto, userFromBd);
+        }
+        return "redirect:/profile";
+    }
 }

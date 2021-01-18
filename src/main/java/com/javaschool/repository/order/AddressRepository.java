@@ -15,4 +15,6 @@ public interface AddressRepository {
     Address getLastByUserId(long userId);
 
     List<Address> findAll();
+
+    void update(Address address);
 }

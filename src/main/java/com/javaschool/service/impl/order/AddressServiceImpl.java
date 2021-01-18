@@ -81,4 +81,31 @@ public class AddressServiceImpl implements AddressService {
         }
         return addressDtoList;
     }
+
+    @Override
+    @Transactional
+    public void updateAddress(AddressDto addressDto) {
+        Address address = addressRepository.findById(addressDto.getId());
+        address.setCountry(addressDto.getCountry());
+        address.setCity(addressDto.getCity());
+        address.setStreet(addressDto.getStreet());
+        address.setHouseNumber(addressDto.getHouseNumber());
+        address.setApartamentNumber(addressDto.getApartamentNumber());
+        address.setPostalCode(addressDto.getPostalCode());
+        addressRepository.update(address);
+    }
+
+    @Override
+    @Transactional
+    public void addUpdateAddress(AddressDto addressDto, User user) {
+        addAddress(addressMapper.toAdditionDto(addressDto), user);
+    }
+
+    @Override
+    @Transactional
+    public void updateSavedAddress(long addressId) {
+        Address address = addressRepository.findById(addressId);
+        address.setSaved(false);
+        addressRepository.update(address);
+    }
 }

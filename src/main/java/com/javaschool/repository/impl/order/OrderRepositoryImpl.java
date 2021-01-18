@@ -62,4 +62,18 @@ public class OrderRepositoryImpl implements OrderRepository {
 
         return selectAll.getResultList();
     }
+
+    @Override
+    public List<Order> findByAddressId(long addressId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
+
+        criteriaQuery
+                .select(root)
+                .where(criteriaBuilder.equal(root.get(Order_.address).get("id"), addressId));
+        TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
+    }
 }
