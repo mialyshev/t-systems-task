@@ -70,4 +70,15 @@ public class AddressServiceImpl implements AddressService {
         }
         return addressDto;
     }
+
+    @Override
+    public List<AddressDto> getAll() {
+        List<AddressDto> addressDtoList = null;
+        try {
+            addressDtoList = addressMapper.toDtoList(addressRepository.findAll());
+        } catch (Exception e) {
+            log.error("Error getting all address", e);
+        }
+        return addressDtoList;
+    }
 }

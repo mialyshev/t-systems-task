@@ -4,6 +4,7 @@ import com.javaschool.dto.order.AddressDto;
 import com.javaschool.dto.order.OrderDto;
 import com.javaschool.entity.Address;
 import com.javaschool.entity.Order;
+import com.javaschool.entity.enums.PaymentStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,7 +24,11 @@ public class OrderMapperImpl {
         orderDto.orderStatus(order.getOrderStatus().name());
         orderDto.paymentStatus(order.getPaymentStatus().name());
         orderDto.paymentType(order.getPaymentType().name());
-
+        if(order.getPaymentStatus().toString().equals("PAID")){
+            orderDto.isPaid(true);
+        }else {
+            orderDto.isPaid(false);
+        }
         return orderDto.build();
     }
 

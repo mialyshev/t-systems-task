@@ -24,4 +24,10 @@ public interface OrderService {
     List<String>getPaymentStatusList();
 
     List<String>getPaymentTypeList();
+
+    List<OrderDto> findByUserId(long userId);
+
+    void changePayment(long orderId);
+
+    void setPaid(long orderId);
 }

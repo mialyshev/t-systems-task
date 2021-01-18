@@ -11,6 +11,7 @@ import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.product.ProductService;
 import com.javaschool.service.user.CardService;
+import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,6 +37,7 @@ public class OrderController {
     private final AddressService addressService;
     private final CardService cardService;
     private final ProductService productService;
+    private final UserService userService;
 
     @GetMapping
     public String getOrderForm(Model model, @RequestParam(value = "selected", required = false)Integer[] selected){
@@ -108,7 +110,7 @@ public class OrderController {
                 return "card-register";
             }
 
-            cardService.addCard(cardRegisterDto, userRepository.findById(orderDto.getUser_id()));
+            cardService.addCard(cardRegisterDto, userService.getUserById(orderDto.getUser_id()));
         }
         orderDto.setPaid(true);
         model.addAttribute("card", cardRegisterDto);
@@ -127,13 +129,13 @@ public class OrderController {
         return "order-finish";
     }
 
-    @PostMapping("/later")
+    @GetMapping ("/later")
     public String getLaterPay(@ModelAttribute("orderForm") @Valid OrderDto orderDto,
                               Model model){
         orderDto.setPaid(false);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
         return "order-finish";
-    }
+}
 
 
     @PostMapping("/finish")

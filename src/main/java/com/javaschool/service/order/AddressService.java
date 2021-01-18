@@ -15,4 +15,6 @@ public interface AddressService {
     AddressDto getById(long id);
 
     AddressDto getLastByUserId(long userId);
+
+    List<AddressDto> getAll();
 }

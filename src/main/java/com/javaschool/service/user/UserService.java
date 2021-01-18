@@ -18,6 +18,8 @@ public interface UserService {
 
     UserDto getById(long id);
 
+    User getUserById(long id);
+
     UserDto toDto(User user);
 
     void registerUser(UserRegistrationDto userRegistrationDto);

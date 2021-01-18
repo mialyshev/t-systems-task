@@ -1,10 +1,14 @@
 package com.javaschool.controller;
 
+import com.javaschool.dto.card.CardRegisterDto;
+import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.user.UserDto;
 import com.javaschool.dto.user.UserUpdateInfoDto;
 import com.javaschool.dto.user.UserUpdatePassDto;
 import com.javaschool.entity.User;
+import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.order.AddressService;
+import com.javaschool.service.order.OrderService;
 import com.javaschool.service.user.CardService;
 import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/profile")
@@ -25,6 +30,7 @@ public class UserController {
     private final UserService userService;
     private final CardService cardService;
     private final AddressService addressService;
+    private final OrderService orderService;
 
     @GetMapping
     public String getAllUserInfo(Model model){
@@ -93,6 +99,71 @@ public class UserController {
         }
         return "redirect:/login";
     }
+
+    @GetMapping("/orders")
+    public String getAllOrders(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        User userFromBd = userService.getByEmail(currentUser);
+        model.addAttribute("orders", orderService.findByUserId(userFromBd.getId()));
+        return "user-orders";
+    }
+
+    @GetMapping("/order/{id}")
+    public String getOrder(@PathVariable("id") long id,
+                           Model model){
+        OrderDto orderDto = orderService.findById(id);
+        model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        model.addAttribute("order", orderDto);
+        return "user-order";
+    }
+
+    @GetMapping("/order/payment/{id}")
+    public String changePaymentType(@PathVariable("id") long id,
+                                    Model model){
+        orderService.changePayment(id);
+        return "redirect:/profile/order/" + id;
+    }
+
+    @GetMapping("/order/pay/{id}")
+    public String payForOrder(@PathVariable("id") long id,
+                                    Model model){
+        OrderDto orderDto = orderService.findById(id);
+        model.addAttribute("orderForm", orderDto);
+        model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
+        model.addAttribute("cardForm", new CardRegisterDto());
+        return "user-pay-order";
+    }
+
+    @PostMapping("/savedcard/{id}")
+    public String addCard(@PathVariable("id") long id,
+                          @RequestParam(value = "cardId", required = true) long cardId){
+        orderService.setPaid(id);
+        return "redirect:/profile/order/" + id;
+    }
+
+    @PostMapping("/card/{id}")
+    public String addCard(@PathVariable("id") long id,
+                          @ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
+                          @RequestParam(value = "save", required = false) String isSaved,
+                          BindingResult bindingResult,
+                          Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        User userFromBd = userService.getByEmail(currentUser);
+        if(isSaved != null){
+            String[] ownerDate = cardRegisterDto.getOwner().split(" ");
+            if (ownerDate.length != 2){
+                model.addAttribute("ownerError", "Cardholder data must consist of first and last name");
+                return "card-register";
+            }
+
+            cardService.addCard(cardRegisterDto, userFromBd);
+        }
+        orderService.setPaid(id);
+        return "redirect:/profile/order/" + id;
+    }
+
 
     //TODO: Add edit addresses
 

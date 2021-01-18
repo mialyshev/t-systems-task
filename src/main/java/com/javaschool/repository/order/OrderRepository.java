@@ -12,5 +12,7 @@ public interface OrderRepository {
 
     void save(Order order);
 
-    void updateOrderStatus(Order order);
+    void updateOrder(Order order);
+
+    List<Order> findByUserId(long userId);
 }

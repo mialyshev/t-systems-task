@@ -1,6 +1,9 @@
 package com.javaschool.repository.impl.order;
 
+import com.javaschool.entity.Address;
+import com.javaschool.entity.Address_;
 import com.javaschool.entity.Order;
+import com.javaschool.entity.Order_;
 import com.javaschool.repository.order.OrderRepository;
 import org.springframework.stereotype.Repository;
 
@@ -42,7 +45,21 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public void updateOrderStatus(Order order) {
+    public void updateOrder(Order order) {
         entityManager.merge(order);
+    }
+
+    @Override
+    public List<Order> findByUserId(long userId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
+
+        criteriaQuery
+                .select(root)
+                .where(criteriaBuilder.equal(root.get(Order_.user).get("id"), userId));
+        TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
     }
 }

@@ -6,6 +6,7 @@ import com.javaschool.entity.Order;
 import com.javaschool.entity.Product;
 import com.javaschool.entity.Product_;
 import com.javaschool.mapper.product.ProductMapperImpl;
+import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.*;
 import com.javaschool.service.product.ProductService;
@@ -127,5 +128,17 @@ public class ProductServiceImpl implements ProductService {
             product.setQuantity(quantity - 1);
             productRepository.updateProduct(product);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<ProductDto> getProductsByParam(List<SearchCriteria> params) {
+        List<ProductDto> productDtoList = null;
+        try {
+            productDtoList = productMapper.toDtoList(productRepository.findByParam(params));
+        } catch (Exception e) {
+            log.error("Error getting all the products by param", e);
+        }
+        return productDtoList;
     }
 }

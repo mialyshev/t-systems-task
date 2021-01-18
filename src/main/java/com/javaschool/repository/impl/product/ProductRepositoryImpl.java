@@ -1,16 +1,16 @@
 package com.javaschool.repository.impl.product;
 
 import com.javaschool.entity.*;
+import com.javaschool.entity.Order;
+import com.javaschool.repository.impl.product.filtration.ProductSearchQueryCriteriaConsumer;
+import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import com.javaschool.repository.product.ProductRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,6 +76,28 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public void updateProduct(Product product) {
         entityManager.merge(product);
+    }
+
+    @Override
+    public List<Product> findByParam(List<SearchCriteria> params) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+        Root<Product> root = criteriaQuery.from(Product.class);
+
+        Predicate predicate = criteriaBuilder.conjunction();
+
+        ProductSearchQueryCriteriaConsumer productConsumer = new ProductSearchQueryCriteriaConsumer(predicate, criteriaBuilder, root);
+
+        params.stream().forEach(productConsumer);
+
+        predicate = productConsumer.getPredicate();
+
+        criteriaQuery.where(criteriaBuilder.equal(root.get(Product_.active), true),
+                predicate);
+
+        List<Product> result = entityManager.createQuery(criteriaQuery).getResultList();
+
+        return result;
     }
 
 

@@ -15,7 +15,7 @@
     </p>
 </div>
 
-<form th:method="POST" th:action="@{/order/savedcard}">
+<form th:method="POST" th:action="@{/profile/savedcard/{id}(id=${orderForm.id})}">
     <label>
         Choose saved card:
         <select name="cardId">
@@ -29,7 +29,7 @@
         <input name="submit" type="submit" value="Select"/>
     </label>
 </form>
-<form th:method="POST" th:action="@{/order/card}" th:object="${cardForm}">
+<form th:method="POST" th:action="@{/profile/card/{id}(id=${orderForm.id})}" th:object="${cardForm}">
     <h2>Card</h2>
     <table>
         <tr>
@@ -66,6 +66,5 @@
         </tr>
     </table>
 </form>
-<p><a th:href="@{/order/later}">Pay later</a></p>
 </body>
 </html>

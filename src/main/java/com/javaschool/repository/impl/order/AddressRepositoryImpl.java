@@ -2,6 +2,7 @@ package com.javaschool.repository.impl.order;
 
 import com.javaschool.entity.Address;
 import com.javaschool.entity.Address_;
+import com.javaschool.entity.Season;
 import com.javaschool.repository.order.AddressRepository;
 import org.springframework.stereotype.Repository;
 
@@ -55,5 +56,18 @@ public class AddressRepositoryImpl implements AddressRepository {
                 .where(criteriaBuilder.equal(root.get(Address_.user).get("id"), userId));
         TypedQuery<Address> findAllAddressByUserId = entityManager.createQuery(criteriaQuery);
         return findAllAddressByUserId.getResultStream().findFirst().orElse(null);
+    }
+
+    @Override
+    public List<Address> findAll() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Address> criteriaQuery = criteriaBuilder.createQuery(Address.class);
+        Root<Address> root = criteriaQuery.from(Address.class);
+
+        criteriaQuery
+                .select(root);
+        TypedQuery<Address> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
     }
 }

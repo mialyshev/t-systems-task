@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h3>Order info</h3>
+    <div>
+        Address: <span th:text="${address.toString()}"></span>
+    </div>
+    <div>
+        Order status: <span th:text="${order.orderStatus}"></span>
+    </div>
+    <div>
+        Payment status: <span th:text="${order.paymentStatus}"></span>
+    </div>
+    <div>
+        Payment type: <span th:text="${order.paymentType}"></span>
+        <div th:if="${order.paymentStatus == 'AWAITING_PAYMENT' and order.paymentType == 'CARD'}">
+            <p>
+                <a th:href="@{/profile/order/payment/{id}(id=${order.id})}">Change to cash payment</a>
+            </p>
+        </div>
+    </div>
+    <div th:if="${order.paymentStatus == 'AWAITING_PAYMENT' and order.paymentType == 'CARD'}">
+        <p>
+            <a th:href="@{/profile/order/pay/{id}(id=${order.id})}">Pay for order</a>
+        </p>
+    </div>
+</body>
+</html>

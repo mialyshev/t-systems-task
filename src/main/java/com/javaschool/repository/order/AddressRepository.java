@@ -13,4 +13,6 @@ public interface AddressRepository {
     void save(Address address);
 
     Address getLastByUserId(long userId);
+
+    List<Address> findAll();
 }

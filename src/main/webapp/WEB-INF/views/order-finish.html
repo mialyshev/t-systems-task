@@ -27,16 +27,18 @@
 
 
     <div th:if="${orderForm.paymentType == 'CARD'}">
-        <h3>Card info</h3>
-        <p>
-            Number: <span th:text="${card.number}"></span>
-        </p>
-        <p>
-            Validate date: <span th:text="${card.validatyDate}"></span>
-        </p>
-        <p>
-            Owner: <span th:text="${card.owner}"></span>
-        </p>
+        <h3>Card payment</h3>
+        <div th:if="${card}">
+            <p>
+                Number: <span th:text="${card.number}"></span>
+            </p>
+            <p>
+                Validate date: <span th:text="${card.validatyDate}"></span>
+            </p>
+            <p>
+                Owner: <span th:text="${card.owner}"></span>
+            </p>
+        </div>
     </div>
 
     <div th:if="${orderForm.paymentType == 'CASH'}">

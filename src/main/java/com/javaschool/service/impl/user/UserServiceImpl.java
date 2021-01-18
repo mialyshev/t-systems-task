@@ -80,6 +80,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(long id) {
+        User user = null;
+        try {
+            user = userRepository.findById(id);
+        } catch (Exception e) {
+            log.error("Error getting a user by id", e);
+        }
+        return user;
+    }
+
+    @Override
     public UserDto toDto(User user) {
         return userMapper.toDto(user);
     }

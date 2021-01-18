@@ -2,6 +2,7 @@ package com.javaschool.service.product;
 
 
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -24,4 +25,6 @@ public interface ProductService {
     void updateBucket(ArrayList<ProductDto> productDtos);
 
     void updateProductQuantity(List<ProductDto> productDtoList);
+
+    List<ProductDto> getProductsByParam(List<SearchCriteria> params);
 }

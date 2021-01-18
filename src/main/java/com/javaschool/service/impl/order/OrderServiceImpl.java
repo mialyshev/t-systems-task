@@ -119,4 +119,33 @@ public class OrderServiceImpl implements OrderService {
         }
         return strings;
     }
+
+    @Override
+    public List<OrderDto> findByUserId(long userId) {
+        List<OrderDto> orderDtoList = null;
+        try {
+            orderDtoList = orderMapper.toDtoList(orderRepository.findByUserId(userId));
+        } catch (Exception e) {
+            log.error("Error getting all orders by user id", e);
+        }
+        return orderDtoList;
+    }
+
+    @Override
+    @Transactional
+    public void changePayment(long orderId) {
+        Order order = orderRepository.findById(orderId);
+        order.setPaymentType(PaymentType.CASH);
+        order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        orderRepository.updateOrder(order);
+    }
+
+    @Override
+    @Transactional
+    public void setPaid(long orderId) {
+        Order order = orderRepository.findById(orderId);
+        order.setPaymentStatus(PaymentStatus.PAID);
+        order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        orderRepository.updateOrder(order);
+    }
 }
