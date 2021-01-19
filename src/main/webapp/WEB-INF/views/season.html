@@ -16,10 +16,11 @@
     <form th:method="POST" th:action="@{/product/season}" th:object="${seasonForm}">
         <tr>
             <td>Enter season:</td>
-            <td><input type="text" th:field="*{seasonName}"/></td>
+            <td><input type="text" th:field="*{seasonName}" required/></td>
             <div th:if="${seasonError}">
                 <div style="color: red" th:text="${seasonError}"></div>
             </div>
+            <div style="color:red" th:if="${#fields.hasErrors('seasonName')}" th:errors="*{seasonName}" >season error</div>
         </tr>
         <tr>
             <td><input name="submit" type="submit" value="submit" /></td>

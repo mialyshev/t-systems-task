@@ -30,36 +30,40 @@
     </form>
 
 <form th:method="POST" th:action="@{/order/address}" th:object="${addressForm}">
-    <input type="hidden" name="orderForm" th:value="${orderForm}">
     <h2>Add new address</h2>
     <table>
         <tr>
             <td>Country:</td>
-            <td><input type="text" th:field="*{country}"/></td>
+            <td><input type="text" th:field="*{country}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('country')}" th:errors="*{country}" >country error</div></td>
         </tr>
 
         <tr>
             <td>City:</td>
-            <td><input type="text" th:field="*{city}"/></td>
+            <td><input type="text" th:field="*{city}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('city')}" th:errors="*{city}" >city error</div></td>
         </tr>
 
         <tr>
             <td>Postal code:</td>
-            <td><input type="text" th:field="*{postalCode}"/></td>
+            <td><input type="text" th:field="*{postalCode}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" >postalCode error</div></td>
         </tr>
         <tr>
             <td>Street:</td>
-            <td><input type="text" th:field="*{street}"/></td>
+            <td><input type="text" th:field="*{street}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('street')}" th:errors="*{street}" >street error</div></td>
         </tr>
         <tr>
             <td>House number:</td>
-            <td><input type="text" th:field="*{houseNumber}"/></td>
+            <td><input type="text" th:field="*{houseNumber}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('houseNumber')}" th:errors="*{houseNumber}" >houseNumber error</div></td>
         </tr>
         <tr>
             <td>Apartment number:</td>
-            <td><input type="text" th:field="*{apartamentNumber}"/></td>
+            <td><input type="text" th:field="*{apartamentNumber}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('apartamentNumber')}" th:errors="*{apartamentNumber}" >apartamentNumber error</div></td>
         </tr>
-
         <tr>
             <td>Save this address?</td>
             <td><input type="checkbox" name="save"/></td>

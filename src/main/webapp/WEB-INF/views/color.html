@@ -16,10 +16,11 @@
     <form th:method="POST" th:action="@{/product/color}" th:object="${colorForm}">
         <tr>
             <td>Enter color:</td>
-            <td><input type="text" th:field="*{colorName}"/></td>
+            <td><input type="text" th:field="*{colorName}" required/></td>
             <div th:if="${colorError}">
                 <div style="color: red" th:text="${colorError}"></div>
             </div>
+            <div style="color:red" th:if="${#fields.hasErrors('colorName')}" th:errors="*{colorName}" >color error</div>
         </tr>
         <tr>
             <td><input name="submit" type="submit" value="submit" /></td>

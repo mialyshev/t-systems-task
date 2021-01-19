@@ -55,8 +55,12 @@ public class UserController {
     }
 
     @PostMapping("/edit")
-    public String updateUserInfo(@ModelAttribute("userForm") UserUpdateInfoDto userUpdateDto,
+    public String updateUserInfo(@ModelAttribute("userForm") @Valid UserUpdateInfoDto userUpdateDto,
+                                 BindingResult bindingResult,
                                  Model model){
+        if (bindingResult.hasErrors()){
+            return "user-update";
+        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         if(!currentUser.equals(userUpdateDto.getEmail())){
@@ -84,7 +88,11 @@ public class UserController {
 
     @PostMapping("/editpass")
     public String updateUserPass(@ModelAttribute("userForm") UserUpdatePassDto userUpdatePassDto,
+                                 BindingResult bindingResult,
                                  Model model){
+        if (bindingResult.hasErrors()){
+            return "user-update-password";
+        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         User userFromBd = userService.getByEmail(currentUser);

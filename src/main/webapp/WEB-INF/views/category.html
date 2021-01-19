@@ -16,10 +16,11 @@
     <form th:method="POST" th:action="@{/product/category}" th:object="${categoryForm}">
         <tr>
             <td>Enter category:</td>
-            <td><input type="text" th:field="*{categoryName}"/></td>
+            <td><input type="text" th:field="*{categoryName}" required/></td>
             <div th:if="${categoryError}">
                 <div style="color: red" th:text="${categoryError}"></div>
             </div>
+            <div style="color:red" th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}" >category error</div>
         </tr>
         <tr>
             <td><input name="submit" type="submit" value="submit" /></td>

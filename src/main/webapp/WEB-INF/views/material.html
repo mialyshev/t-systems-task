@@ -16,10 +16,11 @@
     <form th:method="POST" th:action="@{/product/material}" th:object="${materialForm}">
         <tr>
             <td>Enter material:</td>
-            <td><input type="text" th:field="*{materialName}"/></td>
+            <td><input type="text" th:field="*{materialName}" required/></td>
             <div th:if="${materialError}">
                 <div style="color: red" th:text="${materialError}"></div>
             </div>
+            <div style="color:red" th:if="${#fields.hasErrors('materialName')}" th:errors="*{materialName}" >material error</div>
         </tr>
         <tr>
             <td><input name="submit" type="submit" value="submit" /></td>

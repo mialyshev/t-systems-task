@@ -50,8 +50,7 @@ public class OrderController {
         User userFromBd = userRepository.findByEmail(authentication.getName());
         orderDto.setProductDtoList(productService.getSelectedList(selected));
         orderDto.setUser_id(userFromBd.getId());
-        List<AddressDto> savedAddress = addressService.getAllSaved(userFromBd.getId());
-        model.addAttribute("savedAddress", savedAddress);
+        model.addAttribute("savedAddress", addressService.getAllSaved(orderDto.getUser_id()));
         model.addAttribute("addressForm", new AddressAdditionDto());
         model.addAttribute("orderForm", orderDto);
         return "order-address";
@@ -59,11 +58,16 @@ public class OrderController {
 
 
     @PostMapping("/address")
-    public String addAddress(@ModelAttribute("orderForm") @Valid OrderDto orderDto,
+    public String addAddress(@ModelAttribute("orderForm") OrderDto orderDto,
                               @ModelAttribute("addressForm") @Valid AddressAdditionDto addressAdditionDto,
-                              @RequestParam(value = "save", required = false) String isSaved,
                               BindingResult bindingResult,
+                              @RequestParam(value = "save", required = false) String isSaved,
                               Model model){
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("savedAddress", addressService.getAllSaved(orderDto.getUser_id()));
+            model.addAttribute("orderForm", orderDto);
+            return "order-address";
+        }
         if(isSaved != null){
             addressAdditionDto.setSaved(true);
         }else {
@@ -77,16 +81,14 @@ public class OrderController {
 
 
     @PostMapping("/savedaddress")
-    public String addAddress(@ModelAttribute("orderForm") @Valid OrderDto orderDto,
-                             BindingResult bindingResult,
+    public String addAddress(@ModelAttribute("orderForm") OrderDto orderDto,
                              Model model){
         model.addAttribute("paymentType", orderService.getPaymentTypeList());
         return "order-choose-pay";
     }
 
     @PostMapping("/payment")
-    public String getPaymentType(@ModelAttribute("orderForm") @Valid OrderDto orderDto,
-                                 BindingResult bindingResult,
+    public String getPaymentType(@ModelAttribute("orderForm") OrderDto orderDto,
                                  Model model){
         if(orderDto.getPaymentType().equals("CARD")) {
             model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
@@ -98,11 +100,16 @@ public class OrderController {
     }
 
     @PostMapping("/card")
-    public String addCard(@ModelAttribute("orderForm") @Valid OrderDto orderDto,
-                                  @ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
-                                  @RequestParam(value = "save", required = false) String isSaved,
-                                  BindingResult bindingResult,
-                                  Model model){
+    public String addCard(@ModelAttribute("orderForm") OrderDto orderDto,
+                          @ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
+                          BindingResult bindingResult,
+                          @RequestParam(value = "save", required = false) String isSaved,
+                          Model model){
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
+            model.addAttribute("orderForm", orderDto);
+            return "order-card";
+        }
         if(isSaved != null){
             String[] ownerDate = cardRegisterDto.getOwner().split(" ");
             if (ownerDate.length != 2){
@@ -119,9 +126,8 @@ public class OrderController {
     }
 
     @PostMapping("/savedcard")
-    public String addCard(@ModelAttribute("orderForm") @Valid OrderDto orderDto,
+    public String addCard(@ModelAttribute("orderForm") OrderDto orderDto,
                           @RequestParam(value = "cardId", required = true) long cardId,
-                          BindingResult bindingResult,
                           Model model){
         orderDto.setPaid(true);
         model.addAttribute("card", cardService.getById(cardId));
@@ -130,7 +136,7 @@ public class OrderController {
     }
 
     @GetMapping ("/later")
-    public String getLaterPay(@ModelAttribute("orderForm") @Valid OrderDto orderDto,
+    public String getLaterPay(@ModelAttribute("orderForm") OrderDto orderDto,
                               Model model){
         orderDto.setPaid(false);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
@@ -139,7 +145,7 @@ public class OrderController {
 
 
     @PostMapping("/finish")
-    public String addNewOrder(@ModelAttribute("orderForm") @Valid OrderDto orderDto,
+    public String addNewOrder(@ModelAttribute("orderForm") OrderDto orderDto,
                               @SessionAttribute("bucket") ArrayList<ProductDto> bucket,
                               SessionStatus status,
                               BindingResult bindingResult,

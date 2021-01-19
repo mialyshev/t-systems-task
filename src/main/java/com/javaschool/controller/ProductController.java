@@ -35,18 +35,18 @@ public class ProductController {
 
     @GetMapping("/category")
     public String getAllCategories(Model model){
-        List<CategoryDto> categories = categoryService.getAll();
-        model.addAttribute("categories", categories);
+        model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("categoryForm", new CategoryDto());
         return "category";
     }
 
     @PostMapping("/category")
     public String addNewCategory(@ModelAttribute("categoryForm") @Valid CategoryDto categoryDto,
-                                 HttpSession httpSession,
                                  BindingResult bindingResult,
+                                 HttpSession httpSession,
                                  Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAll());
             return "category";
         }
         if(categoryService.getByName(categoryDto.getCategoryName()) != null){
@@ -64,18 +64,18 @@ public class ProductController {
 
     @GetMapping("/brand")
     public String getAllBrands(Model model){
-        List<BrandDto> brands = brandService.getAll();
-        model.addAttribute("brands", brands);
+        model.addAttribute("brands", brandService.getAll());
         model.addAttribute("brandForm", new BrandDto());
         return "brand";
     }
 
     @PostMapping("/brand")
     public String addNewBrand(@ModelAttribute("brandForm") @Valid BrandDto brandDto,
-                              HttpSession httpSession,
                               BindingResult bindingResult,
+                              HttpSession httpSession,
                               Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("brands", brandService.getAll());
             return "brand";
         }
         if(brandService.getByName(brandDto.getBrandName()) != null){
@@ -93,18 +93,18 @@ public class ProductController {
 
     @GetMapping("/color")
     public String getAllColors(Model model){
-        List<ColorDto> colors = colorService.getAll();
-        model.addAttribute("colors", colors);
+        model.addAttribute("colors", colorService.getAll());
         model.addAttribute("colorForm", new ColorDto());
         return "color";
     }
 
     @PostMapping("/color")
     public String addNewColor(@ModelAttribute("colorForm") @Valid ColorDto colorDto,
-                              HttpSession httpSession,
                               BindingResult bindingResult,
+                              HttpSession httpSession,
                               Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("colors", colorService.getAll());
             return "color";
         }
         if(colorService.getByName(colorDto.getColorName()) != null){
@@ -122,18 +122,18 @@ public class ProductController {
 
     @GetMapping("/material")
     public String getAllMaterials(Model model){
-        List<MaterialDto> materials = materialService.getAll();
-        model.addAttribute("materials", materials);
+        model.addAttribute("materials", materialService.getAll());
         model.addAttribute("materialForm", new MaterialDto());
         return "material";
     }
 
     @PostMapping("/material")
     public String addNewMaterial(@ModelAttribute("materialForm") @Valid MaterialDto materialDto,
-                                 HttpSession httpSession,
                                  BindingResult bindingResult,
+                                 HttpSession httpSession,
                                  Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("materials", materialService.getAll());
             return "material";
         }
         if(materialService.getByName(materialDto.getMaterialName()) != null){
@@ -151,18 +151,18 @@ public class ProductController {
 
     @GetMapping("/season")
     public String getAllSeasons(Model model){
-        List<SeasonDto> seasons = seasonService.getAll();
-        model.addAttribute("seasons", seasons);
+        model.addAttribute("seasons", seasonService.getAll());
         model.addAttribute("seasonForm", new SeasonDto());
         return "season";
     }
 
     @PostMapping("/season")
     public String addNewSeason(@ModelAttribute("seasonForm") @Valid SeasonDto seasonDto,
-                               HttpSession httpSession,
                                BindingResult bindingResult,
+                               HttpSession httpSession,
                                Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("seasons", seasonService.getAll());
             return "season";
         }
         if(seasonService.getByName(seasonDto.getSeasonName()) != null){
@@ -180,8 +180,7 @@ public class ProductController {
 
     @GetMapping("/size")
     public String getAllSizes(Model model){
-        List<SizeDto> sizes = sizeService.getAll();
-        model.addAttribute("sizes", sizes);
+        model.addAttribute("sizes", sizeService.getAll());
         model.addAttribute("sizeForm", new SizeDto());
         return "size";
     }
@@ -189,10 +188,11 @@ public class ProductController {
 
     @PostMapping("/size")
     public String addNewBrand(@ModelAttribute("sizeForm") @Valid SizeDto sizeDto,
-                              HttpSession httpSession,
                               BindingResult bindingResult,
+                              HttpSession httpSession,
                               Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("sizes", sizeService.getAll());
             return "size";
         }
         if(sizeService.getByName(sizeDto.getSize()) != null){
@@ -211,20 +211,11 @@ public class ProductController {
     @GetMapping("/create")
     public String addNewProduct(HttpSession httpSession,
                                 Model model){
-        List<CategoryDto> categories = categoryService.getAll();
-        model.addAttribute("categories", categories);
-
-        List<BrandDto> brands = brandService.getAll();
-        model.addAttribute("brands", brands);
-
-        List<ColorDto> colors = colorService.getAll();
-        model.addAttribute("colors", colors);
-
-        List<MaterialDto> materials = materialService.getAll();
-        model.addAttribute("materials", materials);
-
-        List<SeasonDto> seasons = seasonService.getAll();
-        model.addAttribute("seasons", seasons);
+        model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("brands", brandService.getAll());
+        model.addAttribute("colors", colorService.getAll());
+        model.addAttribute("materials", materialService.getAll());
+        model.addAttribute("seasons", seasonService.getAll());
 
         if(httpSession.getAttribute("productForm") == null){
             model.addAttribute("productForm", new ProductDto());
@@ -234,10 +225,18 @@ public class ProductController {
 
     @PostMapping("/create")
     public String addNewProduct(@ModelAttribute("productForm") @Valid ProductDto productDto,
+                                BindingResult bindingResult,
                                 @RequestParam("size") float size,
                                 SessionStatus status,
-                                BindingResult bindingResult,
                                 Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("categories", categoryService.getAll());
+            model.addAttribute("brands", brandService.getAll());
+            model.addAttribute("colors", colorService.getAll());
+            model.addAttribute("materials", materialService.getAll());
+            model.addAttribute("seasons", seasonService.getAll());
+            return "create-product";
+        }
         status.setComplete();
         productDto.setSize(size);
         productService.addProduct(productDto);

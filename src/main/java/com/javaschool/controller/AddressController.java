@@ -34,6 +34,9 @@ public class AddressController {
     public String addNewAddress(@ModelAttribute("addressForm") @Valid AddressAdditionDto addressAdditionDto,
                                 BindingResult bindingResult,
                                 Model model){
+        if (bindingResult.hasErrors()) {
+            return "address";
+        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         User userFromBd = userRepository.findByEmail(currentUser);
