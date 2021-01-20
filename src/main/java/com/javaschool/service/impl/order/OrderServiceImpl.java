@@ -9,6 +9,7 @@ import com.javaschool.entity.Product;
 import com.javaschool.entity.User;
 import com.javaschool.entity.enums.*;
 import com.javaschool.mapper.order.OrderMapperImpl;
+import com.javaschool.mapper.product.ProductMapperImpl;
 import com.javaschool.repository.order.AddressRepository;
 import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.ProductRepository;
@@ -18,6 +19,7 @@ import com.javaschool.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final ProductService productService;
+    private final ProductMapperImpl productMapper;
 
     @Override
     public List<OrderDto> findAll() {
@@ -187,5 +190,37 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setOrderStatus(OrderStatus.valueOf(orderStatus));
         orderRepository.updateOrder(order);
+    }
+
+    @Override
+    public List<OrderDto> findAllDelivered(long userId, boolean isDelivered) {
+        List<OrderDto> orderDtoList = null;
+        try {
+            if(isDelivered) {
+                orderDtoList = orderMapper.toDtoList(orderRepository.findAllDelivered(userId, OrderStatus.DELIVERED, true));
+            }else {
+                orderDtoList = orderMapper.toDtoList(orderRepository.findAllDelivered(userId, OrderStatus.DELIVERED, false));
+            }
+        } catch (Exception e) {
+            log.error("Error getting all orders by address id", e);
+        }
+        return orderDtoList;
+    }
+
+    @Override
+    @Transactional
+    public void setProductList(OrderDto orderDto) {
+        Order order = orderRepository.findById(orderDto.getId());
+        List<Product> products = new ArrayList<>(order.getProductSet());
+        orderDto.setProductDtoList(productMapper.toDtoList(products));
+    }
+
+    @Override
+    public int getAllPrice(OrderDto orderDto) {
+        int price = 0;
+        for(ProductDto productDto : orderDto.getProductDtoList()){
+            price += productDto.getPrice();
+        }
+        return price;
     }
 }

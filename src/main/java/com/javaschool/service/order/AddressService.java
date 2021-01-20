@@ -24,4 +24,6 @@ public interface AddressService {
     void addUpdateAddress(AddressDto addressDto, User user);
 
     void updateSavedAddress(long addressId);
+
+    void deleteAddress(long addressId);
 }

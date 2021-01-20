@@ -4,6 +4,7 @@ import com.javaschool.entity.Address;
 import com.javaschool.entity.Address_;
 import com.javaschool.entity.Order;
 import com.javaschool.entity.Order_;
+import com.javaschool.entity.enums.OrderStatus;
 import com.javaschool.repository.order.OrderRepository;
 import org.springframework.stereotype.Repository;
 
@@ -76,4 +77,27 @@ public class OrderRepositoryImpl implements OrderRepository {
 
         return selectAll.getResultList();
     }
+
+    @Override
+    public List<Order> findAllDelivered(long userId, OrderStatus orderStatus, boolean isDelivered) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
+        if(isDelivered) {
+            criteriaQuery
+                    .select(root)
+                    .where(criteriaBuilder.equal(root.get(Order_.user).get("id"), userId),
+                            criteriaBuilder.equal(root.get(Order_.orderStatus), orderStatus));
+        }else {
+            criteriaQuery
+                    .select(root)
+                    .where(criteriaBuilder.equal(root.get(Order_.user).get("id"), userId),
+                            criteriaBuilder.notEqual(root.get(Order_.orderStatus), orderStatus));
+        }
+        TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
+    }
+
+
 }

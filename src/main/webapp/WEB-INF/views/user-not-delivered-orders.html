@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Log in with your account</title>
+    <title>User page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/styles/signin.css">
@@ -27,14 +27,14 @@
                     <li class="nav-item">
                         <a class="nav-link btn btn-primary" href="/bucket">Shopping cart</span></a>
                     </li>
-                    <li class="nav-item active" sec:authorize="isAnonymous()">
-                        <a class="nav-link active btn btn-primary" href="/login">Sign in</span></a>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link btn btn-primary" href="/login">Sign in</span></a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="nav-link btn btn-primary" href="/registration">Sign up</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-primary" href="/profile">User page</span></a>
+                    <li class="nav-item active">
+                        <a class="nav-link active btn btn-primary" href="/profile">User page</span></a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <form th:action="@{/logout}" method="post">
@@ -45,22 +45,48 @@
             </div>
         </div>
     </nav>
-        <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${param.error}">Incorrectly entered data</div>
-        <div class="login-form">
-            <form th:action="@{/login}" th:method="POST">
-                <h2 class="text-center">Log in</h2>
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Email" name='username' required="required">
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" name='password' required="required">
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block">Log in</button>
-                </div>
-            </form>
-            <p class="text-center"><a th:href="@{/registration}">Create an Account</a></p>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile">About user</span></a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile/addresses">My addresses</span></a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile/cards">My cards</span></a>
+                </li>
+                <li class="nav-item active" style="margin: 5px">
+                    <a class="nav-link active btn btn-primary" href="#">My orders</span></a>
+                </li>
+            </ul>
         </div>
     </div>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item active" style="margin: 5px">
+                    <a class="nav-link active btn btn-primary" href="#">Not completed</span></a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile/orders/delivered">Completed</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md4 m-4" th:each="order : ${orders}">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Order #<span th:text="*{order.id}"></span></h5>
+                        <a class="nav-link btn btn-primary" style="margin: 5px" th:href="@{/profile/order/{id}(id=${order.id})}">Check</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

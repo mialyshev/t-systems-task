@@ -40,8 +40,6 @@ public class UserController {
         String currentUser = authentication.getName();
         UserDto userFromBd = userService.getDtoByEmail(currentUser);
         model.addAttribute("userInfo", userFromBd);
-        model.addAttribute("savedCard", cardService.getAllByUserId(userFromBd.getId()));
-        model.addAttribute("savedAddress", addressService.getAllSaved(userFromBd.getId()));
         return "user-page";
     }
 
@@ -110,6 +108,23 @@ public class UserController {
         return "redirect:/login";
     }
 
+
+    @GetMapping("/addresses")
+    public String getAllAddresses(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = userService.getDtoByEmail(currentUser);
+        model.addAttribute("savedAddress", addressService.getAllSaved(userFromBd.getId()));
+        return "user-addresses";
+    }
+
+    @GetMapping("/address/delete/{id}")
+    public String deleteAddress(@PathVariable("id") long id){
+        addressService.deleteAddress(id);
+        return "redirect:/profile/addresses";
+    }
+
+
     @GetMapping("/orders")
     public String getAllOrders(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -123,8 +138,10 @@ public class UserController {
     public String getOrder(@PathVariable("id") long id,
                            Model model){
         OrderDto orderDto = orderService.findById(id);
+        orderService.setProductList(orderDto);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
         model.addAttribute("order", orderDto);
+        model.addAttribute("price", orderService.getAllPrice(orderDto));
         return "user-order";
     }
 
@@ -145,9 +162,17 @@ public class UserController {
         return "user-pay-order";
     }
 
-    @PostMapping("/savedcard/{id}")
-    public String addCard(@PathVariable("id") long id,
-                          @RequestParam(value = "cardId", required = true) long cardId){
+    @GetMapping("/cards")
+    public String getCards(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = userService.getDtoByEmail(currentUser);
+        model.addAttribute("savedCards", cardService.getAllByUserId(userFromBd.getId()));
+        return "user-cards";
+    }
+
+    @GetMapping("/savedcard/{id}")
+    public String addCard(@PathVariable("id") long id){
         orderService.setPaid(id);
         return "redirect:/profile/order/" + id;
     }
@@ -187,6 +212,9 @@ public class UserController {
     public String editAddress(@ModelAttribute("addressForm") @Valid AddressDto addressDto,
                               BindingResult bindingResult,
                               Model model){
+        if(bindingResult.hasErrors()){
+            return "user-address-edit";
+        }
         if(orderService.getOrdersByAddressId(addressDto.getId()).size() == 0){
             addressService.updateAddress(addressDto);
         }else {
@@ -196,6 +224,25 @@ public class UserController {
             addressService.updateSavedAddress(addressDto.getId());
             addressService.addUpdateAddress(addressDto, userFromBd);
         }
-        return "redirect:/profile";
+        return "redirect:/profile/addresses";
+    }
+
+
+    @GetMapping("/orders/delivered")
+    public String getDeliveredOrders(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = userService.getDtoByEmail(currentUser);
+        model.addAttribute("orders", orderService.findAllDelivered(userFromBd.getId(), true));
+        return "user-delivered-orders";
+    }
+
+    @GetMapping("/orders/not-delivered")
+    public String getNotDeliveredOrders(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = userService.getDtoByEmail(currentUser);
+        model.addAttribute("orders", orderService.findAllDelivered(userFromBd.getId(), false));
+        return "user-not-delivered-orders";
     }
 }

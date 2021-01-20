@@ -42,6 +42,6 @@ public class AddressController {
         User userFromBd = userRepository.findByEmail(currentUser);
         addressAdditionDto.setSaved(true);
         addressService.addAddress(addressAdditionDto, userFromBd);
-        return "redirect:/profile";
+        return "redirect:/profile/addresses";
     }
 }

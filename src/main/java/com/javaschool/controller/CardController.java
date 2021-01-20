@@ -47,6 +47,6 @@ public class CardController {
         }
 
         cardService.addCard(cardRegisterDto, userFromBd);
-        return "redirect:/profile";
+        return "redirect:/profile/cards";
     }
 }

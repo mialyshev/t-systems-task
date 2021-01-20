@@ -19,7 +19,7 @@ public class CardMapperImpl {
         cardDto.id(card.getId());
         cardDto.code(card.getCode());
         cardDto.owner(card.getOwner());
-        cardDto.validatyDate(card.getValidatyDate());
+        cardDto.validatyDate(String.valueOf(card.getValidatyDate().getYear()) + '-' + card.getValidatyDate().getMonthValue());
         cardDto.number(card.getNumber());
 
         return cardDto.build();

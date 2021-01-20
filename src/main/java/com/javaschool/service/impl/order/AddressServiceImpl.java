@@ -108,4 +108,12 @@ public class AddressServiceImpl implements AddressService {
         address.setSaved(false);
         addressRepository.update(address);
     }
+
+    @Override
+    @Transactional
+    public void deleteAddress(long addressId) {
+        Address address = addressRepository.findById(addressId);
+        address.setSaved(false);
+        addressRepository.update(address);
+    }
 }

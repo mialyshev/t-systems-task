@@ -15,7 +15,7 @@ public class CardDto {
 
     private long id;
     private String number;
-    private LocalDate validatyDate;
+    private String validatyDate;
     private String owner;
     private String code;
 }

@@ -1,7 +1,12 @@
 package com.javaschool.controller;
 
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.entity.Product;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
+import com.javaschool.repository.product.BrandRepository;
+import com.javaschool.repository.product.CategoryRepository;
+import com.javaschool.repository.product.ProductRepository;
+import com.javaschool.service.product.CategoryService;
 import com.javaschool.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,6 +23,9 @@ import java.util.List;
 public class CatalogController {
 
     private final ProductService productService;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final BrandRepository brandRepository;
 
     @GetMapping
     public String getAllProducts(Model model){
@@ -33,5 +41,14 @@ public class CatalogController {
 
         List<ProductDto> productDtoList = productService.getProductsByParam(params);
         return "index";
+    }
+
+    @GetMapping("/check")
+    public String getIndex(){
+        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+        params.add(new SearchCriteria("category", ":", categoryRepository.findById(1)));
+        params.add(new SearchCriteria("brand", ":", brandRepository.findById(2)));
+        List<Product> products = productRepository.findByParam(params);
+        return "redirect:/";
     }
 }

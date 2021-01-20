@@ -36,4 +36,10 @@ public interface OrderService {
     void updatePaymentStatus(String paymentStatus, long orderId);
 
     void updateOrderStatus(String orderStatus, long orderId);
+
+    List<OrderDto> findAllDelivered(long userId, boolean isDelivered);
+
+    void setProductList(OrderDto orderDto);
+
+    int getAllPrice(OrderDto orderDto);
 }

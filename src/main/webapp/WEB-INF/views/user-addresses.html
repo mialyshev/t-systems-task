@@ -63,53 +63,29 @@
             </ul>
         </div>
     </div>
-    <form class="form-horizontal" role="form" th:method="POST" th:action="@{/profile/address/edit}" th:object="${addressForm}">
-        <input type="hidden" th:field="*{id}">
-        <h2>Update address info</h2>
-        <div class="form-group">
-            <label for="country" class="col-sm-3 control-label">Country:</label>
-            <div class="col-sm-9">
-                <input type="text" id="country" th:field="*{country}" class="form-control" autofocus>
+    <div class="container">
+        <div class="row">
+            <div class="col-md4 m-4" th:each="address : ${savedAddress}">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Address #<span th:text="${addressStat.index + 1}"></span></h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Country: <span th:text="*{address.country}"></span></li>
+                        <li class="list-group-item">City: <span th:text="*{address.city}"></span></li>
+                        <li class="list-group-item">Street: <span th:text="*{address.street}"></span></li>
+                        <li class="list-group-item">House number: <span th:text="*{address.houseNumber}"></span></li>
+                        <li class="list-group-item">Apartment number: <span th:text="*{address.apartamentNumber}"></span></li>
+                    </ul>
+                    <div class="card-body">
+                        <a class="card-link" style="margin: 5px" th:href="@{/profile/address/edit/{id}(id=${address.id})}">Edit address</a>
+                        <a class="card-link" style="margin: 5px" th:href="@{/profile/address/delete/{id}(id=${address.id})}">Delete address</a>
+                    </div>
+                </div>
             </div>
-            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('country')}" th:errors="*{country}" ></div>
         </div>
-        <div class="form-group">
-            <label for="city" class="col-sm-3 control-label">City:</label>
-            <div class="col-sm-9">
-                <input type="text" id="city" th:field="*{city}" class="form-control" autofocus>
-            </div>
-            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('city')}" th:errors="*{city}" ></div>
-        </div>
-        <div class="form-group">
-            <label for="postalCode" class="col-sm-3 control-label">Postal code:</label>
-            <div class="col-sm-9">
-                <input type="text" id="postalCode" th:field="*{postalCode}" class="form-control" autofocus>
-            </div>
-            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" ></div>
-        </div>
-        <div class="form-group">
-            <label for="street" class="col-sm-3 control-label">Street:</label>
-            <div class="col-sm-9">
-                <input type="text" id="street" th:field="*{street}" class="form-control" autofocus>
-            </div>
-            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('street')}" th:errors="*{street}" ></div>
-        </div>
-        <div class="form-group">
-            <label for="houseNumber" class="col-sm-3 control-label">House number:</label>
-            <div class="col-sm-9">
-                <input type="text" id="houseNumber" th:field="*{houseNumber}" class="form-control" autofocus>
-            </div>
-            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('houseNumber')}" th:errors="*{houseNumber}" ></div>
-        </div>
-        <div class="form-group">
-            <label for="apartamentNumber" class="col-sm-3 control-label">Apartment number:</label>
-            <div class="col-sm-9">
-                <input type="text" id="apartamentNumber" th:field="*{apartamentNumber}" class="form-control" autofocus>
-            </div>
-            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('apartamentNumber')}" th:errors="*{apartamentNumber}" ></div>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">Update</button>
-    </form>
+        <p><a class="btn btn-primary" href="/profile/add-address" style="margin-top: 5px">Add new address</a></p>
+    </div>
 </div>
 </body>
 </html>
