@@ -9,11 +9,11 @@ import javax.persistence.*;
 import java.util.List;
 
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = { "id", "seasonName"})
 @Entity
 @Table(name = "seasons")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Season {

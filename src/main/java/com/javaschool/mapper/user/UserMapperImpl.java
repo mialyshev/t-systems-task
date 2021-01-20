@@ -1,13 +1,12 @@
 package com.javaschool.mapper.user;
 
 import com.javaschool.dto.user.UserDto;
-import com.javaschool.dto.user.UserRegistrationDto;
+import com.javaschool.dto.user.UserUpdateInfoDto;
+import com.javaschool.dto.user.UserUpdatePassDto;
 import com.javaschool.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -40,5 +39,32 @@ public class UserMapperImpl {
         }
 
         return list;
+    }
+
+    public UserUpdateInfoDto toUpdateInfoDto(UserDto userDto) {
+        if (userDto == null) {
+            return null;
+        }
+
+        UserUpdateInfoDto.UserUpdateInfoDtoBuilder userDtoBuilder = UserUpdateInfoDto.builder();
+
+        userDtoBuilder.id(userDto.getId());
+        userDtoBuilder.firstName(userDto.getFirstName());
+        userDtoBuilder.lastName(userDto.getLastName());
+        userDtoBuilder.dob(userDto.getDob().toString());
+        userDtoBuilder.email(userDto.getEmail());
+        userDtoBuilder.confirmEmail(userDto.getEmail());
+        return userDtoBuilder.build();
+    }
+
+    public UserUpdatePassDto toUpdatePassDto(UserDto userDto){
+        if (userDto == null) {
+            return null;
+        }
+
+        UserUpdatePassDto.UserUpdatePassDtoBuilder userUpdatePassDtoBuilder = UserUpdatePassDto.builder();
+
+        userUpdatePassDtoBuilder.id(userDto.getId());
+        return userUpdatePassDtoBuilder.build();
     }
 }

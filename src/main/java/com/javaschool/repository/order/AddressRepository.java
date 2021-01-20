@@ -12,5 +12,9 @@ public interface AddressRepository {
 
     void save(Address address);
 
-    Address getLast();
+    Address getLastByUserId(long userId);
+
+    List<Address> findAll();
+
+    void update(Address address);
 }

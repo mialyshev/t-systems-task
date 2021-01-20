@@ -1,8 +1,9 @@
 package com.javaschool.repository.impl.order;
 
-import com.javaschool.entity.*;
+import com.javaschool.entity.Address;
+import com.javaschool.entity.Address_;
+import com.javaschool.entity.Season;
 import com.javaschool.repository.order.AddressRepository;
-import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -27,8 +28,8 @@ public class AddressRepositoryImpl implements AddressRepository {
 
         criteriaQuery
                 .select(root)
-                .where(criteriaBuilder.equal(root.get(Address_.user).get("id"), userId))
-                .where(criteriaBuilder.equal(root.get(Address_.isSaved), true));
+                .where(criteriaBuilder.equal(root.get(Address_.user).get("id"), userId),
+                        criteriaBuilder.equal(root.get(Address_.isSaved), true));
         TypedQuery<Address> selectAll = entityManager.createQuery(criteriaQuery);
 
         return selectAll.getResultList();
@@ -45,12 +46,33 @@ public class AddressRepositoryImpl implements AddressRepository {
     }
 
     @Override
-    public Address getLast() {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Address> q = cb.createQuery(Address.class);
-        Root<Address> b = q.from(Address.class);
-        q.select(b).orderBy(cb.desc(b.get("id")));
-        TypedQuery<Address> findAllSizes = entityManager.createQuery(q);
-        return findAllSizes.getResultStream().findFirst().orElse(null);
+    public Address getLastByUserId(long userId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Address> criteriaQuery = criteriaBuilder.createQuery(Address.class);
+        Root<Address> root = criteriaQuery.from(Address.class);
+        criteriaQuery
+                .select(root)
+                .orderBy(criteriaBuilder.desc(root.get("id")))
+                .where(criteriaBuilder.equal(root.get(Address_.user).get("id"), userId));
+        TypedQuery<Address> findAllAddressByUserId = entityManager.createQuery(criteriaQuery);
+        return findAllAddressByUserId.getResultStream().findFirst().orElse(null);
+    }
+
+    @Override
+    public List<Address> findAll() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Address> criteriaQuery = criteriaBuilder.createQuery(Address.class);
+        Root<Address> root = criteriaQuery.from(Address.class);
+
+        criteriaQuery
+                .select(root);
+        TypedQuery<Address> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
+    }
+
+    @Override
+    public void update(Address address) {
+        entityManager.merge(address);
     }
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new order</title>
+</head>
+<body>
+    <div th:each="address : ${savedAddress}">
+        <h5>Address #<span th:text="${addressStat.index + 1}"></span></h5>
+        <p>
+            <span th:text="*{address.country}"></span>
+        </p>
+        <p>
+            <span th:text="*{address.city}"></span>
+        </p>
+    </div>
+
+    <form th:method="POST" th:action="@{/order/savedaddress}">
+        <td>Choose adress:</td>
+        <select th:field="${orderForm.address_id}">
+            <span th:each="address : ${savedAddress}">
+                   <option th:value="${address.id}"
+                           th:text="${addressStat.index + 1}"></option>
+            </span>
+        </select>
+        <br>
+        <label>
+            <input name="submit" type="submit" value="Select"/>
+        </label>
+    </form>
+
+<form th:method="POST" th:action="@{/order/address}" th:object="${addressForm}">
+    <h2>Add new address</h2>
+    <table>
+        <tr>
+            <td>Country:</td>
+            <td><input type="text" th:field="*{country}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('country')}" th:errors="*{country}" >country error</div></td>
+        </tr>
+
+        <tr>
+            <td>City:</td>
+            <td><input type="text" th:field="*{city}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('city')}" th:errors="*{city}" >city error</div></td>
+        </tr>
+
+        <tr>
+            <td>Postal code:</td>
+            <td><input type="text" th:field="*{postalCode}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" >postalCode error</div></td>
+        </tr>
+        <tr>
+            <td>Street:</td>
+            <td><input type="text" th:field="*{street}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('street')}" th:errors="*{street}" >street error</div></td>
+        </tr>
+        <tr>
+            <td>House number:</td>
+            <td><input type="text" th:field="*{houseNumber}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('houseNumber')}" th:errors="*{houseNumber}" >houseNumber error</div></td>
+        </tr>
+        <tr>
+            <td>Apartment number:</td>
+            <td><input type="text" th:field="*{apartamentNumber}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('apartamentNumber')}" th:errors="*{apartamentNumber}" >apartamentNumber error</div></td>
+        </tr>
+        <tr>
+            <td>Save this address?</td>
+            <td><input type="checkbox" name="save"/></td>
+        </tr>
+
+        <tr>
+            <td><input name="submit" type="submit" value="Continue" /></td>
+        </tr>
+    </table>
+</form>
+<p><a href="/">Home</a></p>
+</body>
+</html>

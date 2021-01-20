@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+</head>
+<body>
+    <h3>User info</h3>
+    <div>
+        First name: <span th:text="${userInfo.firstName}"></span>
+    </div>
+    <div>
+        Last name: <span th:text="${userInfo.lastName}"></span>
+    </div>
+    <div>
+        Date of birth: <span th:text="${userInfo.dob}"></span>
+    </div>
+    <div>
+        Email: <span th:text="${userInfo.email}"></span>
+    </div>
+    <p><a th:href="@{/profile/edit}">Edit user info</a></p>
+    <p><a th:href="@{/profile/editpass}">Update password</a></p>
+
+    <h3>Saved address</h3>
+    <div th:each="address : ${savedAddress}">
+        <h5>Address #<span th:text="${addressStat.index + 1}"></span></h5>
+        <p>
+            Country: <span th:text="*{address.country}"></span>
+        </p>
+        <p>
+            City: <span th:text="*{address.city}"></span>
+        </p>
+        <p>
+            Street: <span th:text="*{address.street}"></span>
+        </p>
+        <p>
+            House number: <span th:text="*{address.houseNumber}"></span>
+        </p>
+        <p>
+            Apartment number: <span th:text="*{address.apartamentNumber}"></span>
+        </p>
+        <a th:href="@{/profile/address/edit/{id}(id=${address.id})}">Edit address</a>
+    </div>
+    <p><a th:href="@{/profile/add-address}">Add new address</a></p>
+
+    <h3>Saved card</h3>
+    <div th:each="card : ${savedCard}">
+        <h5>Card #<span th:text="${cardStat.index + 1}"></span></h5>
+        <p>
+            Card number: <span th:text="*{card.number}"></span>
+        </p>
+        <p>
+            Validate date: <span th:text="*{card.validatyDate}"></span>
+        </p>
+    </div>
+    <p><a th:href="@{/profile/add-card}">Add new card</a></p>
+    <p><a th:href="@{/profile/orders}">Check my orders</a></p>
+    <p><a th:href="@{/}">Home</a></p>
+</body>
+</html>

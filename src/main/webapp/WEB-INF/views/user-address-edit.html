@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Address update</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/profile/address/edit}" th:object="${addressForm}">
+    <input type="hidden" th:field="*{id}">
+    <label for="country">Enter country: </label>
+    <input type="text" th:field="*{country}" id="country"/>
+    <br>
+    <label for="city">Enter city: </label>
+    <input type="text" th:field="*{city}" id="city"/>
+    <br>
+    <label for="postalCode">Enter postal code: </label>
+    <input type="text" th:field="*{postalCode}" id="postalCode"/>
+    <br>
+    <label for="street">Enter street: </label>
+    <input type="text" th:field="*{street}" id="street"/>
+    <br>
+    <label for="houseNumber">Enter house number: </label>
+    <input type="text" th:field="*{houseNumber}" id="houseNumber"/>
+    <br>
+    <label for="apartamentNumber">Enter apartment number: </label>
+    <input type="text" th:field="*{apartamentNumber}" id="apartamentNumber"/>
+    <br>
+    <input name="submit" type="submit" value="Update!" />
+</form>
+</body>
+</html>

@@ -2,77 +2,44 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add new address</title>
 </head>
 <body>
-<div th:if="${lastAddress}">
-    <table>
-        <tr>
-            <td>Country:</td>
-            <td th:text="*{lastAddress.getCountry()}"></td>
-        </tr>
-
-        <tr>
-            <td>City:</td>
-            <td th:text="*{lastAddress.getCity()}"></td>
-        </tr>
-
-        <tr>
-            <td>Postal code:</td>
-            <td th:text="*{lastAddress.getPostalCode()}"></td>
-        </tr>
-
-        <tr>
-            <td>Street:</td>
-            <td th:text="*{lastAddress.getStreet()}"></td>
-        </tr>
-
-        <tr>
-            <td>House number:</td>
-            <td th:text="*{lastAddress.getHouseNumber()}"></td>
-        </tr>
-
-        <tr>
-            <td>Apartment number:</td>
-            <td th:text="*{lastAddress.getApartamentNumber()}"></td>
-        </tr>
-    </table>
-</div>
-<form th:method="POST" th:action="@{/address}" th:object="${addressForm}">
+<form th:method="POST" th:action="@{/profile/add-address}" th:object="${addressForm}">
     <h2>Card</h2>
     <table>
         <tr>
             <td>Country:</td>
-            <td><input type="text" th:field="*{country}"/></td>
+            <td><input type="text" th:field="*{country}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('country')}" th:errors="*{country}" >country error</div></td>
         </tr>
 
         <tr>
             <td>City:</td>
-            <td><input type="text" th:field="*{city}"/></td>
+            <td><input type="text" th:field="*{city}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('city')}" th:errors="*{city}" >city error</div></td>
         </tr>
 
         <tr>
             <td>Postal code:</td>
-            <td><input type="text" th:field="*{postalCode}"/></td>
+            <td><input type="text" th:field="*{postalCode}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" >postalCode error</div></td>
         </tr>
         <tr>
             <td>Street:</td>
-            <td><input type="text" th:field="*{street}"/></td>
+            <td><input type="text" th:field="*{street}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('street')}" th:errors="*{street}" >street error</div></td>
         </tr>
         <tr>
             <td>House number:</td>
-            <td><input type="text" th:field="*{houseNumber}"/></td>
+            <td><input type="text" th:field="*{houseNumber}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('houseNumber')}" th:errors="*{houseNumber}" >houseNumber error</div></td>
         </tr>
         <tr>
             <td>Apartment number:</td>
-            <td><input type="text" th:field="*{apartamentNumber}"/></td>
+            <td><input type="text" th:field="*{apartamentNumber}" required/></td>
+            <td><div style="color:red" th:if="${#fields.hasErrors('apartamentNumber')}" th:errors="*{apartamentNumber}" >houseNumber error</div></td>
         </tr>
-
-        <tr>
-            <td>Save this address?</td>
-            <td><input type="checkbox" name="save"/></td>
-        </tr>
-
         <tr>
             <td><input name="submit" type="submit" value="Register!" /></td>
         </tr>

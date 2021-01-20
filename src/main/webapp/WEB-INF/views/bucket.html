@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:if="${orderError}">
+        <div style="color: red" th:text="${orderError}"></div>
+    </div>
+    <form th:action="@{/order}">
+        <div th:each="product : ${session.bucket}">
+            Product #<span th:text="${productStat.index + 1}"></span></h5>
+            <div th:if="${product.quantity == 0}">
+                <div style="color: red">The product is over</div>
+            </div>
+            <p>
+                Brand : <span th:text="*{product.brandName}"></span>
+            </p>
+            <p>
+                Model : <span th:text="*{product.model}"></span>
+            </p>
+            <p>
+                Season : <span th:text="*{product.seasonName}"></span>
+            </p>
+            <p>
+                Color : <span th:text="*{product.colorName}"></span>
+            </p>
+            <p>
+                Material : <span th:text="*{product.materialName}"></span>
+            </p>
+            <p>
+                Size : <span th:text="*{product.size}"></span>
+            </p>
+            <p>
+                Category : <span th:text="*{product.categoryName}"></span>
+            </p>
+            <p>
+                Price : <span th:text="*{product.price}"></span>
+            </p>
+            <div>
+                <img th:src="*{product.url}"
+                     width="189" height="255" alt="lorem">
+            </div>
+            <p><a th:href="@{/bucket/delete/{id}(id=${product.id})}">Delete from cart</a></p>
+            <div th:if="${product.quantity != 0}">
+                <input type="checkbox" name="selected" th:value="${product.id}">
+            </div>
+        </div>
+        <input name="submit" type="submit" value="Make order" />
+    </form>
+    <p><a th:href="@{/}">Home</a></p>
+</body>
+</html>

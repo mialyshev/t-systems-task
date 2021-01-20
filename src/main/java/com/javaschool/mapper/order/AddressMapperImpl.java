@@ -1,5 +1,6 @@
 package com.javaschool.mapper.order;
 
+import com.javaschool.dto.order.AddressAdditionDto;
 import com.javaschool.dto.order.AddressDto;
 import com.javaschool.entity.Address;
 import org.springframework.stereotype.Component;
@@ -38,5 +39,22 @@ public class AddressMapperImpl {
         }
 
         return list;
+    }
+
+    public AddressAdditionDto toAdditionDto(AddressDto addressDto){
+        if (addressDto == null) {
+            return null;
+        }
+        AddressAdditionDto.AddressAdditionDtoBuilder additionDtoBuilder = AddressAdditionDto.builder();
+
+        additionDtoBuilder.country(addressDto.getCountry());
+        additionDtoBuilder.city(addressDto.getCity());
+        additionDtoBuilder.postalCode(addressDto.getPostalCode());
+        additionDtoBuilder.street(addressDto.getStreet());
+        additionDtoBuilder.houseNumber(addressDto.getHouseNumber());
+        additionDtoBuilder.apartamentNumber(addressDto.getApartamentNumber());
+        additionDtoBuilder.isSaved(true);
+
+        return additionDtoBuilder.build();
     }
 }

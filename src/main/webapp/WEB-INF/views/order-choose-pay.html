@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new order</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/order/payment}" th:object="${orderForm}">
+    <label>
+        Choose payment type:
+        <li th:each="payment : ${paymentType}">
+            <input type="radio" th:field="*{paymentType}" th:value="${payment}" />
+            <label th:for="${payment}" th:text="${payment}"></label>
+        </li>
+    </label>
+    <br>
+    <label>
+        <input name="submit" type="submit" value="submit"/>
+    </label>
+</form>
+<p><a href="/">Home</a></p>
+</body>
+</html>

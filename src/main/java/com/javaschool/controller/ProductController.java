@@ -1,5 +1,6 @@
 package com.javaschool.controller;
 
+import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.product.*;
 import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
@@ -7,13 +8,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/product")
 @RequiredArgsConstructor
+@SessionAttributes(types = {ProductDto.class})
 public class ProductController {
     private final ProductService productService;
     private final BrandService brandService;
@@ -23,10 +28,14 @@ public class ProductController {
     private final SeasonService seasonService;
     private final SizeService sizeService;
 
+    @GetMapping
+    public String getAdminProductPage(Model model){
+        return "product-admin-page";
+    }
+
     @GetMapping("/category")
     public String getAllCategories(Model model){
-        List<CategoryDto> categories = categoryService.getAll();
-        model.addAttribute("categories", categories);
+        model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("categoryForm", new CategoryDto());
         return "category";
     }
@@ -34,8 +43,10 @@ public class ProductController {
     @PostMapping("/category")
     public String addNewCategory(@ModelAttribute("categoryForm") @Valid CategoryDto categoryDto,
                                  BindingResult bindingResult,
+                                 HttpSession httpSession,
                                  Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAll());
             return "category";
         }
         if(categoryService.getByName(categoryDto.getCategoryName()) != null){
@@ -45,13 +56,15 @@ public class ProductController {
             return "category";
         }
         categoryService.addCategory(categoryDto);
+        if(httpSession.getAttribute("productForm") != null){
+            return "redirect:/product/create";
+        }
         return "redirect:/product/category";
     }
 
     @GetMapping("/brand")
     public String getAllBrands(Model model){
-        List<BrandDto> brands = brandService.getAll();
-        model.addAttribute("brands", brands);
+        model.addAttribute("brands", brandService.getAll());
         model.addAttribute("brandForm", new BrandDto());
         return "brand";
     }
@@ -59,8 +72,10 @@ public class ProductController {
     @PostMapping("/brand")
     public String addNewBrand(@ModelAttribute("brandForm") @Valid BrandDto brandDto,
                               BindingResult bindingResult,
+                              HttpSession httpSession,
                               Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("brands", brandService.getAll());
             return "brand";
         }
         if(brandService.getByName(brandDto.getBrandName()) != null){
@@ -70,13 +85,15 @@ public class ProductController {
             return "brand";
         }
         brandService.addBrand(brandDto);
+        if(httpSession.getAttribute("productForm") != null){
+            return "redirect:/product/create";
+        }
         return "redirect:/product/brand";
     }
 
     @GetMapping("/color")
     public String getAllColors(Model model){
-        List<ColorDto> colors = colorService.getAll();
-        model.addAttribute("colors", colors);
+        model.addAttribute("colors", colorService.getAll());
         model.addAttribute("colorForm", new ColorDto());
         return "color";
     }
@@ -84,8 +101,10 @@ public class ProductController {
     @PostMapping("/color")
     public String addNewColor(@ModelAttribute("colorForm") @Valid ColorDto colorDto,
                               BindingResult bindingResult,
+                              HttpSession httpSession,
                               Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("colors", colorService.getAll());
             return "color";
         }
         if(colorService.getByName(colorDto.getColorName()) != null){
@@ -95,13 +114,15 @@ public class ProductController {
             return "color";
         }
         colorService.addColor(colorDto);
+        if(httpSession.getAttribute("productForm") != null){
+            return "redirect:/product/create";
+        }
         return "redirect:/product/color";
     }
 
     @GetMapping("/material")
     public String getAllMaterials(Model model){
-        List<MaterialDto> materials = materialService.getAll();
-        model.addAttribute("materials", materials);
+        model.addAttribute("materials", materialService.getAll());
         model.addAttribute("materialForm", new MaterialDto());
         return "material";
     }
@@ -109,8 +130,10 @@ public class ProductController {
     @PostMapping("/material")
     public String addNewMaterial(@ModelAttribute("materialForm") @Valid MaterialDto materialDto,
                                  BindingResult bindingResult,
+                                 HttpSession httpSession,
                                  Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("materials", materialService.getAll());
             return "material";
         }
         if(materialService.getByName(materialDto.getMaterialName()) != null){
@@ -120,13 +143,15 @@ public class ProductController {
             return "material";
         }
         materialService.addMaterial(materialDto);
+        if(httpSession.getAttribute("productForm") != null){
+            return "redirect:/product/create";
+        }
         return "redirect:/product/material";
     }
 
     @GetMapping("/season")
     public String getAllSeasons(Model model){
-        List<SeasonDto> seasons = seasonService.getAll();
-        model.addAttribute("seasons", seasons);
+        model.addAttribute("seasons", seasonService.getAll());
         model.addAttribute("seasonForm", new SeasonDto());
         return "season";
     }
@@ -134,8 +159,10 @@ public class ProductController {
     @PostMapping("/season")
     public String addNewSeason(@ModelAttribute("seasonForm") @Valid SeasonDto seasonDto,
                                BindingResult bindingResult,
+                               HttpSession httpSession,
                                Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("seasons", seasonService.getAll());
             return "season";
         }
         if(seasonService.getByName(seasonDto.getSeasonName()) != null){
@@ -145,13 +172,15 @@ public class ProductController {
             return "season";
         }
         seasonService.addSeason(seasonDto);
+        if(httpSession.getAttribute("productForm") != null){
+            return "redirect:/product/create";
+        }
         return "redirect:/product/season";
     }
 
     @GetMapping("/size")
     public String getAllSizes(Model model){
-        List<SizeDto> sizes = sizeService.getAll();
-        model.addAttribute("sizes", sizes);
+        model.addAttribute("sizes", sizeService.getAll());
         model.addAttribute("sizeForm", new SizeDto());
         return "size";
     }
@@ -160,8 +189,10 @@ public class ProductController {
     @PostMapping("/size")
     public String addNewBrand(@ModelAttribute("sizeForm") @Valid SizeDto sizeDto,
                               BindingResult bindingResult,
+                              HttpSession httpSession,
                               Model model){
         if (bindingResult.hasErrors()) {
+            model.addAttribute("sizes", sizeService.getAll());
             return "size";
         }
         if(sizeService.getByName(sizeDto.getSize()) != null){
@@ -171,44 +202,44 @@ public class ProductController {
             return "size";
         }
         sizeService.addSize(sizeDto);
+        if(httpSession.getAttribute("productForm") != null){
+            return "redirect:/product/create";
+        }
         return "redirect:/product/size";
     }
 
     @GetMapping("/create")
-    public String addNewProduct(Model model){
-        List<CategoryDto> categories = categoryService.getAll();
-        model.addAttribute("categories", categories);
+    public String addNewProduct(HttpSession httpSession,
+                                Model model){
+        model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("brands", brandService.getAll());
+        model.addAttribute("colors", colorService.getAll());
+        model.addAttribute("materials", materialService.getAll());
+        model.addAttribute("seasons", seasonService.getAll());
 
-        List<BrandDto> brands = brandService.getAll();
-        model.addAttribute("brands", brands);
-
-        List<ColorDto> colors = colorService.getAll();
-        model.addAttribute("colors", colors);
-
-        List<MaterialDto> materials = materialService.getAll();
-        model.addAttribute("materials", materials);
-
-        List<SeasonDto> seasons = seasonService.getAll();
-        model.addAttribute("seasons", seasons);
-
-        model.addAttribute("productForm", new ProductDto());
+        if(httpSession.getAttribute("productForm") == null){
+            model.addAttribute("productForm", new ProductDto());
+        }
         return "create-product";
-    }
-
-    @GetMapping
-    public String getAllProducts(Model model){
-        List<ProductDto> products = productService.getAllActive();
-        model.addAttribute("products", products);
-        return "product";
     }
 
     @PostMapping("/create")
     public String addNewProduct(@ModelAttribute("productForm") @Valid ProductDto productDto,
-                                @RequestParam("size") float size,
                                 BindingResult bindingResult,
+                                @RequestParam("size") float size,
+                                SessionStatus status,
                                 Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("categories", categoryService.getAll());
+            model.addAttribute("brands", brandService.getAll());
+            model.addAttribute("colors", colorService.getAll());
+            model.addAttribute("materials", materialService.getAll());
+            model.addAttribute("seasons", seasonService.getAll());
+            return "create-product";
+        }
+        status.setComplete();
         productDto.setSize(size);
         productService.addProduct(productDto);
-        return "redirect:/product";
+        return "redirect:/catalog";
     }
 }

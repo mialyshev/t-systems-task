@@ -3,13 +3,13 @@ package com.javaschool.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
-
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = {"id"})
+@ToString(of = { "id", "quantity", "price", "model"})
 @Entity
 @Table(name = "products")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
@@ -56,5 +56,8 @@ public class Product {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "size_id")
     private Size size;
+
+    @ManyToMany(mappedBy = "productSet", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Order> orderSet;
 }
 

@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class CardDto {
 
+    private long id;
     private String number;
     private LocalDate validatyDate;
     private String owner;

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:each="card : ${savedCard}">
+    <h5>Card #<span th:text="${cardStat.index + 1}"></span></h5>
+    <p>
+        <span th:text="*{card.number}"></span>
+    </p>
+    <p>
+        <span th:text="*{card.validatyDate}"></span>
+    </p>
+</div>
+
+<form th:method="POST" th:action="@{/order/savedcard}">
+    <label>
+        Choose saved card:
+        <select name="cardId">
+            <option th:each="card : ${savedCard}"
+                    th:value="${card.id}"
+                    th:text="${cardStat.index + 1}"></option>
+        </select>
+    </label>
+    <br>
+    <label>
+        <input name="submit" type="submit" value="Select"/>
+    </label>
+</form>
+<form th:method="POST" th:action="@{/order/card}" th:object="${cardForm}">
+    <h2>Card</h2>
+    <table>
+        <tr>
+            <td>Number:</td>
+            <td><input type="text" th:field="*{number}"/></td>
+            <div style="color:red" th:if="${#fields.hasErrors('number')}" th:errors="*{number}" >error</div>
+        </tr>
+
+        <tr>
+            <td>Owner:</td>
+            <td><input type="text" th:field="*{owner}"/></td>
+            <div th:if="${ownerError}">
+                <div style="color: red" th:text="${ownerError}"></div>
+            </div>
+            <div style="color:red" th:if="${#fields.hasErrors('owner')}" th:errors="*{owner}" >error</div>
+        </tr>
+
+        <tr>
+            <td>Validity date:</td>
+            <td><input type="month" th:field="*{validatyDate}"/></td>
+            <div style="color:red" th:if="${#fields.hasErrors('validatyDate')}" th:errors="*{validatyDate}" >email error</div>
+        </tr>
+        <tr>
+            <td>Code:</td>
+            <td><input type="text" th:field="*{code}"/></td>
+            <div style="color:red" th:if="${#fields.hasErrors('code')}" th:errors="*{code}" >email error</div>
+        </tr>
+
+        <td>Save this card?</td>
+        <td><input type="checkbox" name="save"/></td>
+
+        <tr>
+            <td><input name="submit" type="submit" value="Register!" /></td>
+        </tr>
+    </table>
+</form>
+<p><a th:href="@{/order/later}">Pay later</a></p>
+</body>
+</html>

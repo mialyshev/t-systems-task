@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Order finish</title>
+</head>
+<body>
+    <h3>Delivery address</h3>
+    <p>
+        Country: <span th:text="${address.country}"></span>
+    </p>
+    <p>
+        City: <span th:text="${address.city}"></span>
+    </p>
+    <p>
+        Postal code: <span th:text="${address.postalCode}"></span>
+    </p>
+    <p>
+        Street: <span th:text="${address.street}"></span>
+    </p>
+    <p>
+        House number: <span th:text="${address.houseNumber}"></span>
+    </p>
+    <p>
+        Apartment number: <span th:text="${address.apartamentNumber}"></span>
+    </p>
+
+
+    <div th:if="${orderForm.paymentType == 'CARD'}">
+        <h3>Card payment</h3>
+        <div th:if="${card}">
+            <p>
+                Number: <span th:text="${card.number}"></span>
+            </p>
+            <p>
+                Validate date: <span th:text="${card.validatyDate}"></span>
+            </p>
+            <p>
+                Owner: <span th:text="${card.owner}"></span>
+            </p>
+        </div>
+    </div>
+
+    <div th:if="${orderForm.paymentType == 'CASH'}">
+        <h3>Cash payment</h3>
+    </div>
+
+    <div th:each="product : ${session.orderForm.productDtoList}">
+        <p>
+            Model : <span th:text="*{product.model}"></span>
+        </p>
+    </div>
+
+    <form th:method="POST" th:action="@{/order/finish}">
+        <label>
+            <input name="submit" type="submit" value="Confirm"/>
+        </label>
+    </form>
+</body>
+</html>

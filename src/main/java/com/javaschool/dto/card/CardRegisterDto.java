@@ -25,6 +25,6 @@ public class CardRegisterDto {
     private String owner;
 
     @NotEmpty(message = "Code of card must be filled")
-    @Size(min = 3, max = 3, message = "The code must be 3 digits")
+    @Size(min = 3, max = 3, message      = "The code must be 3 digits")
     private String code;
 }

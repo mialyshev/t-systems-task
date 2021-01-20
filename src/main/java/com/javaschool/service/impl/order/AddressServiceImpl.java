@@ -61,13 +61,51 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
-    public AddressDto getLast() {
+    public AddressDto getLastByUserId(long userId) {
         AddressDto addressDto = null;
         try {
-            addressDto = addressMapper.toDto(addressRepository.getLast());
+            addressDto = addressMapper.toDto(addressRepository.getLastByUserId(userId));
         } catch (Exception e) {
             log.error("Error getting a last address", e);
         }
         return addressDto;
+    }
+
+    @Override
+    public List<AddressDto> getAll() {
+        List<AddressDto> addressDtoList = null;
+        try {
+            addressDtoList = addressMapper.toDtoList(addressRepository.findAll());
+        } catch (Exception e) {
+            log.error("Error getting all address", e);
+        }
+        return addressDtoList;
+    }
+
+    @Override
+    @Transactional
+    public void updateAddress(AddressDto addressDto) {
+        Address address = addressRepository.findById(addressDto.getId());
+        address.setCountry(addressDto.getCountry());
+        address.setCity(addressDto.getCity());
+        address.setStreet(addressDto.getStreet());
+        address.setHouseNumber(addressDto.getHouseNumber());
+        address.setApartamentNumber(addressDto.getApartamentNumber());
+        address.setPostalCode(addressDto.getPostalCode());
+        addressRepository.update(address);
+    }
+
+    @Override
+    @Transactional
+    public void addUpdateAddress(AddressDto addressDto, User user) {
+        addAddress(addressMapper.toAdditionDto(addressDto), user);
+    }
+
+    @Override
+    @Transactional
+    public void updateSavedAddress(long addressId) {
+        Address address = addressRepository.findById(addressId);
+        address.setSaved(false);
+        addressRepository.update(address);
     }
 }
