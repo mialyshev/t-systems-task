@@ -54,13 +54,67 @@
                 <li class="nav-item" style="margin: 5px">
                     <a class="nav-link btn btn-primary" href="/admin/orders">Orders</span></a>
                 </li>
-                <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/product">Product</span></a>
+                <li class="nav-item active" style="margin: 5px">
+                    <a class="nav-link active btn btn-primary" href="#">Product</span></a>
                 </li>
                 <li class="nav-item" style="margin: 5px">
                     <a class="nav-link btn btn-primary" href="/admin/statistic">Statistics(TODO)</span></a>
                 </li>
             </ul>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product">Create new product</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/category">Add new category</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/brand">Add new brand</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/color">Add new color</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/material">Add new material</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/season">Add new season</span></a>
+                </li>
+                <li class="nav-item active m-1">
+                    <a class="nav-link active btn btn-primary" href="#">Add new size</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/add-size-product">Add size or quantity for existing product</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <h3>Enter new size</h3>
+        <form class="form-horizontal" role="form" th:method="POST" th:action="@{/product/size}" th:object="${sizeForm}">
+            <div class="form-group">
+                <label for="size" class="col-sm-3 control-label"></label>
+                <div class="col-md-3 col-lg-3">
+                    <input type="number" step=0.5 id="size" th:field="*{size}" placeholder="Enter size" class="form-control" autofocus required>
+                </div>
+                <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${sizeError}" th:text="${sizeError}"></div>
+                <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('size')}" th:errors="*{size}" ></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+    <div class="container mt-1">
+        <h3>Existing sizes</h3>
+        <div class="row" style="margin-top: 5px" id="profile">
+            <div class="col-md-3 col-lg-3">
+                <ul class="list-group" th:each="size : ${sizes}">
+                    <li class="list-group-item"><span th:text="*{size.size}"></span></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

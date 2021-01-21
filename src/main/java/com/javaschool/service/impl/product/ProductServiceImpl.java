@@ -2,9 +2,11 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.ColorDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.product.SizeDto;
 import com.javaschool.entity.Order;
 import com.javaschool.entity.Product;
 import com.javaschool.entity.Product_;
+import com.javaschool.entity.Size;
 import com.javaschool.mapper.product.ProductMapperImpl;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import com.javaschool.repository.order.OrderRepository;
@@ -37,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> getAll() {
         List<ProductDto> productDtoList = null;
         try {
-            productDtoList = productMapper.toDtoList(productRepository.findAll());
+            productDtoList = getUnique(productMapper.toDtoList(productRepository.findAll()));
         } catch (Exception e) {
             log.error("Error getting all the products", e);
         }
@@ -46,13 +48,32 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getAllActive() {
-        List<ProductDto> productDtoList = null;
+        List<ProductDto> productDtoListFromRepo = null;
         try {
-            productDtoList = productMapper.toDtoList(productRepository.findAllActive());
+            productDtoListFromRepo = getUnique(productMapper.toDtoList(productRepository.findAllActive()));
         } catch (Exception e) {
             log.error("Error getting all the active products", e);
         }
+        return productDtoListFromRepo;
+    }
+
+    private List<ProductDto> getUnique(List<ProductDto> productDtos){
+        List<ProductDto> productDtoList = new ArrayList<>();
+        for(ProductDto productDto : productDtos){
+            if(isUnique(productDtoList, productDto)){
+                productDtoList.add(productDto);
+            }
+        }
         return productDtoList;
+    }
+
+    private boolean isUnique(List<ProductDto> productDtos, ProductDto productDto){
+        for (ProductDto productDto1 : productDtos){
+            if(productDto1.equals(productDto)){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -140,5 +161,50 @@ public class ProductServiceImpl implements ProductService {
             log.error("Error getting all the products by param", e);
         }
         return productDtoList;
+    }
+
+    @Override
+    @Transactional
+    public void addProductBySizeQuantity(float size, int quantity, long productId) {
+        Size sizeFromRepo = sizeRepository.findBySize(size);
+        Product product = new Product();
+        Product productFromRepo = productRepository.findById(productId);
+        if(productFromRepo.getSize() == sizeFromRepo){
+            productFromRepo.setQuantity(productFromRepo.getQuantity() + quantity);
+            productRepository.updateProduct(productFromRepo);
+            return;
+        }
+        product.setActive(true);
+        product.setModel(productFromRepo.getModel());
+        product.setQuantity(quantity);
+        product.setPrice(productFromRepo.getPrice());
+        product.setUrl(productFromRepo.getUrl());
+        product.setBrand(productFromRepo.getBrand());
+        product.setCategory(productFromRepo.getCategory());
+        product.setColor(productFromRepo.getColor());
+        product.setMaterial(productFromRepo.getMaterial());
+        product.setSeason(productFromRepo.getSeason());
+        product.setSize(sizeRepository.findBySize(size));
+        productRepository.save(product);
+    }
+
+    @Override
+    public List<SizeDto> getAvailableSizesForProduct(long productId) {
+        List<SizeDto> sizeDtos = new ArrayList<>();
+        List<ProductDto> products = null;
+        ProductDto product = productMapper.toDto(productRepository.findById(productId));
+        try {
+            products = productMapper.toDtoList(productRepository.findAllActive());
+        } catch (Exception e) {
+            log.error("Error getting all the active products for check available sizes", e);
+        }
+        for(ProductDto productFromRepo : products){
+            if(productFromRepo.equals(product)){
+                SizeDto sizeDto = new SizeDto();
+                sizeDto.setSize(productFromRepo.getSize());
+                sizeDtos.add(sizeDto);
+            }
+        }
+        return sizeDtos;
     }
 }

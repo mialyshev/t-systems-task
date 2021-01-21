@@ -2,6 +2,7 @@ package com.javaschool.service.product;
 
 
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.product.SizeDto;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 
 import javax.servlet.http.HttpSession;
@@ -27,4 +28,8 @@ public interface ProductService {
     void updateProductQuantity(List<ProductDto> productDtoList);
 
     List<ProductDto> getProductsByParam(List<SearchCriteria> params);
+
+    void addProductBySizeQuantity(float size, int quantity, long productId);
+
+    List<SizeDto> getAvailableSizesForProduct(long productId);
 }

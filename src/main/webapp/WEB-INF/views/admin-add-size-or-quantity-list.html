@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>User page</title>
+    <title>Admin panel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/styles/signin.css">
@@ -24,8 +24,8 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a class="nav-link btn btn-primary" href="/admin">Admin panel</span></a>
+                    <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link active btn btn-primary" href="/admin">Admin panel</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn btn-primary" href="/bucket">Shopping cart</span></a>
@@ -36,8 +36,8 @@
                     <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="nav-link btn btn-primary" href="/registration">Sign up</span></a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link active btn btn-primary" href="/profile">User page</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/profile">User page</span></a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <form th:action="@{/logout}" method="post">
@@ -52,43 +52,66 @@
         <div class="panel-body">
             <ul class="nav nav-tabs">
                 <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/profile">About user</span></a>
+                    <a class="nav-link btn btn-primary" href="/admin/orders">Orders</span></a>
                 </li>
                 <li class="nav-item active" style="margin: 5px">
-                    <a class="nav-link active btn btn-primary" href="#">My addresses</span></a>
+                    <a class="nav-link active btn btn-primary" href="#">Product</span></a>
                 </li>
                 <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/profile/cards">My cards</span></a>
-                </li>
-                <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/profile/orders">My orders</span></a>
+                    <a class="nav-link btn btn-primary" href="/admin/statistic">Statistics(TODO)</span></a>
                 </li>
             </ul>
         </div>
     </div>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product">Create new product</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/category">Add new category</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/brand">Add new brand</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/color">Add new color</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/material">Add new material</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/season">Add new season</span></a>
+                </li>
+                <li class="nav-item active m-1">
+                    <a class="nav-link active btn btn-primary" href="#">Add size or quantity for existing product</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="row">
-            <div class="col-md4 m-4" th:each="address : ${savedAddress}">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Address #<span th:text="${addressStat.index + 1}"></span></h5>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Country: <span th:text="*{address.country}"></span></li>
-                        <li class="list-group-item">City: <span th:text="*{address.city}"></span></li>
-                        <li class="list-group-item">Street: <span th:text="*{address.street}"></span></li>
-                        <li class="list-group-item">House number: <span th:text="*{address.houseNumber}"></span></li>
-                        <li class="list-group-item">Apartment number: <span th:text="*{address.apartamentNumber}"></span></li>
-                    </ul>
-                    <div class="card-body">
-                        <a class="card-link" style="margin: 5px" th:href="@{/profile/address/edit/{id}(id=${address.id})}">Edit address</a>
-                        <a class="card-link" style="margin: 5px" th:href="@{/profile/address/delete/{id}(id=${address.id})}">Delete address</a>
+        <section class="text-center mb4">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4" th:each="product : ${products}">
+                    <div class="card">
+                        <div class="view overlay">
+                            <img class="card-img-top" th:src="*{product.url}">
+                        </div>
+
+                        <div class="card-body text-center">
+                            <p class="card-text"><span th:text="${product.brandName}"></span></p>
+                            <p class="card-text"><span th:text="*{product.model}"></span></p>
+                            <p class="card-text"><span th:text="*{product.price}"></span>&#8381</p>
+                            <a class="card-link" style="margin: 5px" th:href="@{/product/add-size-product/{id}(id=${product.id})}">Add for this</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <p><a class="btn btn-primary" href="/profile/add-address" style="margin-top: 5px">Add new address</a></p>
+        </section>
     </div>
+
 </div>
 </body>
 </html>

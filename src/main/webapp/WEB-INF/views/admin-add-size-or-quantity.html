@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/styles/signin.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/" role="button">Home</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link active btn btn-primary" href="/admin">Admin panel</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/bucket">Shopping cart</span></a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link btn btn-primary" href="/login">Sign in</span></a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link btn btn-primary" href="/registration">Sign up</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/profile">User page</span></a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post">
+                            <input type="submit" class="btn btn-primary" value="Log out"/>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/admin/orders">Orders</span></a>
+                </li>
+                <li class="nav-item active" style="margin: 5px">
+                    <a class="nav-link active btn btn-primary" href="#">Product</span></a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/admin/statistic">Statistics(TODO)</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product">Create new product</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/category">Add new category</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/brand">Add new brand</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/color">Add new color</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/material">Add new material</span></a>
+                </li>
+                <li class="nav-item m-1">
+                    <a class="nav-link btn btn-primary" href="/product/season">Add new season</span></a>
+                </li>
+                <li class="nav-item active m-1">
+                    <a class="nav-link active btn btn-primary" href="/product/add-size-product">Add size or quantity for existing product</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="text-center mb4">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="view overlay">
+                            <img class="card-img-top" th:src="*{productInfo.url}">
+                        </div>
+
+                        <div class="card-body text-center">
+                            <p class="card-text"><span th:text="${productInfo.brandName}"></span></p>
+                            <p class="card-text"><span th:text="*{productInfo.model}"></span></p>
+                            <p class="card-text"><span th:text="*{productInfo.price}"></span>&#8381</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <h5>Enter information</h5>
+        <form class="form-horizontal border" role="form" th:method="POST" th:action="@{/product/add-size-product/{id}(id=${productInfo.id})}">
+            <div class="form-group">
+                <label for="quantity" class="col-sm-4 control-label">Quantity</label>
+                <div class="col-sm-4">
+                    <input type="text" id="quantity" name="quantity"  placeholder="Quantity" class="form-control" autofocus required>
+                </div>
+                <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${quantityError}" th:text="${quantityError}"></div>
+            </div>
+            <div class="form-group">
+                <label for="sizeSelect" class="col-sm-3 control-label">Choose size:</label>
+                <div class="col-sm-4">
+                    <select id="sizeSelect" name="size" required>
+                        <option th:each="i: ${#numbers.sequence(66, 102)}"
+                                th:value="${i / 2.0}"
+                                th:text="${i / 2.0}"></option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

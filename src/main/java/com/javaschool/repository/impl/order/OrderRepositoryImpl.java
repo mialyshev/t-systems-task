@@ -79,7 +79,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public List<Order> findAllDelivered(long userId, OrderStatus orderStatus, boolean isDelivered) {
+    public List<Order> findAllDeliveredByUserId(long userId, boolean isDelivered) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
         Root<Order> root = criteriaQuery.from(Order.class);
@@ -87,12 +87,31 @@ public class OrderRepositoryImpl implements OrderRepository {
             criteriaQuery
                     .select(root)
                     .where(criteriaBuilder.equal(root.get(Order_.user).get("id"), userId),
-                            criteriaBuilder.equal(root.get(Order_.orderStatus), orderStatus));
+                            criteriaBuilder.equal(root.get(Order_.orderStatus), OrderStatus.DELIVERED));
         }else {
             criteriaQuery
                     .select(root)
                     .where(criteriaBuilder.equal(root.get(Order_.user).get("id"), userId),
-                            criteriaBuilder.notEqual(root.get(Order_.orderStatus), orderStatus));
+                            criteriaBuilder.notEqual(root.get(Order_.orderStatus), OrderStatus.DELIVERED));
+        }
+        TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
+    }
+
+    @Override
+    public List<Order> findAllDelivered(boolean isDelivered) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
+        Root<Order> root = criteriaQuery.from(Order.class);
+        if(isDelivered) {
+            criteriaQuery
+                    .select(root)
+                    .where(criteriaBuilder.equal(root.get(Order_.orderStatus), OrderStatus.DELIVERED));
+        }else {
+            criteriaQuery
+                    .select(root)
+                    .where(criteriaBuilder.notEqual(root.get(Order_.orderStatus), OrderStatus.DELIVERED));
         }
         TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
 

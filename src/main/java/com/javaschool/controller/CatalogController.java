@@ -30,6 +30,7 @@ public class CatalogController {
     @GetMapping
     public String getAllProducts(Model model){
         List<ProductDto> products = productService.getAllActive();
+        productService.getAvailableSizesForProduct(6);
         model.addAttribute("products", products);
         return "product";
     }

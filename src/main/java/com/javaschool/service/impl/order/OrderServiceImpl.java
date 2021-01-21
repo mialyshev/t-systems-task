@@ -1,12 +1,9 @@
 package com.javaschool.service.impl.order;
 
-import com.javaschool.dto.order.AddressDto;
 import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.product.ProductDto;
-import com.javaschool.entity.Address;
 import com.javaschool.entity.Order;
 import com.javaschool.entity.Product;
-import com.javaschool.entity.User;
 import com.javaschool.entity.enums.*;
 import com.javaschool.mapper.order.OrderMapperImpl;
 import com.javaschool.mapper.product.ProductMapperImpl;
@@ -19,7 +16,6 @@ import com.javaschool.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -193,16 +189,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findAllDelivered(long userId, boolean isDelivered) {
+    public List<OrderDto> findAllDeliveredForUser(long userId, boolean isDelivered) {
         List<OrderDto> orderDtoList = null;
         try {
             if(isDelivered) {
-                orderDtoList = orderMapper.toDtoList(orderRepository.findAllDelivered(userId, OrderStatus.DELIVERED, true));
+                orderDtoList = orderMapper.toDtoList(orderRepository.findAllDeliveredByUserId(userId, true));
             }else {
-                orderDtoList = orderMapper.toDtoList(orderRepository.findAllDelivered(userId, OrderStatus.DELIVERED, false));
+                orderDtoList = orderMapper.toDtoList(orderRepository.findAllDeliveredByUserId(userId, false));
             }
         } catch (Exception e) {
-            log.error("Error getting all orders by address id", e);
+            log.error("Error getting all delivered orders by user id", e);
         }
         return orderDtoList;
     }
@@ -222,5 +218,20 @@ public class OrderServiceImpl implements OrderService {
             price += productDto.getPrice();
         }
         return price;
+    }
+
+    @Override
+    public List<OrderDto> findAllDelivered(boolean isDelivered) {
+        List<OrderDto> orderDtoList = null;
+        try {
+            if(isDelivered) {
+                orderDtoList = orderMapper.toDtoList(orderRepository.findAllDelivered(true));
+            }else {
+                orderDtoList = orderMapper.toDtoList(orderRepository.findAllDelivered(false));
+            }
+        } catch (Exception e) {
+            log.error("Error getting all delivered orders", e);
+        }
+        return orderDtoList;
     }
 }

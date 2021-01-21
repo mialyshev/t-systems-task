@@ -6,9 +6,7 @@ import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.user.UserDto;
 import com.javaschool.dto.user.UserUpdateInfoDto;
 import com.javaschool.dto.user.UserUpdatePassDto;
-import com.javaschool.entity.Order;
 import com.javaschool.entity.User;
-import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.user.CardService;
@@ -22,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/profile")
@@ -233,7 +230,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         UserDto userFromBd = userService.getDtoByEmail(currentUser);
-        model.addAttribute("orders", orderService.findAllDelivered(userFromBd.getId(), true));
+        model.addAttribute("orders", orderService.findAllDeliveredForUser(userFromBd.getId(), true));
         return "user-delivered-orders";
     }
 
@@ -242,7 +239,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         UserDto userFromBd = userService.getDtoByEmail(currentUser);
-        model.addAttribute("orders", orderService.findAllDelivered(userFromBd.getId(), false));
+        model.addAttribute("orders", orderService.findAllDeliveredForUser(userFromBd.getId(), false));
         return "user-not-delivered-orders";
     }
 }

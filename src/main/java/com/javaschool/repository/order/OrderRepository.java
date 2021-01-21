@@ -19,6 +19,7 @@ public interface OrderRepository {
 
     List<Order> findByAddressId(long addressId);
 
-    List<Order> findAllDelivered(long userId, OrderStatus orderStatus, boolean isDelivered);
+    List<Order> findAllDeliveredByUserId(long userId, boolean isDelivered);
 
+    List<Order> findAllDelivered(boolean isDelivered);
 }

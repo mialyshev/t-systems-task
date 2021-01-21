@@ -51,8 +51,8 @@
     <div class="panel">
         <div class="panel-body">
             <ul class="nav nav-tabs">
-                <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/admin/orders">Orders</span></a>
+                <li class="nav-item active" style="margin: 5px">
+                    <a class="nav-link active btn btn-primary" href="/admin/orders">Orders</span></a>
                 </li>
                 <li class="nav-item" style="margin: 5px">
                     <a class="nav-link btn btn-primary" href="/product">Product</span></a>
@@ -63,6 +63,80 @@
             </ul>
         </div>
     </div>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/admin/orders">All</span></a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/admin/orders/not-delivered">Not completed</span></a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="#">Completed</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 5px">
+        <div class="col-md-9 col-lg-9">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td>Order number:</td>
+                    <td th:text="${order.id}"></td>
+                </tr>
+                <tr>
+                    <td>User email:</td>
+                    <td th:text="*{email}"></td>
+                </tr>
+                <tr>
+                    <td>Order status:</td>
+                    <td th:text="${order.orderStatus}"></td>
+                </tr>
+                <tr>
+                    <td>Address:</td>
+                    <td th:text="${address.toString()}"></td>
+                </tr>
+                <tr>
+                    <td>Order payment status:</td>
+                    <td th:text="${order.paymentStatus}"></td>
+                </tr>
+                <tr>
+                    <td>Order payment type:</td>
+                    <td th:text="${order.paymentType}"></td>
+                </tr>
+                <tr>
+                    <td>Order price:</td>
+                    <td><span th:text="*{price}"></span>&#8381</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="container">
+        <h3>List of goods</h3>
+        <section class="text-center mb4">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4" th:each="product : ${order.productDtoList}">
+                    <div class="card">
+                        <div class="view overlay">
+                            <img class="card-img-top" th:src="*{product.url}">
+                        </div>
+
+                        <div class="card-body text-center">
+                            <p class="card-text"><span th:text="${product.brandName}"></span></p>
+                            <p class="card-text"><span th:text="*{product.model}"></span></p>
+                            <p class="card-text"><span th:text="*{product.price}"></span>&#8381</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
 </div>
 </body>
 </html>
