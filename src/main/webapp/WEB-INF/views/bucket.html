@@ -53,6 +53,7 @@
         </div>
     </nav>
     <div class="container">
+        <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${bucketEmpty}" th:text="${bucketEmpty}"></div>
         <div class="row">
             <div class="col-md-6">
                 <form th:action="@{/order}">

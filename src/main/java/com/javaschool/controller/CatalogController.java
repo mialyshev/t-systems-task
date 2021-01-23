@@ -2,20 +2,20 @@ package com.javaschool.controller;
 
 import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.product.SelectedParams;
 import com.javaschool.dto.product.SizeDto;
 import com.javaschool.entity.Product;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import com.javaschool.repository.product.BrandRepository;
 import com.javaschool.repository.product.CategoryRepository;
+import com.javaschool.repository.product.ColorRepository;
 import com.javaschool.repository.product.ProductRepository;
-import com.javaschool.service.product.CategoryService;
-import com.javaschool.service.product.ProductService;
+import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -29,6 +29,11 @@ public class CatalogController {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
+    private final ColorService colorService;
+    private final CategoryService categoryService;
+    private final BrandService brandService;
+    private final MaterialService materialService;
+    private final SeasonService seasonService;
 
     @GetMapping("/")
     public String getAllProducts(Model model,
@@ -36,9 +41,47 @@ public class CatalogController {
         if (session.getAttribute("bucket") == null) {
             session.setAttribute("bucket", new ArrayList<ProductBucketDto>());
         }
-        List<ProductDto> products = productService.getAllActive();
+        if (session.getAttribute("params") == null) {
+            session.setAttribute("params", new SelectedParams());
+        }
+        SelectedParams selectedParams = (SelectedParams)session.getAttribute("params");
+        List<ProductDto> products = productService.getProductsByParamList(selectedParams);
         model.addAttribute("products", products);
+        model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("brands", brandService.getAll());
+        model.addAttribute("colors", colorService.getAll());
+        model.addAttribute("materials", materialService.getAll());
+        model.addAttribute("seasons", seasonService.getAll());
         return "products";
+    }
+
+    @PostMapping("/")
+    public String getProductsByParam(Model model,
+                                     @RequestParam(value = "radioCategory", required = false) String categoryName,
+                                     @RequestParam(value = "radioBrand", required = false) String brandName,
+                                     @RequestParam(value = "radioColor",required = false) String colorName,
+                                     @RequestParam(value = "radioMaterial",required = false) String materialName,
+                                     @RequestParam(value = "radioSeason",required = false) String seasonName,
+                                     @SessionAttribute("params") SelectedParams params){
+        model.addAttribute("products", productService.getProductsByParam(categoryName, brandName, colorName, materialName, seasonName, params));
+        model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("brands", brandService.getAll());
+        model.addAttribute("colors", colorService.getAll());
+        model.addAttribute("materials", materialService.getAll());
+        model.addAttribute("seasons", seasonService.getAll());
+        return "products";
+    }
+
+
+    @GetMapping("/clear-params")
+    public String clearParams(HttpSession session){
+        SelectedParams selectedParams = (SelectedParams)session.getAttribute("params");
+        selectedParams.setCategory(null);
+        selectedParams.setBrand(null);
+        selectedParams.setColor(null);
+        selectedParams.setMaterial(null);
+        selectedParams.setSeason(null);
+        return "redirect:/";
     }
 
     @GetMapping("/catalog/product/{id}")

@@ -3,8 +3,10 @@ package com.javaschool.service.product;
 
 import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.product.SelectedParams;
 import com.javaschool.dto.product.SizeDto;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -35,4 +37,8 @@ public interface ProductService {
     List<SizeDto> getAvailableSizesForProduct(long productId);
 
     void addProductToBucket(long productId, float size, ArrayList<ProductDto> bucket);
+
+    List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams);
+
+    List<ProductDto> getProductsByParamList(SelectedParams selectedParams);
 }

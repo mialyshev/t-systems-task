@@ -50,6 +50,103 @@
                 </div>
             </div>
         </nav>
+    <div class="panel">
+        <div class="panel-body">
+            <form th:method="POST" th:action="@{/}">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-plus-sign"></i> <span class="caret">Category</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li class="dropdown-input" th:each="category : ${categories}">
+                            <label>
+                                <div th:if="${session.params.category != null}">
+                                    <input th:if="${session.params.category == category.categoryName}" type="radio" name="radioCategory" th:value="*{category.categoryName}" th:text="*{category.categoryName}" checked>
+                                    <input th:unless="${session.params.category == category.categoryName}" type="radio" name="radioCategory" th:value="*{category.categoryName}" th:text="*{category.categoryName}">
+                                </div>
+                                <div th:if="${session.params.category == null}">
+                                    <input type="radio" name="radioCategory" th:value="*{category.categoryName}" th:text="*{category.categoryName}">
+                                </div>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-plus-sign"></i> <span class="caret">Brand</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-input" th:each="brand : ${brands}">
+                            <label>
+                                <div th:if="${session.params.brand != null}">
+                                    <input th:if="${session.params.brand == brand.brandName}" type="radio" name="radioBrand" th:value="*{brand.brandName}" th:text="*{brand.brandName}" checked>
+                                    <input th:unless="${session.params.brand == brand.brandName}" type="radio" name="radioBrand" th:value="*{brand.brandName}" th:text="*{brand.brandName}">
+                                </div>
+                                <div th:if="${session.params.brand == null}">
+                                    <input type="radio" name="radioBrand" th:value="*{brand.brandName}" th:text="*{brand.brandName}">
+                                </div>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-plus-sign"></i> <span class="caret">Color</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-input" th:each="color : ${colors}">
+                            <label>
+                                <div th:if="${session.params.color != null}">
+                                    <input th:if="${session.params.color == color.colorName}" type="radio" name="radioColor" th:value="*{color.colorName}" th:text="*{color.colorName}" checked>
+                                    <input th:unless="${session.params.color == color.colorName}" type="radio" name="radioColor" th:value="*{color.colorName}" th:text="*{color.colorName}">
+                                </div>
+                                <div th:if="${session.params.color == null}">
+                                    <input type="radio" name="radioColor" th:value="*{color.colorName}" th:text="*{color.colorName}">
+                                </div>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-plus-sign"></i> <span class="caret">Materail</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-input" th:each="material : ${materials}">
+                            <label>
+                                <div th:if="${session.params.material != null}">
+                                    <input th:if="${session.params.material == material.materialName}" type="radio" name="radioMaterial" th:value="*{material.materialName}" th:text="*{material.materialName}" checked>
+                                    <input th:unless="${session.params.material == material.materialName}" type="radio" name="radioMaterial" th:value="*{material.materialName}" th:text="*{material.materialName}">
+                                </div>
+                                <div th:if="${session.params.material == null}">
+                                    <input type="radio" name="radioMaterial" th:value="*{material.materialName}" th:text="*{material.materialName}">
+                                </div>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-plus-sign"></i> <span class="caret">Season</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-input" th:each="season : ${seasons}">
+                            <label>
+                                <div th:if="${session.params.season != null}">
+                                    <input th:if="${session.params.season == season.seasonName}" type="radio" name="radioSeason" th:value="*{season.seasonName}" th:text="*{season.seasonName}" checked>
+                                    <input th:unless="${session.params.season == season.seasonName}" type="radio" name="radioSeason" th:value="*{season.seasonName}" th:text="*{season.seasonName}">
+                                </div>
+                                <div th:if="${session.params.season == null}">
+                                    <input type="radio" name="radioSeason" th:value="*{season.seasonName}" th:text="*{season.seasonName}">
+                                </div>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+                <button type="submit" class="btn btn-primary mt-1">Submit</button>
+                <a class="btn btn-primary mt-1" href="/clear-params">Clear filter</a>
+            </form>
+        </div>
     </div>
     <div class="container">
         <div class="row mr-2">
@@ -72,6 +169,6 @@
             </div>
         </div>
     </div>
-
+    </div>
 </body>
 </html>

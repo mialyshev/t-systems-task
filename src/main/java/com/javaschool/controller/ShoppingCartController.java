@@ -29,7 +29,11 @@ public class ShoppingCartController {
     }
 
     @GetMapping()
-    public String getBucketForm(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket){
+    public String getBucketForm(Model model,
+                                @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket){
+        if (bucket.isEmpty()){
+            model.addAttribute("bucketEmpty", "Your shopping cart is empty. It's time to shop!");
+        }
         shoppingCartService.updateBucket(bucket);
         return "bucket";
     }
@@ -39,6 +43,6 @@ public class ShoppingCartController {
                                           @PathVariable("id") long id,
                                           Model model){
         shoppingCartService.delete(id, bucket);
-        return "bucket";
+        return "redirect:/bucket";
     }
 }

@@ -1,9 +1,6 @@
 package com.javaschool.service.impl.product;
 
-import com.javaschool.dto.product.ColorDto;
-import com.javaschool.dto.product.ProductBucketDto;
-import com.javaschool.dto.product.ProductDto;
-import com.javaschool.dto.product.SizeDto;
+import com.javaschool.dto.product.*;
 import com.javaschool.entity.Order;
 import com.javaschool.entity.Product;
 import com.javaschool.entity.Product_;
@@ -238,5 +235,64 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
         }
+    }
+
+    @Override
+    public List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams) {
+        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+        if(categoryName != null){
+            params.add(new SearchCriteria("category", ":", categoryRepository.findByName(categoryName)));
+            selectedParams.setCategory(categoryName);
+        }
+        if(brandName != null){
+            params.add(new SearchCriteria("brand", ":", brandRepository.findByName(brandName)));
+            selectedParams.setBrand(brandName);
+        }
+        if(colorName != null){
+            params.add(new SearchCriteria("color", ":", colorRepository.findByName(colorName)));
+            selectedParams.setColor(colorName);
+        }
+        if(materialName != null){
+            params.add(new SearchCriteria("material", ":", materialRepository.findByName(materialName)));
+            selectedParams.setMaterial(materialName);
+        }
+        if(seasonName != null){
+            params.add(new SearchCriteria("season", ":", seasonRepository.findByName(seasonName)));
+            selectedParams.setSeason(seasonName);
+        }
+        List<ProductDto> productDtoListFromRepo = null;
+        try {
+            productDtoListFromRepo = getUnique(productMapper.toDtoList(productRepository.findByParam(params)));
+        } catch (Exception e) {
+            log.error("Error getting all the active products by param name", e);
+        }
+        return productDtoListFromRepo;
+    }
+
+    @Override
+    public List<ProductDto> getProductsByParamList(SelectedParams selectedParams) {
+        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+        if(selectedParams.getCategory() != null){
+            params.add(new SearchCriteria("category", ":", categoryRepository.findByName(selectedParams.getCategory())));
+        }
+        if(selectedParams.getBrand() != null){
+            params.add(new SearchCriteria("brand", ":", brandRepository.findByName(selectedParams.getBrand())));
+        }
+        if(selectedParams.getColor() != null){
+            params.add(new SearchCriteria("color", ":", colorRepository.findByName(selectedParams.getColor())));
+        }
+        if(selectedParams.getMaterial() != null){
+            params.add(new SearchCriteria("material", ":", materialRepository.findByName(selectedParams.getMaterial())));
+        }
+        if(selectedParams.getSeason() != null){
+            params.add(new SearchCriteria("season", ":", seasonRepository.findByName(selectedParams.getSeason())));
+        }
+        List<ProductDto> productDtoListFromRepo = null;
+        try {
+            productDtoListFromRepo = getUnique(productMapper.toDtoList(productRepository.findByParam(params)));
+        } catch (Exception e) {
+            log.error("Error getting all the active products by param list", e);
+        }
+        return productDtoListFromRepo;
     }
 }
