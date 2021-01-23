@@ -12,6 +12,8 @@ public interface ProductRepository {
 
     List<Product> findAllActive();
 
+    List<Product> findAllActiveByModel(String model);
+
     Product findById(long id);
 
     void save(Product product);

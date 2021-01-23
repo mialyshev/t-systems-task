@@ -1,14 +1,13 @@
 package com.javaschool.controller;
 
+import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
 import com.javaschool.service.product.ProductService;
+import com.javaschool.service.user.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -18,26 +17,28 @@ import java.util.ArrayList;
 public class ShoppingCartController {
 
     private final ProductService productService;
+    private final ShoppingCartService shoppingCartService;
 
-    @GetMapping("/add/{id}")
-    public String addProductToBucket(@SessionAttribute("bucket") ArrayList<ProductDto> bucket,
+    @PostMapping("/add/{id}")
+    public String addProductToBucket(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
+                                     @RequestParam("size") float size,
                                      @PathVariable("id") long id,
                                      Model model){
-        bucket.add(productService.getById(id));
-        return "redirect:/catalog";
+        shoppingCartService.add(id, bucket, size);
+        return "redirect:/catalog/product/" +id;
     }
 
     @GetMapping()
-    public String getBucketForm(@SessionAttribute("bucket") ArrayList<ProductDto> bucket){
-        productService.updateBucket(bucket);
+    public String getBucketForm(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket){
+        shoppingCartService.updateBucket(bucket);
         return "bucket";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteProductFromBucket(@SessionAttribute("bucket") ArrayList<ProductDto> bucket,
+    public String deleteProductFromBucket(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
                                           @PathVariable("id") long id,
                                           Model model){
-        bucket.remove(productService.getById(id));
+        shoppingCartService.delete(id, bucket);
         return "bucket";
     }
 }

@@ -1,6 +1,7 @@
 package com.javaschool.service.product;
 
 
+import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
 import com.javaschool.dto.product.SizeDto;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
@@ -19,17 +20,19 @@ public interface ProductService {
 
     void addProduct(ProductDto productDto);
 
-    List<ProductDto>getSelectedList(Integer[] selected);
+    List<ProductBucketDto>getSelectedList(Integer[] selected, ArrayList<ProductBucketDto> bucket);
 
-    boolean isAvailable(List<ProductDto> productDtos);
+    boolean isAvailable(List<ProductBucketDto> productDtos);
 
-    void updateBucket(ArrayList<ProductDto> productDtos);
+    int calcPrice(List<ProductBucketDto> productDtos);
 
-    void updateProductQuantity(List<ProductDto> productDtoList);
+    void updateProductQuantity(List<ProductBucketDto> productDtoList);
 
     List<ProductDto> getProductsByParam(List<SearchCriteria> params);
 
     void addProductBySizeQuantity(float size, int quantity, long productId);
 
     List<SizeDto> getAvailableSizesForProduct(long productId);
+
+    void addProductToBucket(long productId, float size, ArrayList<ProductDto> bucket);
 }

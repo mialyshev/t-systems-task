@@ -3,6 +3,7 @@ package com.javaschool.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(of = {"id"})
@@ -57,7 +58,7 @@ public class Product {
     @JoinColumn(name = "size_id")
     private Size size;
 
-    @ManyToMany(mappedBy = "productSet", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Order> orderSet;
+    @ManyToMany(mappedBy = "productList", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Order> orderList;
 }
 

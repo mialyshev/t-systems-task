@@ -1,6 +1,7 @@
 package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.ColorDto;
+import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
 import com.javaschool.dto.product.SizeDto;
 import com.javaschool.entity.Order;
@@ -12,6 +13,7 @@ import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.*;
 import com.javaschool.service.product.ProductService;
+import com.javaschool.service.user.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,6 @@ public class ProductServiceImpl implements ProductService {
     private final MaterialRepository materialRepository;
     private final SeasonRepository seasonRepository;
     private final SizeRepository sizeRepository;
-    private final OrderRepository orderRepository;
 
     @Override
     public List<ProductDto> getAll() {
@@ -106,19 +107,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getSelectedList(Integer[] selected) {
-        List<ProductDto> productDtos = new ArrayList<>();
+    public List<ProductBucketDto> getSelectedList(Integer[] selected, ArrayList<ProductBucketDto> bucket) {
+        List<ProductBucketDto> productDtos = new ArrayList<>();
         for(Integer id : selected){
-            productDtos.add(getById(id));
+            productDtos.add(findByProductId(bucket, id));
         }
         return productDtos;
     }
 
+    private ProductBucketDto findByProductId(ArrayList<ProductBucketDto> bucket, long productId){
+        for(ProductBucketDto productBucketDto: bucket){
+            if(productBucketDto.getProductDto().getId() == productId){
+                return productBucketDto;
+            }
+        }
+        return null;
+    }
+
     @Override
-    public boolean isAvailable(List<ProductDto> productDtos) {
-        for(ProductDto productDto : productDtos){
-            Product product = productRepository.findById(productDto.getId());
-            if(product.getQuantity() <= 0){
+    public boolean isAvailable(List<ProductBucketDto> productDtos) {
+        for(ProductBucketDto productBucketDto : productDtos){
+            Product product = productRepository.findById(productBucketDto.getProductDto().getId());
+            if(productBucketDto.getQuantityInBucket() > product.getQuantity()){
                 return false;
             }
         }
@@ -126,27 +136,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateBucket(ArrayList<ProductDto> productDtos) {
-        List<Long> productId = new ArrayList<>();
-        for(ProductDto productDto : productDtos){
-            productId.add(productDto.getId());
+    public int calcPrice(List<ProductBucketDto> productDtos) {
+        int price = 0;
+        for(ProductBucketDto productBucketDto : productDtos){
+            price += (productBucketDto.getProductDto().getPrice() * productBucketDto.getQuantityInBucket());
         }
-        productDtos.clear();
-        for (Long id : productId){
-            productDtos.add(getById(id));
-        }
+        return price;
     }
 
     @Override
     @Transactional
-    public void updateProductQuantity(List<ProductDto> productDtoList) {
-        for(ProductDto productDto : productDtoList){
-            Product product = productRepository.findById(productDto.getId());
-            int quantity = product.getQuantity();
-            if (quantity <= 1){
+    public void updateProductQuantity(List<ProductBucketDto> productDtoList) {
+        for(ProductBucketDto productDto : productDtoList){
+            Product product = productRepository.findById(productDto.getProductDto().getId());
+            product.setQuantity(product.getQuantity() - productDto.getQuantityInBucket());
+            if (product.getQuantity() <= 0){
                 product.setActive(false);
             }
-            product.setQuantity(quantity - 1);
             productRepository.updateProduct(product);
         }
     }
@@ -170,6 +176,9 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         Product productFromRepo = productRepository.findById(productId);
         if(productFromRepo.getSize() == sizeFromRepo){
+            if(!productFromRepo.isActive()){
+                productFromRepo.setActive(true);
+            }
             productFromRepo.setQuantity(productFromRepo.getQuantity() + quantity);
             productRepository.updateProduct(productFromRepo);
             return;
@@ -194,7 +203,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> products = null;
         ProductDto product = productMapper.toDto(productRepository.findById(productId));
         try {
-            products = productMapper.toDtoList(productRepository.findAllActive());
+            products = productMapper.toDtoList(productRepository.findAllActiveByModel(product.getModel()));
         } catch (Exception e) {
             log.error("Error getting all the active products for check available sizes", e);
         }
@@ -206,5 +215,28 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         return sizeDtos;
+    }
+
+    @Override
+    public void addProductToBucket(long productId, float size, ArrayList<ProductDto> bucket) {
+        ProductDto product = productMapper.toDto(productRepository.findById(productId));
+        if(product.getSize() == size){
+            bucket.add(product);
+            return;
+        }
+        List<ProductDto> products = null;
+        try {
+            products = productMapper.toDtoList(productRepository.findAllActiveByModel(product.getModel()));
+        } catch (Exception e) {
+            log.error("Error getting all the active products for add to bucket", e);
+        }
+        for (ProductDto productDto : products){
+            if(productDto.equals(product)){
+                if(productDto.getSize() == size){
+                    bucket.add(productDto);
+                    return;
+                }
+            }
+        }
     }
 }

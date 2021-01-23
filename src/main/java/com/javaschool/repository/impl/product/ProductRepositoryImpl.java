@@ -48,6 +48,21 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public List<Product> findAllActiveByModel(String model) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+        Root<Product> root = criteriaQuery.from(Product.class);
+
+        criteriaQuery
+                .select(root)
+                .where(criteriaBuilder.equal(root.get(Product_.active), true),
+                        criteriaBuilder.equal(root.get(Product_.model), model));
+        TypedQuery<Product> selectAll = entityManager.createQuery(criteriaQuery);
+
+        return selectAll.getResultList();
+    }
+
+    @Override
     public Product findById(long id) {
         return entityManager.find(Product.class, id);
     }
@@ -63,7 +78,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
         Root<Product> root = criteriaQuery.from(Product.class);
 
-        Join<Product, Order> productOrderJoin = root.join(Product_.orderSet);
+        Join<Product, Order> productOrderJoin = root.join(Product_.orderList);
 
         criteriaQuery
                 .select(root)

@@ -17,15 +17,15 @@ import java.util.List;
  * @author mialyshev
  */
 
-@Controller
-@RequiredArgsConstructor
-public class HelloController {
-    @GetMapping("/")
-    public String sayHello(HttpSession session) {
-        if (session.getAttribute("bucket") == null) {
-            session.setAttribute("bucket", new ArrayList<ProductDto>());
-        }
-        return "index";
-    }
-
-}
+//@Controller
+//@RequiredArgsConstructor
+//public class HelloController {
+//    @GetMapping("/")
+//    public String sayHello(HttpSession session) {
+//        if (session.getAttribute("bucket") == null) {
+//            session.setAttribute("bucket", new ArrayList<ProductDto>());
+//        }
+//        return "index";
+//    }
+//
+//}

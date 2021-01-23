@@ -10,9 +10,11 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/3.0.0/jquery.payment.min.js"></script>
+    <script src="/js/bucketSize.js"></script>
 </head>
 <body>
 <div class="container">
+    <div id="bucketCount" th:attr="data-bucket=${session.bucket}"></div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,24 +23,24 @@
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link btn btn-primary" href="/" role="button">Home</a>
+                        <a class="nav-link btn btn-primary" href="/" role="button">Catalog</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a class="nav-link btn btn-primary" href="/admin">Admin panel</span></a>
+                        <a class="nav-link btn btn-primary" href="/admin">Admin panel</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-primary" href="/bucket">Shopping cart</span></a>
+                        <a class="nav-link btn btn-primary" href="/bucket">Shopping cart <span id="quantity" class="badge badge-light"></span></a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link btn btn-primary" href="/login">Sign in</span></a>
+                        <a class="nav-link btn btn-primary" href="/login">Sign in</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAnonymous()">
-                        <a class="nav-link btn btn-primary" href="/registration">Sign up</span></a>
+                        <a class="nav-link btn btn-primary" href="/registration">Sign up</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link active btn btn-primary" href="/profile">User page</span></a>
+                        <a class="nav-link active btn btn-primary" href="/profile">User page</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <form th:action="@{/logout}" method="post">
@@ -53,16 +55,16 @@
         <div class="panel-body">
             <ul class="nav nav-tabs">
                 <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/profile">About user</span></a>
+                    <a class="nav-link btn btn-primary" href="/profile">About user</a>
                 </li>
                 <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/profile/addresses">My addresses</span></a>
+                    <a class="nav-link btn btn-primary" href="/profile/addresses">My addresses</a>
                 </li>
                 <li class="nav-item active" style="margin: 5px">
-                    <a class="nav-link active btn btn-primary" href="/profile/cards">My cards</span></a>
+                    <a class="nav-link active btn btn-primary" href="/profile/cards">My cards</a>
                 </li>
                 <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/profile/orders">My orders</span></a>
+                    <a class="nav-link btn btn-primary" href="/profile/orders">My orders</a>
                 </li>
             </ul>
         </div>
@@ -86,6 +88,7 @@
                                 <div class="form-group">
                                     <label for="cc-number" class="control-label">CARD NUMBER</label>
                                     <input id="cc-number" th:field="*{number}" placeholder="16 DIGITS WITHOUT SPACE" type="text" class="input-lg form-control cc-number" required>
+                                    <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('number')}" th:errors="*{number}" ></div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -98,6 +101,7 @@
                                         <div class="form-group">
                                             <label for="cc-cvc" class="control-label">CARD CVC</label>
                                             <input id="cc-cvc" type="text" th:field="*{code}" class="input-lg form-control cc-cvc"  required>
+                                            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('code')}" th:errors="*{code}" ></div>
                                         </div>
                                     </div>
                                 </div>

@@ -2,15 +2,17 @@ package com.javaschool.controller;
 
 import com.javaschool.dto.card.CardRegisterDto;
 import com.javaschool.dto.order.AddressAdditionDto;
-import com.javaschool.dto.order.AddressDto;
 import com.javaschool.dto.order.OrderDto;
+import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.order.OrderRegisterDto;
 import com.javaschool.entity.User;
 import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.product.ProductService;
 import com.javaschool.service.user.CardService;
+import com.javaschool.service.user.ShoppingCartService;
 import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -23,14 +25,12 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 @Controller
 @RequestMapping("/order")
 @RequiredArgsConstructor
-@SessionAttributes(types = {OrderDto.class})
+@SessionAttributes(types = {OrderRegisterDto.class})
 public class OrderController {
     private final OrderService orderService;
     private final UserRepository userRepository;
@@ -38,17 +38,20 @@ public class OrderController {
     private final CardService cardService;
     private final ProductService productService;
     private final UserService userService;
+    private final ShoppingCartService shoppingCartService;
 
     @GetMapping
-    public String getOrderForm(Model model, @RequestParam(value = "selected", required = false)Integer[] selected){
+    public String getOrderForm(Model model,
+                               @RequestParam(value = "selected", required = false)Integer[] selected,
+                               @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket){
         if(selected == null){
             model.addAttribute("orderError", "Please select at least one product");
             return "bucket";
         }
-        OrderDto orderDto = new OrderDto();
+        OrderRegisterDto orderDto = new OrderRegisterDto();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userFromBd = userRepository.findByEmail(authentication.getName());
-        orderDto.setProductDtoList(productService.getSelectedList(selected));
+        orderDto.setProductDtoList(productService.getSelectedList(selected, bucket));
         orderDto.setUser_id(userFromBd.getId());
         model.addAttribute("savedAddress", addressService.getAllSaved(orderDto.getUser_id()));
         model.addAttribute("addressForm", new AddressAdditionDto());
@@ -58,14 +61,13 @@ public class OrderController {
 
 
     @PostMapping("/address")
-    public String addAddress(@ModelAttribute("orderForm") OrderDto orderDto,
+    public String addAddress(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
                               @ModelAttribute("addressForm") @Valid AddressAdditionDto addressAdditionDto,
                               BindingResult bindingResult,
                               @RequestParam(value = "save", required = false) String isSaved,
                               Model model){
         if (bindingResult.hasErrors()) {
             model.addAttribute("savedAddress", addressService.getAllSaved(orderDto.getUser_id()));
-            model.addAttribute("orderForm", orderDto);
             return "order-address";
         }
         if(isSaved != null){
@@ -80,34 +82,36 @@ public class OrderController {
     }
 
 
-    @PostMapping("/savedaddress")
-    public String addAddress(@ModelAttribute("orderForm") OrderDto orderDto,
+    @GetMapping("/savedaddress/{id}")
+    public String addAddress(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
+                             @PathVariable("id") long addressId,
                              Model model){
+        orderDto.setAddress_id(addressId);
         model.addAttribute("paymentType", orderService.getPaymentTypeList());
         return "order-choose-pay";
     }
 
     @PostMapping("/payment")
-    public String getPaymentType(@ModelAttribute("orderForm") OrderDto orderDto,
+    public String getPaymentType(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
                                  Model model){
         if(orderDto.getPaymentType().equals("CARD")) {
             model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
             model.addAttribute("cardForm", new CardRegisterDto());
             return "order-card";
         }
+        orderDto.setPaid(false);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
         return "order-finish";
     }
 
     @PostMapping("/card")
-    public String addCard(@ModelAttribute("orderForm") OrderDto orderDto,
+    public String addCard(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
                           @ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
                           BindingResult bindingResult,
                           @RequestParam(value = "save", required = false) String isSaved,
                           Model model){
         if (bindingResult.hasErrors()) {
             model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
-            model.addAttribute("orderForm", orderDto);
             return "order-card";
         }
         if(isSaved != null){
@@ -122,38 +126,39 @@ public class OrderController {
         orderDto.setPaid(true);
         model.addAttribute("card", cardRegisterDto);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        model.addAttribute("orderPrice", productService.calcPrice(orderDto.getProductDtoList()));
         return "order-finish";
     }
 
-    @PostMapping("/savedcard")
-    public String addCard(@ModelAttribute("orderForm") OrderDto orderDto,
-                          @RequestParam(value = "cardId", required = true) long cardId,
+    @GetMapping("/savedcard/{id}")
+    public String addCard(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
+                          @PathVariable("id") long cardId,
                           Model model){
         orderDto.setPaid(true);
         model.addAttribute("card", cardService.getById(cardId));
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        model.addAttribute("orderPrice", productService.calcPrice(orderDto.getProductDtoList()));
         return "order-finish";
     }
 
     @GetMapping ("/later")
-    public String getLaterPay(@ModelAttribute("orderForm") OrderDto orderDto,
+    public String getLaterPay(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
                               Model model){
         orderDto.setPaid(false);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        model.addAttribute("orderPrice", productService.calcPrice(orderDto.getProductDtoList()));
         return "order-finish";
 }
 
 
     @PostMapping("/finish")
-    public String addNewOrder(@ModelAttribute("orderForm") OrderDto orderDto,
-                              @SessionAttribute("bucket") ArrayList<ProductDto> bucket,
-                              SessionStatus status,
-                              BindingResult bindingResult,
-                              Model model) {
+    public String addNewOrder(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
+                              @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
+                              SessionStatus status) {
         status.setComplete();
         if(productService.isAvailable(orderDto.getProductDtoList())){
             orderService.addOrder(orderDto);
-            bucket.clear();
+            shoppingCartService.deleteSelectedProduct(bucket, orderDto.getProductDtoList());
         }else {
             return "redirect:/bucket";
         }

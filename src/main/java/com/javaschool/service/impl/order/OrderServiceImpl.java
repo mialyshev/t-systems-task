@@ -1,6 +1,8 @@
 package com.javaschool.service.impl.order;
 
 import com.javaschool.dto.order.OrderDto;
+import com.javaschool.dto.order.OrderRegisterDto;
+import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
 import com.javaschool.entity.Order;
 import com.javaschool.entity.Product;
@@ -60,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void addOrder(OrderDto orderDto) {
+    public void addOrder(OrderRegisterDto orderDto) {
         Order order = new Order();
         order.setUser(userRepository.findById(orderDto.getUser_id()));
         order.setAddress(addressRepository.findById(orderDto.getAddress_id()));
@@ -78,11 +80,14 @@ public class OrderServiceImpl implements OrderService {
             order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
             order.setPaymentStatus(PaymentStatus.AWAITING_PAYMENT);
         }
-        Set<Product> productSet = new HashSet<>();
-        for (ProductDto productDto : orderDto.getProductDtoList()){
-            productSet.add(productRepository.findById(productDto.getId()));
+
+        List<Product> productList = new ArrayList<>();
+        for (ProductBucketDto productDto : orderDto.getProductDtoList()){
+            for(int i = 0; i < productDto.getQuantityInBucket(); i++){
+                productList.add(productRepository.findById(productDto.getProductDto().getId()));
+            }
         }
-        order.setProductSet(productSet);
+        order.setProductList(productList);
         productService.updateProductQuantity(orderDto.getProductDtoList());
         orderRepository.save(order);
     }
@@ -205,9 +210,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void setProductList(OrderDto orderDto) {
+    public void setOrderProductList(OrderDto orderDto) {
         Order order = orderRepository.findById(orderDto.getId());
-        List<Product> products = new ArrayList<>(order.getProductSet());
+        List<Product> products = new ArrayList<>(order.getProductList());
         orderDto.setProductDtoList(productMapper.toDtoList(products));
     }
 

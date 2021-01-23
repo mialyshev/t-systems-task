@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/admin")
 @RequiredArgsConstructor
@@ -50,7 +48,7 @@ public class AdminController {
     public String editOrderInfo(@PathVariable("id") long id,
                                 Model model){
         OrderDto orderDto = orderService.findById(id);
-        orderService.setProductList(orderDto);
+        orderService.setOrderProductList(orderDto);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
         model.addAttribute("email", userService.getById(orderDto.getUser_id()).getEmail());
         model.addAttribute("order", orderDto);

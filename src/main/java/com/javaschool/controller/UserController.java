@@ -127,7 +127,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         User userFromBd = userService.getByEmail(currentUser);
-        model.addAttribute("orders", orderService.findByUserId(userFromBd.getId()));
+        model.addAttribute("orders", orderService.findAllDeliveredForUser(userFromBd.getId(), false));
         return "user-orders";
     }
 
@@ -135,7 +135,7 @@ public class UserController {
     public String getOrder(@PathVariable("id") long id,
                            Model model){
         OrderDto orderDto = orderService.findById(id);
-        orderService.setProductList(orderDto);
+        orderService.setOrderProductList(orderDto);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
         model.addAttribute("order", orderDto);
         model.addAttribute("price", orderService.getAllPrice(orderDto));
@@ -177,9 +177,16 @@ public class UserController {
     @PostMapping("/card/{id}")
     public String addCard(@PathVariable("id") long id,
                           @ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
-                          @RequestParam(value = "save", required = false) String isSaved,
                           BindingResult bindingResult,
+                          @RequestParam(value = "save", required = false) String isSaved,
                           Model model){
+        if(bindingResult.hasErrors()){
+            OrderDto orderDto = orderService.findById(id);
+            model.addAttribute("orderForm", orderDto);
+            model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
+            return "user-pay-order";
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         User userFromBd = userService.getByEmail(currentUser);
@@ -232,14 +239,5 @@ public class UserController {
         UserDto userFromBd = userService.getDtoByEmail(currentUser);
         model.addAttribute("orders", orderService.findAllDeliveredForUser(userFromBd.getId(), true));
         return "user-delivered-orders";
-    }
-
-    @GetMapping("/orders/not-delivered")
-    public String getNotDeliveredOrders(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = authentication.getName();
-        UserDto userFromBd = userService.getDtoByEmail(currentUser);
-        model.addAttribute("orders", orderService.findAllDeliveredForUser(userFromBd.getId(), false));
-        return "user-not-delivered-orders";
     }
 }

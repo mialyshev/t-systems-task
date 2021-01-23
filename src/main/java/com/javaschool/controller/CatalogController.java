@@ -1,6 +1,8 @@
 package com.javaschool.controller;
 
+import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.product.SizeDto;
 import com.javaschool.entity.Product;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import com.javaschool.repository.product.BrandRepository;
@@ -12,13 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/catalog")
 @RequiredArgsConstructor
 public class CatalogController {
 
@@ -27,15 +30,26 @@ public class CatalogController {
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
 
-    @GetMapping
-    public String getAllProducts(Model model){
+    @GetMapping("/")
+    public String getAllProducts(Model model,
+                                 HttpSession session){
+        if (session.getAttribute("bucket") == null) {
+            session.setAttribute("bucket", new ArrayList<ProductBucketDto>());
+        }
         List<ProductDto> products = productService.getAllActive();
-        productService.getAvailableSizesForProduct(6);
         model.addAttribute("products", products);
+        return "products";
+    }
+
+    @GetMapping("/catalog/product/{id}")
+    public String getProduct(@PathVariable("id") long id,
+                             Model model){
+        model.addAttribute("product", productService.getById(id));
+        model.addAttribute("sizes", productService.getAvailableSizesForProduct(id));
         return "product";
     }
 
-    @GetMapping("/param")
+    @GetMapping("/catalog/param")
     public String getProductByParam(){
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
         params.add(new SearchCriteria("season_id", ":", "3"));
@@ -44,7 +58,7 @@ public class CatalogController {
         return "index";
     }
 
-    @GetMapping("/check")
+    @GetMapping("/catalog/check")
     public String getIndex(){
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
         params.add(new SearchCriteria("category", ":", categoryRepository.findById(1)));

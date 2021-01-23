@@ -6,6 +6,7 @@ import com.javaschool.entity.enums.PaymentType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(of = {"id"})
@@ -51,5 +52,5 @@ public class Order {
                     @JoinColumn(name = "product_id", referencedColumnName = "id")
             }
     )
-    private Set<Product> productSet;
+    private List<Product> productList;
 }

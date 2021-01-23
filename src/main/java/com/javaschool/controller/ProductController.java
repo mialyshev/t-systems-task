@@ -201,7 +201,7 @@ public class ProductController {
         }
         productDto.setSize(size);
         productService.addProduct(productDto);
-        return "admin-product-page";
+        return "redirect:/product";
     }
 
     @GetMapping("/add-size-product")
