@@ -220,7 +220,7 @@ public class ProductController {
     @PostMapping("/add-size-product/{id}")
     public String addSizeOrQuantityForProduct(@PathVariable("id") long id,
                                               @RequestParam("size") float size,
-                                              @RequestParam("quantity") int quantity,
+                                              @RequestParam("quantityProduct") int quantity,
                                               Model model){
         if(quantity <= 0){
             model.addAttribute("quantityError", "Quantity must be greater than 0");

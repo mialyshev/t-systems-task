@@ -138,7 +138,7 @@ public class UserController {
         orderService.setOrderProductList(orderDto);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
         model.addAttribute("order", orderDto);
-        model.addAttribute("price", orderService.getAllPrice(orderDto));
+        model.addAttribute("price", orderService.getAllPriceForOrder(orderDto));
         return "user-order";
     }
 

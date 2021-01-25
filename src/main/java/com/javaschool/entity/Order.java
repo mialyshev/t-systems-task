@@ -6,6 +6,7 @@ import com.javaschool.entity.enums.PaymentType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +42,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_type")
     private PaymentType paymentType;
+
+    @Column(name = "date")
+    private LocalDate dateOfPurchase;
 
         @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(

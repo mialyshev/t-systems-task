@@ -88,7 +88,6 @@
                                 <div class="form-group">
                                     <label for="cc-number" class="control-label">CARD NUMBER</label>
                                     <input id="cc-number" th:field="*{number}" placeholder="16 DIGITS WITHOUT SPACE" type="text" class="input-lg form-control cc-number" required>
-                                    <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('number')}" th:errors="*{number}" ></div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -101,7 +100,6 @@
                                         <div class="form-group">
                                             <label for="cc-cvc" class="control-label">CARD CVC</label>
                                             <input id="cc-cvc" type="text" th:field="*{code}" class="input-lg form-control cc-cvc"  required>
-                                            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('code')}" th:errors="*{code}" ></div>
                                         </div>
                                     </div>
                                 </div>
@@ -114,6 +112,8 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('number')}" th:errors="*{number}" ></div>
+                        <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('code')}" th:errors="*{code}" ></div>
                     </form>
                 </div>
             </div>

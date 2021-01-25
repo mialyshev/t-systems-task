@@ -4,11 +4,17 @@ import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.order.OrderRegisterDto;
 import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.product.ProductStatisticDto;
+import com.javaschool.dto.user.UserStatisticDto;
 import com.javaschool.entity.Order;
 import com.javaschool.entity.Product;
-import com.javaschool.entity.enums.*;
+import com.javaschool.entity.User;
+import com.javaschool.entity.enums.OrderStatus;
+import com.javaschool.entity.enums.PaymentStatus;
+import com.javaschool.entity.enums.PaymentType;
 import com.javaschool.mapper.order.OrderMapperImpl;
 import com.javaschool.mapper.product.ProductMapperImpl;
+import com.javaschool.mapper.user.UserMapperImpl;
 import com.javaschool.repository.order.AddressRepository;
 import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.ProductRepository;
@@ -20,10 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
 @Service
 @Slf4j
@@ -37,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final ProductService productService;
     private final ProductMapperImpl productMapper;
+    private final UserMapperImpl userMapper;
 
     @Override
     public List<OrderDto> findAll() {
@@ -88,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         order.setProductList(productList);
+        order.setDateOfPurchase(LocalDate.now());
         productService.updateProductQuantity(orderDto.getProductDtoList());
         orderRepository.save(order);
     }
@@ -217,12 +226,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int getAllPrice(OrderDto orderDto) {
+    public int getAllPriceForOrder(OrderDto orderDto) {
         int price = 0;
         for(ProductDto productDto : orderDto.getProductDtoList()){
             price += productDto.getPrice();
         }
         return price;
+    }
+
+
+    @Override
+    public int getAllPriceForOrderS(List<OrderDto> orderDtoList) {
+        int fullPrice = 0;
+        for(OrderDto orderDto : orderDtoList){
+            if(orderDto.getProductDtoList() == null){
+                setOrderProductList(orderDto);
+            }
+            fullPrice += getAllPriceForOrder(orderDto);
+        }
+        return fullPrice;
     }
 
     @Override
@@ -239,4 +261,118 @@ public class OrderServiceImpl implements OrderService {
         }
         return orderDtoList;
     }
+
+    @Override
+    @Transactional
+    public List<OrderDto> getMonthOrders() {
+        List<OrderDto> orderDtoListFromBd = null;
+        List<OrderDto> orderDtoList = new ArrayList<>();
+        try {
+            orderDtoListFromBd = orderMapper.toDtoList(orderRepository.findAll());
+        } catch (Exception e) {
+            log.error("Error getting all orders", e);
+        }
+        int currentMonth = LocalDate.now().getMonthValue();
+        for(OrderDto orderDto : orderDtoListFromBd){
+            if(orderDto.getDateOfPurchase().getMonthValue() == currentMonth){
+                setOrderProductList(orderDto);
+                orderDtoList.add(orderDto);
+            }
+        }
+        return orderDtoList;
+    }
+
+    @Override
+    @Transactional
+    public List<OrderDto> getWeekOrders() {
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        int weekNumber = LocalDate.now().get(weekFields.weekOfWeekBasedYear());
+        List<OrderDto> orderDtoListFromBd = null;
+        List<OrderDto> orderDtoList = new ArrayList<>();
+        try {
+            orderDtoListFromBd = orderMapper.toDtoList(orderRepository.findAll());
+        } catch (Exception e) {
+            log.error("Error getting all orders", e);
+        }
+        for(OrderDto orderDto : orderDtoListFromBd){
+            if(orderDto.getDateOfPurchase().get(weekFields.weekOfWeekBasedYear()) == weekNumber){
+                setOrderProductList(orderDto);
+                orderDtoList.add(orderDto);
+            }
+        }
+        return orderDtoList;
+    }
+
+    @Override
+    @Transactional
+    public List<ProductDto> getTopProducts() {
+        List<OrderDto> orderDtoListFromBd = null;
+        List<ProductDto> productDtoList = new ArrayList<>();
+        try {
+            orderDtoListFromBd = orderMapper.toDtoList(orderRepository.findAll());
+        } catch (Exception e) {
+            log.error("Error getting all orders", e);
+        }
+        List<ProductStatisticDto> productStatistic = new ArrayList<>();
+        boolean isEquals;
+        for(OrderDto orderDto : orderDtoListFromBd){
+            setOrderProductList(orderDto);
+            for(ProductDto productDto : orderDto.getProductDtoList()){
+                isEquals = false;
+                for(ProductStatisticDto productStatisticDto : productStatistic){
+                    if(productStatisticDto.getProductDto().equals(productDto)){
+                        productStatisticDto.setCount(productStatisticDto.getCount() + 1);
+                        isEquals = true;
+                        break;
+                    }
+                }
+                if(!isEquals){
+                    ProductStatisticDto productStatisticDto = new ProductStatisticDto();
+                    productStatisticDto.setProductDto(productDto);
+                    productStatisticDto.setCount(1);
+                    productStatistic.add(productStatisticDto);
+                }
+            }
+        }
+        while (productDtoList.size() != 10 & !productStatistic.isEmpty()) {
+            int max = 0;
+            ProductStatisticDto productStatisticDtoMax = null;
+            for (ProductStatisticDto productStatisticDto : productStatistic) {
+                if (productStatisticDto.getCount() > max) {
+                    max = productStatisticDto.getCount();
+                    productStatisticDtoMax = productStatisticDto;
+                }
+            }
+            productDtoList.add(productStatisticDtoMax.getProductDto());
+            productStatistic.remove(productStatisticDtoMax);
+        }
+        return productDtoList;
+    }
+
+    @Override
+    @Transactional
+    public List<UserStatisticDto> getTopUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserStatisticDto> userStatisticDtos = new ArrayList<>();
+        for (User user : users){
+            UserStatisticDto userStatisticDto = new UserStatisticDto();
+            userStatisticDto.setUserDto(userMapper.toDto(user));
+            userStatisticDto.setPriceForOrders(getAllPriceForOrderS(orderMapper.toDtoList(user.getOrders())));
+            userStatisticDtos.add(userStatisticDto);
+        }
+        while (userStatisticDtos.size() > 10){
+            int min = Integer.MAX_VALUE;
+            UserStatisticDto userStatisticDtoMin = null;
+            for (UserStatisticDto userStatisticDto : userStatisticDtos){
+                if (userStatisticDto.getPriceForOrders() < min){
+                    min = userStatisticDto.getPriceForOrders();
+                    userStatisticDtoMin = userStatisticDto;
+                }
+            }
+            userStatisticDtos.remove(userStatisticDtoMin);
+        }
+        return userStatisticDtos;
+    }
+
+
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class OrderDto {
     private String paymentStatus;
     private String paymentType;
     private boolean paid;
+    private LocalDate dateOfPurchase;
     private List<ProductDto> productDtoList;
 
 }

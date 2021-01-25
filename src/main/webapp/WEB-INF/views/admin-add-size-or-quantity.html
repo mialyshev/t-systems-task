@@ -61,7 +61,7 @@
                     <a class="nav-link active btn btn-primary" href="#">Product</span></a>
                 </li>
                 <li class="nav-item" style="margin: 5px">
-                    <a class="nav-link btn btn-primary" href="/admin/statistic">Statistics(TODO)</span></a>
+                    <a class="nav-link btn btn-primary" href="/admin/statistic">Statistics</span></a>
                 </li>
             </ul>
         </div>
@@ -115,9 +115,9 @@
         <h5>Enter information</h5>
         <form class="form-horizontal border" role="form" th:method="POST" th:action="@{/product/add-size-product/{id}(id=${productInfo.id})}">
             <div class="form-group">
-                <label for="quantity" class="col-sm-4 control-label">Quantity</label>
+                <label for="quantityProduct" class="col-sm-4 control-label">Quantity</label>
                 <div class="col-sm-4">
-                    <input type="text" id="quantity" name="quantity"  placeholder="Quantity" class="form-control" autofocus required>
+                    <input type="text" id="quantityProduct" name="quantityProduct"  placeholder="Quantity" class="form-control" autofocus required>
                 </div>
                 <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${quantityError}" th:text="${quantityError}"></div>
             </div>

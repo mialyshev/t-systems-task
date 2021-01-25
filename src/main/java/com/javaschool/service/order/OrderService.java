@@ -3,6 +3,9 @@ package com.javaschool.service.order;
 import com.javaschool.dto.order.AddressDto;
 import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.order.OrderRegisterDto;
+import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.user.UserDto;
+import com.javaschool.dto.user.UserStatisticDto;
 import com.javaschool.entity.Address;
 import com.javaschool.entity.Product;
 import com.javaschool.entity.User;
@@ -42,7 +45,17 @@ public interface OrderService {
 
     void setOrderProductList(OrderDto orderDto);
 
-    int getAllPrice(OrderDto orderDto);
+    int getAllPriceForOrder(OrderDto orderDto);
+
+    int getAllPriceForOrderS(List<OrderDto> orderDtoList);
 
     List<OrderDto> findAllDelivered(boolean isDelivered);
+
+    List<OrderDto> getMonthOrders();
+
+    List<OrderDto> getWeekOrders();
+
+    List<ProductDto> getTopProducts();
+
+    List<UserStatisticDto> getTopUsers();
 }

@@ -26,15 +26,19 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     public void addAddress(AddressAdditionDto addressAdditionDto, User user) {
         Address address = new Address();
-        address.setCountry(addressAdditionDto.getCountry());
-        address.setCity(addressAdditionDto.getCity());
-        address.setPostalCode(addressAdditionDto.getPostalCode());
-        address.setStreet(addressAdditionDto.getStreet());
-        address.setHouseNumber(addressAdditionDto.getHouseNumber());
-        address.setApartamentNumber(addressAdditionDto.getApartamentNumber());
-        address.setSaved(addressAdditionDto.isSaved());
-        address.setUser(user);
-        addressRepository.save(address);
+        try {
+            address.setCountry(addressAdditionDto.getCountry());
+            address.setCity(addressAdditionDto.getCity());
+            address.setPostalCode(addressAdditionDto.getPostalCode());
+            address.setStreet(addressAdditionDto.getStreet());
+            address.setHouseNumber(addressAdditionDto.getHouseNumber());
+            address.setApartamentNumber(addressAdditionDto.getApartamentNumber());
+            address.setSaved(addressAdditionDto.isSaved());
+            address.setUser(user);
+            addressRepository.save(address);
+        }catch (Exception e) {
+            log.error("Error saved new address", e);
+        }
     }
 
     @Override
@@ -66,7 +70,7 @@ public class AddressServiceImpl implements AddressService {
         try {
             addressDto = addressMapper.toDto(addressRepository.getLastByUserId(userId));
         } catch (Exception e) {
-            log.error("Error getting a last address", e);
+            log.error("Error getting a last address by user id", e);
         }
         return addressDto;
     }
@@ -86,34 +90,54 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     public void updateAddress(AddressDto addressDto) {
         Address address = addressRepository.findById(addressDto.getId());
-        address.setCountry(addressDto.getCountry());
-        address.setCity(addressDto.getCity());
-        address.setStreet(addressDto.getStreet());
-        address.setHouseNumber(addressDto.getHouseNumber());
-        address.setApartamentNumber(addressDto.getApartamentNumber());
-        address.setPostalCode(addressDto.getPostalCode());
-        addressRepository.update(address);
+        try {
+            address.setCountry(addressDto.getCountry());
+            address.setCity(addressDto.getCity());
+            address.setStreet(addressDto.getStreet());
+            address.setHouseNumber(addressDto.getHouseNumber());
+            address.setApartamentNumber(addressDto.getApartamentNumber());
+            address.setPostalCode(addressDto.getPostalCode());
+            addressRepository.update(address);
+        }catch (Exception e) {
+            log.error("Error update address", e);
+        }
+
     }
 
     @Override
     @Transactional
     public void addUpdateAddress(AddressDto addressDto, User user) {
-        addAddress(addressMapper.toAdditionDto(addressDto), user);
+        try {
+            addAddress(addressMapper.toAdditionDto(addressDto), user);
+        }catch (Exception e) {
+            log.error("Error add update address", e);
+        }
+
     }
 
     @Override
     @Transactional
     public void updateSavedAddress(long addressId) {
-        Address address = addressRepository.findById(addressId);
-        address.setSaved(false);
-        addressRepository.update(address);
+        try {
+            Address address = addressRepository.findById(addressId);
+            address.setSaved(false);
+            addressRepository.update(address);
+        }catch (Exception e) {
+            log.error("Error update saved address", e);
+        }
+
     }
 
     @Override
     @Transactional
     public void deleteAddress(long addressId) {
-        Address address = addressRepository.findById(addressId);
-        address.setSaved(false);
-        addressRepository.update(address);
+        try {
+            Address address = addressRepository.findById(addressId);
+            address.setSaved(false);
+            addressRepository.update(address);
+        }catch (Exception e) {
+            log.error("Error delete address", e);
+        }
+
     }
 }

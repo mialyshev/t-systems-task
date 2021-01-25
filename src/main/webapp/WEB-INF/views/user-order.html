@@ -93,8 +93,8 @@
                     <td th:text="${order.orderStatus}"></td>
                 </tr>
                 <tr>
-                    <td>Address:</td>
-                    <td th:text="${address.toString()}"></td>
+                    <td>Purchasing date:</td>
+                    <td><span th:text="*{order.dateOfPurchase}"></span></td>
                 </tr>
                 <tr>
                     <td>Order payment status:</td>
@@ -106,7 +106,7 @@
                 </tr>
                 <tr>
                     <td>Order price:</td>
-                    <td><span th:text="*{price}"></span>&#8381</td>
+                    <td><span th:text="*{price}"></span>$</td>
                 </tr>
                 </tbody>
             </table>
@@ -135,7 +135,7 @@
                         <div class="card-body text-center">
                             <p class="card-text"><span th:text="${product.brandName}"></span></p>
                             <p class="card-text"><span th:text="*{product.model}"></span></p>
-                            <p class="card-text"><span th:text="*{product.price}"></span>&#8381</p>
+                            <p class="card-text"><span th:text="*{product.price}"></span>$</p>
                         </div>
                     </div>
                 </div>

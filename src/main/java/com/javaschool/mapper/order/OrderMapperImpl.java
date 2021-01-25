@@ -21,6 +21,7 @@ public class OrderMapperImpl {
         orderDto.orderStatus(order.getOrderStatus().name());
         orderDto.paymentStatus(order.getPaymentStatus().name());
         orderDto.paymentType(order.getPaymentType().name());
+        orderDto.dateOfPurchase(order.getDateOfPurchase());
         if(order.getPaymentStatus().toString().equals("PAID")){
             orderDto.paid(true);
         }else {
