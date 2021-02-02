@@ -9,6 +9,8 @@ import com.javaschool.service.product.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -67,5 +69,28 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = new Category();
         category.setCategoryName(categoryDto.getCategoryName());
         categoryRepository.save(category);
+    }
+
+    @Override
+    public void getAllCategoriesController(Model model) {
+        model.addAttribute("categories", getAll());
+        model.addAttribute("categoryForm", new CategoryDto());
+    }
+
+    @Override
+    @Transactional
+    public String addNewCategoryController(BindingResult bindingResult, CategoryDto categoryDto, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", getAll());
+            return "admin-category";
+        }
+        if(getByName(categoryDto.getCategoryName()) != null){
+            model.addAttribute("categoryError", "A category with the same name already exists");
+            List<CategoryDto> categories = getAll();
+            model.addAttribute("categories", categories);
+            return "admin-category";
+        }
+        addCategory(categoryDto);
+        return "redirect:/product/category";
     }
 }

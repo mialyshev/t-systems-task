@@ -3,6 +3,7 @@ package com.javaschool.controller;
 import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.product.ProductDto;
 import com.javaschool.exception.UserException;
+import com.javaschool.service.admin.AdminService;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.user.UserService;
@@ -19,8 +20,7 @@ import java.util.List;
 public class AdminController {
 
     private final OrderService orderService;
-    private final UserService userService;
-    private final AddressService addressService;
+    private final AdminService adminService;
 
     @GetMapping
     public String getAdminPage(){
@@ -29,42 +29,33 @@ public class AdminController {
 
     @GetMapping("/orders")
     public String getAllOrders(Model model){
-        model.addAttribute("orders", orderService.findAll());
-        model.addAttribute("users", userService.getAll());
+        adminService.getAllOrders(model);
         return "admin-orders";
     }
 
     @GetMapping("/orders/not-delivered")
     public String getAllNotDeliveredOrders(Model model){
-        model.addAttribute("orders", orderService.findAllDelivered(false));
-        model.addAttribute("users", userService.getAll());
+        adminService.getAllNotDeliveredOrders(model);
         return "admin-orders-not-delivered";
     }
 
     @GetMapping("/orders/delivered")
     public String getAllDeliveredOrders(Model model){
-        model.addAttribute("orders", orderService.findAllDelivered(true));
-        model.addAttribute("users", userService.getAll());
+        adminService.getAllDeliveredOrders(model);
         return "admin-orders-delivered";
     }
 
     @GetMapping("/order/{id}")
-    public String editOrderInfo(@PathVariable("id") long id,
+    public String getOrder(@PathVariable("id") long id,
                                 Model model){
-        OrderDto orderDto = orderService.findById(id);
-        orderService.setOrderProductList(orderDto);
-        model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
-        model.addAttribute("email", userService.getById(orderDto.getUser_id()).getEmail());
-        model.addAttribute("order", orderDto);
-        model.addAttribute("price", orderService.getAllPriceForOrder(orderDto));
+        adminService.getOrder(id, model);
         return "admin-order";
     }
 
     @GetMapping("/order/edit/pay/{id}")
     public String getPageEditPaymentStatus(@PathVariable("id") long id,
                                   Model model){
-        model.addAttribute("order", orderService.findById(id));
-        model.addAttribute("paymentStatuses", orderService.getPaymentStatusList());
+       adminService.getPageEditPaymentStatus(id, model);
         return "admin-order-edit-payment";
     }
 
@@ -79,8 +70,7 @@ public class AdminController {
     @GetMapping("/order/edit/status/{id}")
     public String getPageEditStatus(@PathVariable("id") long id,
                                            Model model){
-        model.addAttribute("order", orderService.findById(id));
-        model.addAttribute("orderStatuses", orderService.getOrderStatusList());
+        adminService.getPageEditStatus(id, model);
         return "admin-order-edit-status";
     }
 
@@ -94,29 +84,25 @@ public class AdminController {
 
     @GetMapping("/statistic")
     public String getStatisticPage(Model model){
-        List<OrderDto> orders = orderService.getMonthOrders();
-        model.addAttribute("orders", orders);
-        model.addAttribute("revenue", orderService.getAllPriceForOrderS(orders));
+        adminService.getStatisticPage(model);
         return "admin-statistic";
     }
 
     @GetMapping("/statistic/week")
     public String getRevenueForWeekStatisticPage(Model model){
-        List<OrderDto> orders = orderService.getWeekOrders();
-        model.addAttribute("orders", orders);
-        model.addAttribute("revenue", orderService.getAllPriceForOrderS(orders));
+        adminService.getRevenueForWeekStatisticPage(model);
         return "admin-statistic-week";
     }
 
     @GetMapping("/statistic/products")
     public String getTopProductsPage(Model model){
-        model.addAttribute("products", orderService.getTopProducts());
+        adminService.getTopProductsPage(model);
         return "admin-statistic-products";
     }
 
     @GetMapping("/statistic/users")
-    public String getTopUsersPage(Model model) throws UserException {
-        model.addAttribute("users", orderService.getTopUsers());
+    public String getTopUsersPage(Model model){
+        adminService.getTopUsersPage(model);
         return "admin-statistic-users";
     }
 }

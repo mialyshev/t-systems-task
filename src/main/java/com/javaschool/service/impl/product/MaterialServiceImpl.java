@@ -9,6 +9,8 @@ import com.javaschool.service.product.MaterialService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -67,5 +69,28 @@ public class MaterialServiceImpl implements MaterialService {
         Material material = new Material();
         material.setMaterialName(materialDto.getMaterialName());
         materialRepository.save(material);
+    }
+
+    @Override
+    public void getAllMaterialsController(Model model) {
+        model.addAttribute("materials", getAll());
+        model.addAttribute("materialForm", new MaterialDto());
+    }
+
+    @Override
+    @Transactional
+    public String addNewMaterialController(BindingResult bindingResult,  MaterialDto materialDto, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("materials", getAll());
+            return "admin-material";
+        }
+        if(getByName(materialDto.getMaterialName()) != null){
+            model.addAttribute("materialError", "A material with the same name already exists");
+            List<MaterialDto> materials = getAll();
+            model.addAttribute("materials", materials);
+            return "admin-material";
+        }
+        addMaterial(materialDto);
+        return "redirect:/product/material";
     }
 }

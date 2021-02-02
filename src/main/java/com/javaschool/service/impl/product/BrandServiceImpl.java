@@ -9,6 +9,8 @@ import com.javaschool.service.product.BrandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -67,5 +69,28 @@ public class BrandServiceImpl implements BrandService {
         Brand brand = new Brand();
         brand.setBrandName(brandDto.getBrandName());
         brandRepository.save(brand);
+    }
+
+    @Override
+    public void getAllBrandsController(Model model) {
+        model.addAttribute("brands", getAll());
+        model.addAttribute("brandForm", new BrandDto());
+    }
+
+    @Override
+    @Transactional
+    public String addNewBrandController(BindingResult bindingResult,  BrandDto brandDto, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("brands", getAll());
+            return "admin-brand";
+        }
+        if(getByName(brandDto.getBrandName()) != null){
+            model.addAttribute("brandError", "A brand with the same name already exists");
+            List<BrandDto> brands = getAll();
+            model.addAttribute("brands", brands);
+            return "admin-brand";
+        }
+        addBrand(brandDto);
+        return "redirect:/product/brand";
     }
 }

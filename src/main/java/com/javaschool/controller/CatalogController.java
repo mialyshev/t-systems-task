@@ -22,33 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CatalogController {
 
-    private final ProductService productService;
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final BrandRepository brandRepository;
-    private final ColorService colorService;
-    private final CategoryService categoryService;
-    private final BrandService brandService;
-    private final MaterialService materialService;
-    private final SeasonService seasonService;
+    private final CatalogService catalogService;
 
     @GetMapping("/")
     public String getAllProducts(Model model,
-                                 HttpSession session) throws ProductException {
-        if (session.getAttribute("bucket") == null) {
-            session.setAttribute("bucket", new ArrayList<ProductBucketDto>());
-        }
-        if (session.getAttribute("params") == null) {
-            session.setAttribute("params", new SelectedParams());
-        }
-        SelectedParams selectedParams = (SelectedParams)session.getAttribute("params");
-        List<ProductDto> products = productService.getProductsByParamList(selectedParams);
-        model.addAttribute("products", products);
-        model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("brands", brandService.getAll());
-        model.addAttribute("colors", colorService.getAll());
-        model.addAttribute("materials", materialService.getAll());
-        model.addAttribute("seasons", seasonService.getAll());
+                                 HttpSession session){
+        catalogService.getAllProducts(model, session);
         return "products";
     }
 
@@ -59,42 +38,22 @@ public class CatalogController {
                                      @RequestParam(value = "radioColor",required = false) String colorName,
                                      @RequestParam(value = "radioMaterial",required = false) String materialName,
                                      @RequestParam(value = "radioSeason",required = false) String seasonName,
-                                     @SessionAttribute("params") SelectedParams params) throws ProductException {
-        model.addAttribute("products", productService.getProductsByParam(categoryName, brandName, colorName, materialName, seasonName, params));
-        model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("brands", brandService.getAll());
-        model.addAttribute("colors", colorService.getAll());
-        model.addAttribute("materials", materialService.getAll());
-        model.addAttribute("seasons", seasonService.getAll());
+                                     @SessionAttribute("params") SelectedParams params){
+        catalogService.getProductsByParam(model, categoryName, brandName, colorName, materialName, seasonName, params);
         return "products";
     }
 
 
     @GetMapping("/clear-params")
     public String clearParams(HttpSession session){
-        SelectedParams selectedParams = (SelectedParams)session.getAttribute("params");
-        selectedParams.setCategory(null);
-        selectedParams.setBrand(null);
-        selectedParams.setColor(null);
-        selectedParams.setMaterial(null);
-        selectedParams.setSeason(null);
+        catalogService.clearParams(session);
         return "redirect:/";
     }
 
     @GetMapping("/catalog/product/{id}")
     public String getProduct(@PathVariable("id") long id,
                              Model model){
-        model.addAttribute("product", productService.getById(id));
-        model.addAttribute("sizes", productService.getAvailableSizesForProduct(id));
+        catalogService.getProduct(id, model);
         return "product";
     }
-
-    @GetMapping("/catalog/param")
-    public String getProductByParam(){
-        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
-        params.add(new SearchCriteria("season_id", ":", "3"));
-
-        List<ProductDto> productDtoList = productService.getProductsByParam(params);
-        return "index";
-    }
-    }
+}

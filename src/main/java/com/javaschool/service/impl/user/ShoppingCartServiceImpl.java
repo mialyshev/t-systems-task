@@ -10,6 +10,7 @@ import com.javaschool.service.user.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +24,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ProductMapperImpl productMapper;
 
     @Override
-    public void add(long productId, ArrayList<ProductBucketDto> bucket, float size) throws ProductException {
+    public void add(long productId, ArrayList<ProductBucketDto> bucket, float size){
         List<ProductDto> productDtoList = null;
-        ProductDto productDto = productMapper.toDto(productRepository.findById(productId));
+        ProductDto productDto = null;
         try {
+            productDto = productMapper.toDto(productRepository.findById(productId));
             productDtoList = productMapper.toDtoList(productRepository.findAllActiveByModel(productDto.getModel()));
-        } catch (Exception e) {
-            log.error("Error getting all the products for add to cart", e);
+        }catch (ProductException e){
+            log.error("Error add product to bucket", e);
         }
         for(ProductBucketDto productBucket : bucket){
             if(productBucket.getProductDto().equals(productDto) && productBucket.getProductDto().getSize() == size){
@@ -78,5 +80,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         for(ProductBucketDto productBucketDto : selectedProducts){
             bucket.remove(productBucketDto);
         }
+    }
+
+    @Override
+    public String getBucketFormController(Model model, ArrayList<ProductBucketDto> bucket) {
+        if (bucket.isEmpty()){
+            model.addAttribute("bucketEmpty", "Your shopping cart is empty. It's time to shop!");
+        }
+        updateBucket(bucket);
+        return "bucket";
     }
 }

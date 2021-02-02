@@ -22,7 +22,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class CardController {
     private final CardService cardService;
-    private final UserRepository userRepository;
 
     @GetMapping("/profile/add-card")
     public String getCardForm(Model model){
@@ -33,21 +32,8 @@ public class CardController {
     @PostMapping("/profile/add-card")
     public String registerNewCard(@ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
                                   BindingResult bindingResult,
-                                  Model model) throws UserException {
-        if (bindingResult.hasErrors()) {
-            return "card-register";
-        }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = authentication.getName();
-        User userFromBd = userRepository.findByEmail(currentUser);
+                                  Model model){
 
-        String[] ownerDate = cardRegisterDto.getOwner().split(" ");
-        if (ownerDate.length != 2){
-            model.addAttribute("ownerError", "Cardholder data must consist of first and last name");
-            return "card-register";
-        }
-
-        cardService.addCard(cardRegisterDto, userFromBd);
-        return "redirect:/profile/cards";
+        return cardService.registerNewCardController(bindingResult, cardRegisterDto, model);
     }
 }

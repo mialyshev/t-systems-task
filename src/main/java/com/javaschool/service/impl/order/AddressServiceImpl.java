@@ -7,10 +7,14 @@ import com.javaschool.entity.User;
 import com.javaschool.exception.UserException;
 import com.javaschool.mapper.order.AddressMapperImpl;
 import com.javaschool.repository.order.AddressRepository;
+import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.order.AddressService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -22,6 +26,7 @@ public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
     private final AddressMapperImpl addressMapper;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -155,5 +160,24 @@ public class AddressServiceImpl implements AddressService {
             log.error("Error at AddressService.deleteAddress()", e);
         }
 
+    }
+
+    @Override
+    @Transactional
+    public String addAddressController(BindingResult bindingResult, AddressAdditionDto addressAdditionDto) {
+        if (bindingResult.hasErrors()) {
+            return "address";
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        User userFromBd = null;
+        try{
+            userFromBd = userRepository.findByEmail(currentUser);
+        }catch (UserException e){
+            log.error("Error while getting user", e);
+        }
+        addressAdditionDto.setSaved(true);
+        addAddress(addressAdditionDto, userFromBd);
+        return "redirect:/profile/addresses";
     }
 }

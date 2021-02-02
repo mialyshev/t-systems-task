@@ -17,14 +17,12 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class ShoppingCartController {
 
-    private final ProductService productService;
     private final ShoppingCartService shoppingCartService;
 
     @PostMapping("/add/{id}")
     public String addProductToBucket(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
                                      @RequestParam("size") float size,
-                                     @PathVariable("id") long id,
-                                     Model model) throws ProductException {
+                                     @PathVariable("id") long id) {
         shoppingCartService.add(id, bucket, size);
         return "redirect:/catalog/product/" +id;
     }
@@ -32,17 +30,12 @@ public class ShoppingCartController {
     @GetMapping()
     public String getBucketForm(Model model,
                                 @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket){
-        if (bucket.isEmpty()){
-            model.addAttribute("bucketEmpty", "Your shopping cart is empty. It's time to shop!");
-        }
-        shoppingCartService.updateBucket(bucket);
-        return "bucket";
+        return shoppingCartService.getBucketFormController(model, bucket);
     }
 
     @GetMapping("/delete/{id}")
     public String deleteProductFromBucket(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
-                                          @PathVariable("id") long id,
-                                          Model model){
+                                          @PathVariable("id") long id){
         shoppingCartService.delete(id, bucket);
         return "redirect:/bucket";
     }

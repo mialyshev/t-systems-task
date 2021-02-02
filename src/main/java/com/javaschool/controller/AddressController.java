@@ -23,7 +23,6 @@ import javax.validation.Valid;
 public class AddressController {
 
     private final AddressService addressService;
-    private final UserRepository userRepository;
 
     @GetMapping("/profile/add-address")
     public String getAddressForm(Model model){
@@ -33,16 +32,7 @@ public class AddressController {
 
     @PostMapping("/profile/add-address")
     public String addNewAddress(@ModelAttribute("addressForm") @Valid AddressAdditionDto addressAdditionDto,
-                                BindingResult bindingResult,
-                                Model model) throws UserException {
-        if (bindingResult.hasErrors()) {
-            return "address";
-        }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = authentication.getName();
-        User userFromBd = userRepository.findByEmail(currentUser);
-        addressAdditionDto.setSaved(true);
-        addressService.addAddress(addressAdditionDto, userFromBd);
-        return "redirect:/profile/addresses";
+                                BindingResult bindingResult) {
+        return addressService.addAddressController(bindingResult, addressAdditionDto);
     }
 }

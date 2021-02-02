@@ -27,8 +27,7 @@ public class ProductController {
 
     @GetMapping("/category")
     public String getAllCategories(Model model){
-        model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("categoryForm", new CategoryDto());
+        categoryService.getAllCategoriesController(model);
         return "admin-category";
     }
 
@@ -36,24 +35,12 @@ public class ProductController {
     public String addNewCategory(@ModelAttribute("categoryForm") @Valid CategoryDto categoryDto,
                                  BindingResult bindingResult,
                                  Model model){
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAll());
-            return "admin-category";
-        }
-        if(categoryService.getByName(categoryDto.getCategoryName()) != null){
-            model.addAttribute("categoryError", "A category with the same name already exists");
-            List<CategoryDto> categories = categoryService.getAll();
-            model.addAttribute("categories", categories);
-            return "admin-category";
-        }
-        categoryService.addCategory(categoryDto);
-        return "redirect:/product/category";
+        return categoryService.addNewCategoryController(bindingResult, categoryDto, model);
     }
 
     @GetMapping("/brand")
     public String getAllBrands(Model model){
-        model.addAttribute("brands", brandService.getAll());
-        model.addAttribute("brandForm", new BrandDto());
+        brandService.getAllBrandsController(model);
         return "admin-brand";
     }
 
@@ -61,24 +48,12 @@ public class ProductController {
     public String addNewBrand(@ModelAttribute("brandForm") @Valid BrandDto brandDto,
                               BindingResult bindingResult,
                               Model model){
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("brands", brandService.getAll());
-            return "admin-brand";
-        }
-        if(brandService.getByName(brandDto.getBrandName()) != null){
-            model.addAttribute("brandError", "A brand with the same name already exists");
-            List<BrandDto> brands = brandService.getAll();
-            model.addAttribute("brands", brands);
-            return "admin-brand";
-        }
-        brandService.addBrand(brandDto);
-        return "redirect:/product/brand";
+        return brandService.addNewBrandController(bindingResult, brandDto, model);
     }
 
     @GetMapping("/color")
     public String getAllColors(Model model){
-        model.addAttribute("colors", colorService.getAll());
-        model.addAttribute("colorForm", new ColorDto());
+        colorService.getAllColorsController(model);
         return "admin-color";
     }
 
@@ -86,24 +61,12 @@ public class ProductController {
     public String addNewColor(@ModelAttribute("colorForm") @Valid ColorDto colorDto,
                               BindingResult bindingResult,
                               Model model){
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("colors", colorService.getAll());
-            return "admin-color";
-        }
-        if(colorService.getByName(colorDto.getColorName()) != null){
-            model.addAttribute("colorError", "A color with the same name already exists");
-            List<ColorDto> colors = colorService.getAll();
-            model.addAttribute("colors", colors);
-            return "admin-color";
-        }
-        colorService.addColor(colorDto);
-        return "redirect:/product/color";
+        return colorService.addNewColorController(bindingResult, colorDto, model);
     }
 
     @GetMapping("/material")
     public String getAllMaterials(Model model){
-        model.addAttribute("materials", materialService.getAll());
-        model.addAttribute("materialForm", new MaterialDto());
+        materialService.getAllMaterialsController(model);
         return "admin-material";
     }
 
@@ -111,24 +74,12 @@ public class ProductController {
     public String addNewMaterial(@ModelAttribute("materialForm") @Valid MaterialDto materialDto,
                                  BindingResult bindingResult,
                                  Model model){
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("materials", materialService.getAll());
-            return "admin-material";
-        }
-        if(materialService.getByName(materialDto.getMaterialName()) != null){
-            model.addAttribute("materialError", "A material with the same name already exists");
-            List<MaterialDto> materials = materialService.getAll();
-            model.addAttribute("materials", materials);
-            return "admin-material";
-        }
-        materialService.addMaterial(materialDto);
-        return "redirect:/product/material";
+        return materialService.addNewMaterialController(bindingResult, materialDto, model);
     }
 
     @GetMapping("/season")
     public String getAllSeasons(Model model){
-        model.addAttribute("seasons", seasonService.getAll());
-        model.addAttribute("seasonForm", new SeasonDto());
+       seasonService.getAllSeasonsController(model);
         return "admin-season";
     }
 
@@ -136,24 +87,12 @@ public class ProductController {
     public String addNewSeason(@ModelAttribute("seasonForm") @Valid SeasonDto seasonDto,
                                BindingResult bindingResult,
                                Model model){
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("seasons", seasonService.getAll());
-            return "admin-season";
-        }
-        if(seasonService.getByName(seasonDto.getSeasonName()) != null){
-            model.addAttribute("seasonError", "A season with the same name already exists");
-            List<SeasonDto> seasons = seasonService.getAll();
-            model.addAttribute("seasons", seasons);
-            return "admin-season";
-        }
-        seasonService.addSeason(seasonDto);
-        return "redirect:/product/season";
+        return seasonService.addNewSeasonController(bindingResult, seasonDto, model);
     }
 
     @GetMapping("/size")
     public String getAllSizes(Model model){
-        model.addAttribute("sizes", sizeService.getAll());
-        model.addAttribute("sizeForm", new SizeDto());
+        sizeService.getAllSizesController(model);
         return "admin-size";
     }
 
@@ -162,28 +101,12 @@ public class ProductController {
     public String addNewSize(@ModelAttribute("sizeForm") @Valid SizeDto sizeDto,
                               BindingResult bindingResult,
                               Model model){
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("sizes", sizeService.getAll());
-            return "admin-size";
-        }
-        if(sizeService.getByName(sizeDto.getSize()) != null){
-            model.addAttribute("sizeError", "A size with the same value already exists");
-            List<SizeDto> sizes = sizeService.getAll();
-            model.addAttribute("sizes", sizes);
-            return "admin-size";
-        }
-        sizeService.addSize(sizeDto);
-        return "redirect:/product/size";
+        return sizeService.addNewSizeController(bindingResult, sizeDto, model);
     }
 
     @GetMapping
-    public String addNewProduct(Model model){
-        model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("brands", brandService.getAll());
-        model.addAttribute("colors", colorService.getAll());
-        model.addAttribute("materials", materialService.getAll());
-        model.addAttribute("seasons", seasonService.getAll());
-        model.addAttribute("productForm", new ProductDto());
+    public String addNewProductPage(Model model){
+        productService.addNewProductPageController(model);
         return "admin-product-page";
     }
 
@@ -191,18 +114,8 @@ public class ProductController {
     public String addNewProduct(@ModelAttribute("productForm") @Valid ProductDto productDto,
                                 BindingResult bindingResult,
                                 @RequestParam("size") float size,
-                                Model model) throws ProductException {
-        if (bindingResult.hasErrors()){
-            model.addAttribute("categories", categoryService.getAll());
-            model.addAttribute("brands", brandService.getAll());
-            model.addAttribute("colors", colorService.getAll());
-            model.addAttribute("materials", materialService.getAll());
-            model.addAttribute("seasons", seasonService.getAll());
-            return "admin-product-page";
-        }
-        productDto.setSize(size);
-        productService.addProduct(productDto);
-        return "redirect:/product";
+                                Model model) {
+        return productService.addNewProductController(productDto, bindingResult, size, model);
     }
 
     @GetMapping("/add-size-product")
@@ -223,12 +136,6 @@ public class ProductController {
                                               @RequestParam("size") float size,
                                               @RequestParam("quantityProduct") int quantity,
                                               Model model){
-        if(quantity <= 0){
-            model.addAttribute("quantityError", "Quantity must be greater than 0");
-            model.addAttribute("productInfo", productService.getById(id));
-            return "admin-add-size-or-quantity";
-        }
-        productService.addProductBySizeQuantity(size, quantity, id);
-        return "redirect:/product/add-size-product/" + id;
+       return productService.addSizeOrQuantityForProductController(id, size, quantity, model);
     }
 }

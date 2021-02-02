@@ -1,5 +1,7 @@
 package com.javaschool.service.impl.order;
 
+import com.javaschool.dto.card.CardRegisterDto;
+import com.javaschool.dto.order.AddressAdditionDto;
 import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.order.OrderRegisterDto;
 import com.javaschool.dto.product.ProductBucketDto;
@@ -22,11 +24,19 @@ import com.javaschool.repository.order.AddressRepository;
 import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.ProductRepository;
 import com.javaschool.repository.user.UserRepository;
+import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.product.ProductService;
+import com.javaschool.service.user.CardService;
+import com.javaschool.service.user.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.support.SessionStatus;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -46,6 +56,9 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final ProductService productService;
+    private final AddressService addressService;
+    private final CardService cardService;
+    private final ShoppingCartService shoppingCartService;
     private final ProductMapperImpl productMapper;
     private final UserMapperImpl userMapper;
 
@@ -77,10 +90,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void addOrder(OrderRegisterDto orderDto) throws ProductException, UserException {
+    public void addOrder(OrderRegisterDto orderDto){
         Order order = new Order();
-        order.setUser(userRepository.findById(orderDto.getUser_id()));
-        order.setAddress(addressRepository.findById(orderDto.getAddress_id()));
+        try {
+            order.setUser(userRepository.findById(orderDto.getUser_id()));
+        }catch (UserException e){
+            log.error("Error while set user for order", e);
+        }
+        try {
+            order.setAddress(addressRepository.findById(orderDto.getAddress_id()));
+        }catch (UserException e){
+            log.error("Error while ser address for order", e);
+        }
         order.setPaymentType(PaymentType.valueOf(orderDto.getPaymentType()));
         if(orderDto.getPaymentType().equals("CARD")){
             if(orderDto.isPaid()) {
@@ -99,7 +120,11 @@ public class OrderServiceImpl implements OrderService {
         List<Product> productList = new ArrayList<>();
         for (ProductBucketDto productDto : orderDto.getProductDtoList()){
             for(int i = 0; i < productDto.getQuantityInBucket(); i++){
-                productList.add(productRepository.findById(productDto.getProductDto().getId()));
+                try {
+                    productList.add(productRepository.findById(productDto.getProductDto().getId()));
+                }catch (ProductException e){
+                    log.error("Error while get product by id for add him to order", e);
+                }
             }
         }
         order.setProductList(productList);
@@ -402,8 +427,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public List<UserStatisticDto> getTopUsers() throws UserException {
-        List<User> users = userRepository.findAll();
+    public List<UserStatisticDto> getTopUsers(){
+        List<User> users = null;
+        try{
+            users = userRepository.findAll();
+        }catch (UserException e){
+            log.error("Error while getting all users", e);
+        }
         List<UserStatisticDto> userStatisticDtos = new ArrayList<>();
         for (User user : users){
             UserStatisticDto userStatisticDto = new UserStatisticDto();
@@ -425,5 +455,117 @@ public class OrderServiceImpl implements OrderService {
         return userStatisticDtos;
     }
 
+    @Override
+    public String getOrderFormController(Model model, Integer[] selected, ArrayList<ProductBucketDto> bucket, OrderRegisterDto orderDto) {
+        if (selected == null) {
+            model.addAttribute("orderError", "Please select at least one product");
+            return "bucket";
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userFromBd = null;
+        try{
+            userFromBd = userRepository.findByEmail(authentication.getName());
+        }catch (UserException e){
+            log.error("Error getting user for complete order", e);
+        }
+        orderDto.setProductDtoList(productService.getSelectedList(selected, bucket));
+        orderDto.setUser_id(userFromBd.getId());
+        model.addAttribute("savedAddress", addressService.getAllSaved(orderDto.getUser_id()));
+        model.addAttribute("addressForm", new AddressAdditionDto());
+        model.addAttribute("orderForm", orderDto);
+        return "order-address";
+    }
 
+    @Override
+    public String addAddressController(BindingResult bindingResult, OrderRegisterDto orderDto, AddressAdditionDto addressAdditionDto, String isSaved, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("savedAddress", addressService.getAllSaved(orderDto.getUser_id()));
+            return "order-address";
+        }
+        if(isSaved != null){
+            addressAdditionDto.setSaved(true);
+        }else {
+            addressAdditionDto.setSaved(false);
+        }
+        try {
+            addressService.addAddress(addressAdditionDto, userRepository.findById(orderDto.getUser_id()));
+        }catch (UserException e){
+            log.error("Error while saved address from order processing", e);
+        }
+        orderDto.setAddress_id(addressService.getLastByUserId(orderDto.getUser_id()).getId());
+        model.addAttribute("paymentType", getPaymentTypeList());
+        return "order-choose-pay";
+    }
+
+    @Override
+    public void addSavedAddressController(OrderRegisterDto orderDto, long addressId, Model model) {
+        orderDto.setAddress_id(addressId);
+        model.addAttribute("paymentType", getPaymentTypeList());
+    }
+
+    @Override
+    public String getPaymentTypeController(OrderRegisterDto orderDto, Model model) {
+        if(orderDto.getPaymentType().equals("CARD")) {
+            model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
+            model.addAttribute("cardForm", new CardRegisterDto());
+            return "order-card";
+        }
+        orderDto.setPaid(false);
+        model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        return "order-finish";
+    }
+
+    @Override
+    public String addCardController(BindingResult bindingResult, OrderRegisterDto orderDto, CardRegisterDto cardRegisterDto, String isSaved, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
+            return "order-card";
+        }
+        if(isSaved != null){
+            String[] ownerDate = cardRegisterDto.getOwner().split(" ");
+            if (ownerDate.length != 2){
+                model.addAttribute("ownerError", "Cardholder data must consist of first and last name");
+                return "card-register";
+            }
+
+            try {
+                cardService.addCard(cardRegisterDto, userRepository.findById(orderDto.getUser_id()));
+            }catch (UserException e){
+                log.error("Error add new card for user while order processing", e);
+            }
+        }
+        orderDto.setPaid(true);
+        model.addAttribute("card", cardRegisterDto);
+        model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        model.addAttribute("orderPrice", productService.calcPrice(orderDto.getProductDtoList()));
+        return "order-finish";
+    }
+
+    @Override
+    public void addSavedCardController(OrderRegisterDto orderDto, long cardId, Model model) {
+        orderDto.setPaid(true);
+        model.addAttribute("card", cardService.getById(cardId));
+        model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        model.addAttribute("orderPrice", productService.calcPrice(orderDto.getProductDtoList()));
+    }
+
+    @Override
+    public void getLaterPayController(OrderRegisterDto orderDto, Model model) {
+        orderDto.setPaid(false);
+        model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        model.addAttribute("orderPrice", productService.calcPrice(orderDto.getProductDtoList()));
+    }
+
+    @Override
+    @Transactional
+    public String addNewOrderController(OrderRegisterDto orderDto, ArrayList<ProductBucketDto> bucket, SessionStatus status) {
+        status.setComplete();
+        if(productService.isAvailable(orderDto.getProductDtoList())){
+            addOrder(orderDto);
+            shoppingCartService.deleteSelectedProduct(bucket, orderDto.getProductDtoList());
+        }else {
+            return "redirect:/bucket";
+        }
+        return "redirect:/";
+    }
 }

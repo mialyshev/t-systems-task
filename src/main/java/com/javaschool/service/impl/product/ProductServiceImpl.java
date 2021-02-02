@@ -7,10 +7,12 @@ import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.ProductMapperImpl;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import com.javaschool.repository.product.*;
-import com.javaschool.service.product.ProductService;
+import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -28,6 +30,12 @@ public class ProductServiceImpl implements ProductService {
     private final MaterialRepository materialRepository;
     private final SeasonRepository seasonRepository;
     private final SizeRepository sizeRepository;
+    private final BrandService brandService;
+    private final CategoryService categoryService;
+    private final ColorService colorService;
+    private final MaterialService materialService;
+    private final SeasonService seasonService;
+    private final SizeService sizeService;
 
     @Override
     public List<ProductDto> getAll() {
@@ -339,5 +347,43 @@ public class ProductServiceImpl implements ProductService {
             log.error("Error at ProductService.getProductsByParamList()", e);
         }
         return productDtoListFromRepo;
+    }
+
+    @Override
+    public void addNewProductPageController(Model model) {
+        model.addAttribute("categories", categoryService.getAll());
+        model.addAttribute("brands", brandService.getAll());
+        model.addAttribute("colors", colorService.getAll());
+        model.addAttribute("materials", materialService.getAll());
+        model.addAttribute("seasons", seasonService.getAll());
+        model.addAttribute("productForm", new ProductDto());
+    }
+
+    @Override
+    @Transactional
+    public String addNewProductController(ProductDto productDto, BindingResult bindingResult, float size, Model model) {
+        if (bindingResult.hasErrors()){
+            model.addAttribute("categories", categoryService.getAll());
+            model.addAttribute("brands", brandService.getAll());
+            model.addAttribute("colors", colorService.getAll());
+            model.addAttribute("materials", materialService.getAll());
+            model.addAttribute("seasons", seasonService.getAll());
+            return "admin-product-page";
+        }
+        productDto.setSize(size);
+        addProduct(productDto);
+        return "redirect:/product";
+    }
+
+    @Override
+    @Transactional
+    public String addSizeOrQuantityForProductController(long id, float size, int quantity, Model model) {
+        if(quantity <= 0){
+            model.addAttribute("quantityError", "Quantity must be greater than 0");
+            model.addAttribute("productInfo", getById(id));
+            return "admin-add-size-or-quantity";
+        }
+        addProductBySizeQuantity(size, quantity, id);
+        return "redirect:/product/add-size-product/" + id;
     }
 }

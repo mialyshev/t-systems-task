@@ -9,6 +9,8 @@ import com.javaschool.service.product.SeasonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -67,5 +69,28 @@ public class SeasonServiceImpl implements SeasonService {
         Season season = new Season();
         season.setSeasonName(seasonDto.getSeasonName());
         seasonRepository.save(season);
+    }
+
+    @Override
+    public void getAllSeasonsController(Model model) {
+        model.addAttribute("seasons", getAll());
+        model.addAttribute("seasonForm", new SeasonDto());
+    }
+
+    @Override
+    @Transactional
+    public String addNewSeasonController(BindingResult bindingResult,  SeasonDto seasonDto, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("seasons", getAll());
+            return "admin-season";
+        }
+        if(getByName(seasonDto.getSeasonName()) != null){
+            model.addAttribute("seasonError", "A season with the same name already exists");
+            List<SeasonDto> seasons = getAll();
+            model.addAttribute("seasons", seasons);
+            return "admin-season";
+        }
+        addSeason(seasonDto);
+        return "redirect:/product/season";
     }
 }
