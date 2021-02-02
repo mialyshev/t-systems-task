@@ -2,6 +2,7 @@ package com.javaschool.controller;
 
 import com.javaschool.dto.order.AddressAdditionDto;
 import com.javaschool.entity.User;
+import com.javaschool.exception.UserException;
 import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.order.AddressService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class AddressController {
     @PostMapping("/profile/add-address")
     public String addNewAddress(@ModelAttribute("addressForm") @Valid AddressAdditionDto addressAdditionDto,
                                 BindingResult bindingResult,
-                                Model model){
+                                Model model) throws UserException {
         if (bindingResult.hasErrors()) {
             return "address";
         }

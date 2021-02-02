@@ -4,11 +4,13 @@ import com.javaschool.entity.Role;
 import com.javaschool.entity.Role_;
 import com.javaschool.entity.User;
 import com.javaschool.entity.User_;
+import com.javaschool.exception.UserException;
 import com.javaschool.repository.user.RoleRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,33 +26,41 @@ public class RoleRepositoryImpl implements RoleRepository {
     private EntityManager entityManager;
 
     @Override
-    public Role findByName(String name) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Role> criteriaQuery = criteriaBuilder.createQuery(Role.class);
-        Root<Role> root = criteriaQuery.from(Role.class);
+    public Role findByName(String name) throws UserException {
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Role> criteriaQuery = criteriaBuilder.createQuery(Role.class);
+            Root<Role> root = criteriaQuery.from(Role.class);
 
-        criteriaQuery
-                .select(root)
-                .where(criteriaBuilder.equal(root.get(Role_.name), name));
-        TypedQuery<Role> selectByName = entityManager.createQuery(criteriaQuery);
+            criteriaQuery
+                    .select(root)
+                    .where(criteriaBuilder.equal(root.get(Role_.name), name));
+            TypedQuery<Role> selectByName = entityManager.createQuery(criteriaQuery);
 
-        return selectByName.getSingleResult();
+            return selectByName.getSingleResult();
+        }catch (PersistenceException e){
+            throw new UserException("Error getting role with name: " + name);
+        }
     }
 
     @Override
-    public Collection<Role> findRolesByUserEmail(String email) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Role> criteriaQuery = criteriaBuilder.createQuery(Role.class);
-        Root<Role> root = criteriaQuery.from(Role.class);
+    public Collection<Role> findRolesByUserEmail(String email) throws UserException{
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Role> criteriaQuery = criteriaBuilder.createQuery(Role.class);
+            Root<Role> root = criteriaQuery.from(Role.class);
 
-        Join<Role, User> userEntityJoin = root.join(Role_.userSet);
+            Join<Role, User> userEntityJoin = root.join(Role_.userSet);
 
-        criteriaQuery
-                .select(root)
-                .where(criteriaBuilder.equal(userEntityJoin.get(User_.email), email));
-        TypedQuery<Role> selectByUserLogin = entityManager.createQuery(criteriaQuery);
+            criteriaQuery
+                    .select(root)
+                    .where(criteriaBuilder.equal(userEntityJoin.get(User_.email), email));
+            TypedQuery<Role> selectByUserLogin = entityManager.createQuery(criteriaQuery);
 
-        return selectByUserLogin.getResultStream().collect(Collectors.toSet());
+            return selectByUserLogin.getResultStream().collect(Collectors.toSet());
+        }catch (PersistenceException e){
+            throw new UserException("Error getting roles for user with email: " + email);
+        }
     }
 
     @Override

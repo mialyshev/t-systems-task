@@ -7,6 +7,8 @@ import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
 import com.javaschool.dto.order.OrderRegisterDto;
 import com.javaschool.entity.User;
+import com.javaschool.exception.ProductException;
+import com.javaschool.exception.UserException;
 import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
@@ -43,7 +45,7 @@ public class OrderController {
     @GetMapping
     public String getOrderForm(Model model,
                                @RequestParam(value = "selected", required = false)Integer[] selected,
-                               @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket){
+                               @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket) throws UserException {
         if(selected == null){
             model.addAttribute("orderError", "Please select at least one product");
             return "bucket";
@@ -65,7 +67,7 @@ public class OrderController {
                               @ModelAttribute("addressForm") @Valid AddressAdditionDto addressAdditionDto,
                               BindingResult bindingResult,
                               @RequestParam(value = "save", required = false) String isSaved,
-                              Model model){
+                              Model model) throws UserException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("savedAddress", addressService.getAllSaved(orderDto.getUser_id()));
             return "order-address";
@@ -154,7 +156,7 @@ public class OrderController {
     @PostMapping("/finish")
     public String addNewOrder(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
                               @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
-                              SessionStatus status) {
+                              SessionStatus status) throws ProductException, UserException {
         status.setComplete();
         if(productService.isAvailable(orderDto.getProductDtoList())){
             orderService.addOrder(orderDto);

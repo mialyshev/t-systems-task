@@ -2,6 +2,7 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.SizeDto;
 import com.javaschool.entity.Size;
+import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.SizeMapperImpl;
 import com.javaschool.repository.product.SizeRepository;
 import com.javaschool.service.product.SizeService;
@@ -25,8 +26,10 @@ public class SizeServiceImpl implements SizeService {
         List<SizeDto> sizeDtoList = null;
         try {
             sizeDtoList = sizeMapper.toDtoList(sizeRepository.findAll());
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the sizes", e);
+        }catch (Exception e){
+            log.error("Error at SizeService.getAll()", e);
         }
         return sizeDtoList;
     }
@@ -36,8 +39,10 @@ public class SizeServiceImpl implements SizeService {
         SizeDto sizeDto = null;
         try {
             sizeDto = sizeMapper.toDto(sizeRepository.findById(id));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a size by id", e);
+        }catch (Exception e){
+            log.error("Error at SizeService.getById()", e);
         }
         return sizeDto;
     }
@@ -48,8 +53,10 @@ public class SizeServiceImpl implements SizeService {
         SizeDto sizeDto = null;
         try {
             sizeDto = sizeMapper.toDto(sizeRepository.findBySize(size));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a size by name", e);
+        }catch (Exception e){
+            log.error("Error at SizeService.getByName()", e);
         }
         return sizeDto;
     }

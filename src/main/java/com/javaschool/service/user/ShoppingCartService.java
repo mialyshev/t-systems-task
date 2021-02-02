@@ -2,13 +2,14 @@ package com.javaschool.service.user;
 
 import com.javaschool.dto.order.OrderRegisterDto;
 import com.javaschool.dto.product.ProductBucketDto;
+import com.javaschool.exception.ProductException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface ShoppingCartService {
 
-    void add(long productId, ArrayList<ProductBucketDto> bucket, float size);
+    void add(long productId, ArrayList<ProductBucketDto> bucket, float size) throws ProductException;
 
     void delete(long productId, ArrayList<ProductBucketDto> bucket);
 

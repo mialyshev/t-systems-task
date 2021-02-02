@@ -2,6 +2,7 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.CategoryDto;
 import com.javaschool.entity.Category;
+import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.CategoryMapperImpl;
 import com.javaschool.repository.product.CategoryRepository;
 import com.javaschool.service.product.CategoryService;
@@ -25,8 +26,10 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryDto> categoryDtoList = null;
         try {
             categoryDtoList = categoryMapper.toDtoList(categoryRepository.findAll());
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the categories", e);
+        }catch (Exception e){
+            log.error("Error at CategoryService.getAll()", e);
         }
         return categoryDtoList;
     }
@@ -36,8 +39,10 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryDto categoryDto = null;
         try {
             categoryDto = categoryMapper.toDto(categoryRepository.findById(id));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a category by id", e);
+        }catch (Exception e){
+            log.error("Error at CategoryService.getById()", e);
         }
         return categoryDto;
     }
@@ -48,8 +53,10 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryDto categoryDto = null;
         try {
             categoryDto = categoryMapper.toDto(categoryRepository.findByName(categoryName));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a category by name", e);
+        }catch (Exception e){
+            log.error("Error at CategoryService.getByName()", e);
         }
         return categoryDto;
     }

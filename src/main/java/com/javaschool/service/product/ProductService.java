@@ -5,10 +5,9 @@ import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
 import com.javaschool.dto.product.SelectedParams;
 import com.javaschool.dto.product.SizeDto;
+import com.javaschool.exception.ProductException;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public interface ProductService {
 
     ProductDto getById(long id);
 
-    void addProduct(ProductDto productDto);
+    void addProduct(ProductDto productDto) throws ProductException;
 
     List<ProductBucketDto>getSelectedList(Integer[] selected, ArrayList<ProductBucketDto> bucket);
 
@@ -38,7 +37,7 @@ public interface ProductService {
 
     void addProductToBucket(long productId, float size, ArrayList<ProductDto> bucket);
 
-    List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams);
+    List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams) throws ProductException;
 
-    List<ProductDto> getProductsByParamList(SelectedParams selectedParams);
+    List<ProductDto> getProductsByParamList(SelectedParams selectedParams) throws ProductException;
 }

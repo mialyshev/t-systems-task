@@ -5,6 +5,7 @@ import com.javaschool.dto.user.UserRegistrationDto;
 import com.javaschool.dto.user.UserUpdateInfoDto;
 import com.javaschool.dto.user.UserUpdatePassDto;
 import com.javaschool.entity.User;
+import com.javaschool.exception.UserException;
 import com.javaschool.mapper.user.UserMapperImpl;
 import com.javaschool.repository.user.RoleRepository;
 import com.javaschool.repository.user.UserRepository;
@@ -38,8 +39,10 @@ public class UserServiceImpl implements UserService {
         List<UserDto> userDtoList = null;
         try {
             userDtoList = userMapper.toDtoList(userRepository.findAll());
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting all the users", e);
+        }catch (Exception e){
+            log.error("Error at UserService.getAll()", e);
         }
         return userDtoList;
     }
@@ -50,8 +53,10 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = null;
         try {
             userDto = userMapper.toDto(userRepository.findByEmail(email));
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a user by email", e);
+        }catch (Exception e){
+            log.error("Error at UserService.getDtoByEmail()", e);
         }
         return userDto;
     }
@@ -62,8 +67,10 @@ public class UserServiceImpl implements UserService {
         User user = null;
         try {
             user = userRepository.findByEmail(email);
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a user by email", e);
+        }catch (Exception e){
+            log.error("Error at UserService.getByEmail()", e);
         }
         return user;
     }
@@ -73,8 +80,10 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = null;
         try {
             userDto = userMapper.toDto(userRepository.findById(id));
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a user by id", e);
+        }catch (Exception e){
+            log.error("Error at UserService.getById()", e);
         }
         return userDto;
     }
@@ -84,8 +93,10 @@ public class UserServiceImpl implements UserService {
         User user = null;
         try {
             user = userRepository.findById(id);
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a user by id", e);
+        }catch (Exception e){
+            log.error("Error at UserService.getUserById()", e);
         }
         return user;
     }
@@ -99,13 +110,19 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void registerUser(UserRegistrationDto userRegistrationDto) {
         User user = new User();
-        user.setFirstName(userRegistrationDto.getFirstName());
-        user.setLastName(userRegistrationDto.getLastName());
-        user.setDob(getDate(userRegistrationDto.getDob()));
-        user.setEmail(userRegistrationDto.getEmail());
-        user.setRoleSet(Collections.singleton(roleRepository.findByName("ROLE_USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()));
-        userRepository.save(user);
+        try {
+            user.setFirstName(userRegistrationDto.getFirstName());
+            user.setLastName(userRegistrationDto.getLastName());
+            user.setDob(getDate(userRegistrationDto.getDob()));
+            user.setEmail(userRegistrationDto.getEmail());
+            user.setRoleSet(Collections.singleton(roleRepository.findByName("ROLE_USER")));
+            user.setPassword(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()));
+            userRepository.save(user);
+        }catch (UserException e){
+            log.error("Error while register user", e);
+        }catch (Exception e){
+            log.error("Error at UserService.registerUser()");
+        }
     }
 
     @Override
@@ -136,8 +153,10 @@ public class UserServiceImpl implements UserService {
                     nowAuthorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             userRepository.update(user);
-        }catch (Exception e) {
+        }catch (UserException e) {
             log.error("Error updating user info", e);
+        }catch (Exception e){
+            log.error("Error at UserService.updateUserInfo()", e);
         }
     }
 
@@ -157,8 +176,10 @@ public class UserServiceImpl implements UserService {
                 userRepository.update(user);
                 return true;
             }
-        }catch (Exception e) {
+        }catch (UserException e) {
             log.error("Error updating user pass", e);
+        }catch (Exception e){
+            log.error("Error at UserService.updateUserPass()", e);
         }
         return false;
     }

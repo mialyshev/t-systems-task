@@ -2,6 +2,7 @@ package com.javaschool.controller;
 
 import com.javaschool.dto.card.CardRegisterDto;
 import com.javaschool.entity.User;
+import com.javaschool.exception.UserException;
 import com.javaschool.repository.user.UserRepository;
 import com.javaschool.service.user.CardService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class CardController {
     @PostMapping("/profile/add-card")
     public String registerNewCard(@ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
                                   BindingResult bindingResult,
-                                  Model model){
+                                  Model model) throws UserException {
         if (bindingResult.hasErrors()) {
             return "card-register";
         }

@@ -2,6 +2,7 @@ package com.javaschool.controller;
 
 import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.exception.ProductException;
 import com.javaschool.service.product.ProductService;
 import com.javaschool.service.user.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class ShoppingCartController {
     public String addProductToBucket(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
                                      @RequestParam("size") float size,
                                      @PathVariable("id") long id,
-                                     Model model){
+                                     Model model) throws ProductException {
         shoppingCartService.add(id, bucket, size);
         return "redirect:/catalog/product/" +id;
     }

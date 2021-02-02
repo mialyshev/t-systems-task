@@ -56,6 +56,6 @@ public class RegistrationController {
         }
 
         userService.registerUser(userRegistrationDto);
-        return "index";
+        return "redirect:/";
     }
 }

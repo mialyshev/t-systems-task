@@ -150,22 +150,19 @@
     </div>
     <div class="container">
         <div class="row mr-2">
-            <div class="col-3" th:each="product : ${products}">
-                <div class="card mt-2" style="width: 17rem; height: 35rem">
-                    <div class="view overlay">
-                        <img class="card-img-top" th:src="*{product.url}">
+            <div class="col-3 mt-4" th:each="product : ${products}">
+                <a th:href="@{/catalog/product/{id}(id=${product.id})}">
+                    <div class="card">
+                        <div class="view overlay">
+                            <img class="card-img-top" th:src="*{product.url}">
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text"><span th:text="${product.brandName}"></span></p>
+                            <p class="card-text"><span th:text="*{product.model}"></span></p>
+                            <p class="card-text"><span th:text="*{product.price}"></span>$</p>
+                        </div>
                     </div>
-
-                    <div class="card-body text-center">
-                        <p class="card-text"><span th:text="${product.brandName}"></span></p>
-                        <p class="card-text"><span th:text="*{product.model}"></span></p>
-                        <p class="card-text"><span th:text="*{product.price}"></span>$</p>
-                    </div>
-
-                    <div class="card-body text-center">
-                        <a class="card-link" style="margin: 5px" th:href="@{/catalog/product/{id}(id=${product.id})}">View</a>
-                    </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>

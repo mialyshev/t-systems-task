@@ -1,21 +1,17 @@
 package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.*;
-import com.javaschool.entity.Order;
 import com.javaschool.entity.Product;
-import com.javaschool.entity.Product_;
 import com.javaschool.entity.Size;
+import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.ProductMapperImpl;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
-import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.*;
 import com.javaschool.service.product.ProductService;
-import com.javaschool.service.user.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -38,8 +34,10 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> productDtoList = null;
         try {
             productDtoList = getUnique(productMapper.toDtoList(productRepository.findAll()));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the products", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.getAll()", e);
         }
         return productDtoList;
     }
@@ -49,8 +47,10 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> productDtoListFromRepo = null;
         try {
             productDtoListFromRepo = getUnique(productMapper.toDtoList(productRepository.findAllActive()));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the active products", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.getAllActive()", e);
         }
         return productDtoListFromRepo;
     }
@@ -79,28 +79,36 @@ public class ProductServiceImpl implements ProductService {
         ProductDto productDto = null;
         try {
             productDto = productMapper.toDto(productRepository.findById(id));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a product by id", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.getById()", e);
         }
         return productDto;
     }
 
     @Override
     @Transactional
-    public void addProduct(ProductDto productDto) {
+    public void addProduct(ProductDto productDto){
         Product product = new Product();
-        product.setActive(true);
-        product.setModel(productDto.getModel());
-        product.setQuantity(productDto.getQuantity());
-        product.setPrice(productDto.getPrice());
-        product.setUrl(productDto.getUrl());
-        product.setBrand(brandRepository.findByName(productDto.getBrandName()));
-        product.setCategory(categoryRepository.findByName(productDto.getCategoryName()));
-        product.setColor(colorRepository.findByName(productDto.getColorName()));
-        product.setMaterial(materialRepository.findByName(productDto.getMaterialName()));
-        product.setSeason(seasonRepository.findByName(productDto.getSeasonName()));
-        product.setSize(sizeRepository.findBySize(productDto.getSize()));
-        productRepository.save(product);
+        try {
+            product.setActive(true);
+            product.setModel(productDto.getModel());
+            product.setQuantity(productDto.getQuantity());
+            product.setPrice(productDto.getPrice());
+            product.setUrl(productDto.getUrl());
+            product.setBrand(brandRepository.findByName(productDto.getBrandName()));
+            product.setCategory(categoryRepository.findByName(productDto.getCategoryName()));
+            product.setColor(colorRepository.findByName(productDto.getColorName()));
+            product.setMaterial(materialRepository.findByName(productDto.getMaterialName()));
+            product.setSeason(seasonRepository.findByName(productDto.getSeasonName()));
+            product.setSize(sizeRepository.findBySize(productDto.getSize()));
+            productRepository.save(product);
+        }catch (ProductException e) {
+            log.error("Error while add new product", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.addProduct()", e);
+        }
     }
 
     @Override
@@ -123,11 +131,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean isAvailable(List<ProductBucketDto> productDtos) {
-        for(ProductBucketDto productBucketDto : productDtos){
-            Product product = productRepository.findById(productBucketDto.getProductDto().getId());
-            if(productBucketDto.getQuantityInBucket() > product.getQuantity()){
-                return false;
+        try {
+            for (ProductBucketDto productBucketDto : productDtos) {
+                Product product = productRepository.findById(productBucketDto.getProductDto().getId());
+                if (productBucketDto.getQuantityInBucket() > product.getQuantity()) {
+                    return false;
+                }
             }
+        }catch (ProductException e) {
+            log.error("Error while find product by id", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.isAvailable()", e);
         }
         return true;
     }
@@ -144,13 +158,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateProductQuantity(List<ProductBucketDto> productDtoList) {
-        for(ProductBucketDto productDto : productDtoList){
-            Product product = productRepository.findById(productDto.getProductDto().getId());
-            product.setQuantity(product.getQuantity() - productDto.getQuantityInBucket());
-            if (product.getQuantity() <= 0){
-                product.setActive(false);
+        try {
+            for (ProductBucketDto productDto : productDtoList) {
+                Product product = productRepository.findById(productDto.getProductDto().getId());
+                product.setQuantity(product.getQuantity() - productDto.getQuantityInBucket());
+                if (product.getQuantity() <= 0) {
+                    product.setActive(false);
+                }
+                productRepository.updateProduct(product);
             }
-            productRepository.updateProduct(product);
+        }catch (ProductException e) {
+            log.error("Error while find product by id", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.updateProductQuantity()", e);
         }
     }
 
@@ -160,8 +180,10 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> productDtoList = null;
         try {
             productDtoList = productMapper.toDtoList(productRepository.findByParam(params));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the products by param", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.getProductsByParam()", e);
         }
         return productDtoList;
     }
@@ -169,109 +191,132 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void addProductBySizeQuantity(float size, int quantity, long productId) {
-        Size sizeFromRepo = sizeRepository.findBySize(size);
-        Product product = new Product();
-        Product productFromRepo = productRepository.findById(productId);
-        if(productFromRepo.getSize() == sizeFromRepo){
-            if(!productFromRepo.isActive()){
-                productFromRepo.setActive(true);
+        try {
+            Size sizeFromRepo = sizeRepository.findBySize(size);
+            Product product = new Product();
+            Product productFromRepo = productRepository.findById(productId);
+            if (productFromRepo.getSize() == sizeFromRepo) {
+                if (!productFromRepo.isActive()) {
+                    productFromRepo.setActive(true);
+                }
+                productFromRepo.setQuantity(productFromRepo.getQuantity() + quantity);
+                productRepository.updateProduct(productFromRepo);
+                return;
             }
-            productFromRepo.setQuantity(productFromRepo.getQuantity() + quantity);
-            productRepository.updateProduct(productFromRepo);
-            return;
+            product.setActive(true);
+            product.setModel(productFromRepo.getModel());
+            product.setQuantity(quantity);
+            product.setPrice(productFromRepo.getPrice());
+            product.setUrl(productFromRepo.getUrl());
+            product.setBrand(productFromRepo.getBrand());
+            product.setCategory(productFromRepo.getCategory());
+            product.setColor(productFromRepo.getColor());
+            product.setMaterial(productFromRepo.getMaterial());
+            product.setSeason(productFromRepo.getSeason());
+            product.setSize(sizeRepository.findBySize(size));
+            productRepository.save(product);
+        }catch (ProductException e) {
+            log.error("Error while add product by size or quantity", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.addProductBySizeQuantity()", e);
         }
-        product.setActive(true);
-        product.setModel(productFromRepo.getModel());
-        product.setQuantity(quantity);
-        product.setPrice(productFromRepo.getPrice());
-        product.setUrl(productFromRepo.getUrl());
-        product.setBrand(productFromRepo.getBrand());
-        product.setCategory(productFromRepo.getCategory());
-        product.setColor(productFromRepo.getColor());
-        product.setMaterial(productFromRepo.getMaterial());
-        product.setSeason(productFromRepo.getSeason());
-        product.setSize(sizeRepository.findBySize(size));
-        productRepository.save(product);
     }
 
     @Override
     public List<SizeDto> getAvailableSizesForProduct(long productId) {
         List<SizeDto> sizeDtos = new ArrayList<>();
-        List<ProductDto> products = null;
-        ProductDto product = productMapper.toDto(productRepository.findById(productId));
         try {
-            products = productMapper.toDtoList(productRepository.findAllActiveByModel(product.getModel()));
-        } catch (Exception e) {
-            log.error("Error getting all the active products for check available sizes", e);
-        }
-        for(ProductDto productFromRepo : products){
-            if(productFromRepo.equals(product)){
-                SizeDto sizeDto = new SizeDto();
-                sizeDto.setSize(productFromRepo.getSize());
-                sizeDtos.add(sizeDto);
+            List<ProductDto> products = null;
+            ProductDto product = productMapper.toDto(productRepository.findById(productId));
+            try {
+                products = productMapper.toDtoList(productRepository.findAllActiveByModel(product.getModel()));
+            } catch (ProductException e) {
+                log.error("Error getting all the active products for check available sizes", e);
             }
+            for (ProductDto productFromRepo : products) {
+                if (productFromRepo.equals(product)) {
+                    SizeDto sizeDto = new SizeDto();
+                    sizeDto.setSize(productFromRepo.getSize());
+                    sizeDtos.add(sizeDto);
+                }
+            }
+        }catch (ProductException e) {
+            log.error("Error while getting all available sizes for product", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.getAvailableSizesForProduct()", e);
         }
         return sizeDtos;
     }
 
     @Override
     public void addProductToBucket(long productId, float size, ArrayList<ProductDto> bucket) {
-        ProductDto product = productMapper.toDto(productRepository.findById(productId));
-        if(product.getSize() == size){
-            bucket.add(product);
-            return;
-        }
-        List<ProductDto> products = null;
         try {
-            products = productMapper.toDtoList(productRepository.findAllActiveByModel(product.getModel()));
-        } catch (Exception e) {
-            log.error("Error getting all the active products for add to bucket", e);
-        }
-        for (ProductDto productDto : products){
-            if(productDto.equals(product)){
-                if(productDto.getSize() == size){
-                    bucket.add(productDto);
-                    return;
+            ProductDto product = productMapper.toDto(productRepository.findById(productId));
+            if (product.getSize() == size) {
+                bucket.add(product);
+                return;
+            }
+            List<ProductDto> products = null;
+            try {
+                products = productMapper.toDtoList(productRepository.findAllActiveByModel(product.getModel()));
+            } catch (ProductException e) {
+                log.error("Error getting all the active products for add to bucket", e);
+            }
+            for (ProductDto productDto : products) {
+                if (productDto.equals(product)) {
+                    if (productDto.getSize() == size) {
+                        bucket.add(productDto);
+                        return;
+                    }
                 }
             }
+        }catch (ProductException e) {
+            log.error("Error while add product to bucket", e);
+        }catch (Exception e){
+            log.error("Error at ProductService.addProductToBucket()", e);
         }
     }
 
     @Override
-    public List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams) {
+    public List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams){
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
-        if(categoryName != null){
-            params.add(new SearchCriteria("category", ":", categoryRepository.findByName(categoryName)));
-            selectedParams.setCategory(categoryName);
-        }
-        if(brandName != null){
-            params.add(new SearchCriteria("brand", ":", brandRepository.findByName(brandName)));
-            selectedParams.setBrand(brandName);
-        }
-        if(colorName != null){
-            params.add(new SearchCriteria("color", ":", colorRepository.findByName(colorName)));
-            selectedParams.setColor(colorName);
-        }
-        if(materialName != null){
-            params.add(new SearchCriteria("material", ":", materialRepository.findByName(materialName)));
-            selectedParams.setMaterial(materialName);
-        }
-        if(seasonName != null){
-            params.add(new SearchCriteria("season", ":", seasonRepository.findByName(seasonName)));
-            selectedParams.setSeason(seasonName);
-        }
         List<ProductDto> productDtoListFromRepo = null;
         try {
+            if (categoryName != null) {
+                params.add(new SearchCriteria("category", ":", categoryRepository.findByName(categoryName)));
+                selectedParams.setCategory(categoryName);
+            }
+            if (brandName != null) {
+                params.add(new SearchCriteria("brand", ":", brandRepository.findByName(brandName)));
+                selectedParams.setBrand(brandName);
+            }
+            if (colorName != null) {
+                params.add(new SearchCriteria("color", ":", colorRepository.findByName(colorName)));
+                selectedParams.setColor(colorName);
+            }
+            if (materialName != null) {
+                params.add(new SearchCriteria("material", ":", materialRepository.findByName(materialName)));
+                selectedParams.setMaterial(materialName);
+            }
+            if (seasonName != null) {
+                params.add(new SearchCriteria("season", ":", seasonRepository.findByName(seasonName)));
+                selectedParams.setSeason(seasonName);
+            }
+
             productDtoListFromRepo = getUnique(productMapper.toDtoList(productRepository.findByParam(params)));
-        } catch (Exception e) {
-            log.error("Error getting all the active products by param name", e);
+        } catch (ProductException e) {
+            log.error("Error while check all params", e);
+        } catch (Exception e){
+            log.error("Error at ProductService.getProductsByParam()", e);
         }
         return productDtoListFromRepo;
     }
 
     @Override
-    public List<ProductDto> getProductsByParamList(SelectedParams selectedParams) {
+    public List<ProductDto> getProductsByParamList(SelectedParams selectedParams){
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+        List<ProductDto> productDtoListFromRepo = null;
+        try {
         if(selectedParams.getCategory() != null){
             params.add(new SearchCriteria("category", ":", categoryRepository.findByName(selectedParams.getCategory())));
         }
@@ -287,11 +332,11 @@ public class ProductServiceImpl implements ProductService {
         if(selectedParams.getSeason() != null){
             params.add(new SearchCriteria("season", ":", seasonRepository.findByName(selectedParams.getSeason())));
         }
-        List<ProductDto> productDtoListFromRepo = null;
-        try {
-            productDtoListFromRepo = getUnique(productMapper.toDtoList(productRepository.findByParam(params)));
-        } catch (Exception e) {
-            log.error("Error getting all the active products by param list", e);
+        productDtoListFromRepo = getUnique(productMapper.toDtoList(productRepository.findByParam(params)));
+        } catch (ProductException e) {
+            log.error("Error while get product by params", e);
+        } catch (Exception e){
+            log.error("Error at ProductService.getProductsByParamList()", e);
         }
         return productDtoListFromRepo;
     }

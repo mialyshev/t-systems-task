@@ -2,6 +2,7 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.ColorDto;
 import com.javaschool.entity.Color;
+import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.ColorMapperImpl;
 import com.javaschool.repository.product.ColorRepository;
 import com.javaschool.service.product.ColorService;
@@ -25,8 +26,10 @@ public class ColorServiceImpl implements ColorService {
         List<ColorDto> colorDtoList = null;
         try {
             colorDtoList = colorMapper.toDtoList(colorRepository.findAll());
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the colors", e);
+        }catch (Exception e){
+            log.error("Error at ColorService.getAll()", e);
         }
         return colorDtoList;
     }
@@ -36,8 +39,10 @@ public class ColorServiceImpl implements ColorService {
         ColorDto colorDto = null;
         try {
             colorDto = colorMapper.toDto(colorRepository.findById(id));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a color by id", e);
+        }catch (Exception e){
+            log.error("Error at ColorService.getById()", e);
         }
         return colorDto;
     }
@@ -48,8 +53,10 @@ public class ColorServiceImpl implements ColorService {
         ColorDto colorDto = null;
         try {
             colorDto = colorMapper.toDto(colorRepository.findByName(colorName));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a color by name", e);
+        }catch (Exception e){
+            log.error("Error at ColorService.getByName()", e);
         }
         return colorDto;
     }

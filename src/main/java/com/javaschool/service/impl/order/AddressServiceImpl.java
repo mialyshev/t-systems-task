@@ -4,6 +4,7 @@ import com.javaschool.dto.order.AddressAdditionDto;
 import com.javaschool.dto.order.AddressDto;
 import com.javaschool.entity.Address;
 import com.javaschool.entity.User;
+import com.javaschool.exception.UserException;
 import com.javaschool.mapper.order.AddressMapperImpl;
 import com.javaschool.repository.order.AddressRepository;
 import com.javaschool.service.order.AddressService;
@@ -46,8 +47,10 @@ public class AddressServiceImpl implements AddressService {
         List<AddressDto> addressDtoList = null;
         try {
             addressDtoList = addressMapper.toDtoList(addressRepository.findAllSavedByUserId(userId));
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting all saved address", e);
+        }catch (Exception e){
+            log.error("Error at AddressService.getAllSaved()", e);
         }
         return addressDtoList;
     }
@@ -57,8 +60,10 @@ public class AddressServiceImpl implements AddressService {
         AddressDto addressDto = null;
         try {
             addressDto = addressMapper.toDto(addressRepository.findById(id));
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a address by id", e);
+        }catch (Exception e){
+            log.error("Error at AddressService.getById()", e);
         }
         return addressDto;
     }
@@ -69,8 +74,10 @@ public class AddressServiceImpl implements AddressService {
         AddressDto addressDto = null;
         try {
             addressDto = addressMapper.toDto(addressRepository.getLastByUserId(userId));
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a last address by user id", e);
+        }catch (Exception e){
+            log.error("Error at AddressService.getLastByUserId()", e);
         }
         return addressDto;
     }
@@ -80,8 +87,10 @@ public class AddressServiceImpl implements AddressService {
         List<AddressDto> addressDtoList = null;
         try {
             addressDtoList = addressMapper.toDtoList(addressRepository.findAll());
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting all address", e);
+        }catch (Exception e){
+            log.error("Error at AddressService.getAll()", e);
         }
         return addressDtoList;
     }
@@ -89,8 +98,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public void updateAddress(AddressDto addressDto) {
-        Address address = addressRepository.findById(addressDto.getId());
+        Address address = null;
         try {
+            address = addressRepository.findById(addressDto.getId());
             address.setCountry(addressDto.getCountry());
             address.setCity(addressDto.getCity());
             address.setStreet(addressDto.getStreet());
@@ -98,8 +108,10 @@ public class AddressServiceImpl implements AddressService {
             address.setApartamentNumber(addressDto.getApartamentNumber());
             address.setPostalCode(addressDto.getPostalCode());
             addressRepository.update(address);
-        }catch (Exception e) {
+        }catch (UserException e) {
             log.error("Error update address", e);
+        }catch (Exception e){
+            log.error("Error at AddressService.updateAddress()", e);
         }
 
     }
@@ -122,8 +134,10 @@ public class AddressServiceImpl implements AddressService {
             Address address = addressRepository.findById(addressId);
             address.setSaved(false);
             addressRepository.update(address);
-        }catch (Exception e) {
+        }catch (UserException e) {
             log.error("Error update saved address", e);
+        }catch (Exception e){
+            log.error("Error at AddressService.updateSavedAddress()", e);
         }
 
     }
@@ -135,8 +149,10 @@ public class AddressServiceImpl implements AddressService {
             Address address = addressRepository.findById(addressId);
             address.setSaved(false);
             addressRepository.update(address);
-        }catch (Exception e) {
+        }catch (UserException e) {
             log.error("Error delete address", e);
+        }catch (Exception e){
+            log.error("Error at AddressService.deleteAddress()", e);
         }
 
     }

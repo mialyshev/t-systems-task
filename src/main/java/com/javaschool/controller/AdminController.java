@@ -2,6 +2,7 @@ package com.javaschool.controller;
 
 import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.exception.UserException;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.user.UserService;
@@ -114,7 +115,7 @@ public class AdminController {
     }
 
     @GetMapping("/statistic/users")
-    public String getTopUsersPage(Model model){
+    public String getTopUsersPage(Model model) throws UserException {
         model.addAttribute("users", orderService.getTopUsers());
         return "admin-statistic-users";
     }

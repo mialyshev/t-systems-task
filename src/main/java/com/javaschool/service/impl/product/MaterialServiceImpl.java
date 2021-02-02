@@ -2,6 +2,7 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.MaterialDto;
 import com.javaschool.entity.Material;
+import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.MaterialMapperImpl;
 import com.javaschool.repository.product.MaterialRepository;
 import com.javaschool.service.product.MaterialService;
@@ -25,8 +26,10 @@ public class MaterialServiceImpl implements MaterialService {
         List<MaterialDto> materialDtoList = null;
         try {
             materialDtoList = materialMapper.toDtoList(materialRepository.findAll());
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the materials", e);
+        }catch (Exception e){
+            log.error("Error at MaterialService.getAll()", e);
         }
         return materialDtoList;
     }
@@ -36,8 +39,10 @@ public class MaterialServiceImpl implements MaterialService {
         MaterialDto materialDto = null;
         try {
             materialDto = materialMapper.toDto(materialRepository.findById(id));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a material by id", e);
+        }catch (Exception e){
+            log.error("Error at MaterialService.getById()", e);
         }
         return materialDto;
     }
@@ -48,8 +53,10 @@ public class MaterialServiceImpl implements MaterialService {
         MaterialDto materialDto = null;
         try {
             materialDto = materialMapper.toDto(materialRepository.findByName(materialName));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a material by name", e);
+        }catch (Exception e){
+            log.error("Error at MaterialService.getByName()", e);
         }
         return materialDto;
     }

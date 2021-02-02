@@ -26,6 +26,7 @@ public class MvcDispatcherServletInitializer extends AbstractAnnotationConfigDis
     protected FrameworkServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
         DispatcherServlet dispatcher = (DispatcherServlet) super.createDispatcherServlet(servletAppContext);
         dispatcher.setThrowExceptionIfNoHandlerFound(true);
+        dispatcher.setThrowExceptionIfNoHandlerFound(true);
         return dispatcher;
     }
 }

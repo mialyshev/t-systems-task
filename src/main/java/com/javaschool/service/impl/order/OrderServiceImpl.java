@@ -12,6 +12,9 @@ import com.javaschool.entity.User;
 import com.javaschool.entity.enums.OrderStatus;
 import com.javaschool.entity.enums.PaymentStatus;
 import com.javaschool.entity.enums.PaymentType;
+import com.javaschool.exception.OrderException;
+import com.javaschool.exception.ProductException;
+import com.javaschool.exception.UserException;
 import com.javaschool.mapper.order.OrderMapperImpl;
 import com.javaschool.mapper.product.ProductMapperImpl;
 import com.javaschool.mapper.user.UserMapperImpl;
@@ -51,8 +54,10 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto> orderDtoList = null;
         try {
             orderDtoList = orderMapper.toDtoList(orderRepository.findAll());
-        } catch (Exception e) {
+        } catch (OrderException e) {
             log.error("Error getting all orders", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.findAll()", e);
         }
         return orderDtoList;
     }
@@ -62,15 +67,17 @@ public class OrderServiceImpl implements OrderService {
         OrderDto orderDto = null;
         try {
             orderDto = orderMapper.toDto(orderRepository.findById(id));
-        } catch (Exception e) {
+        } catch (OrderException e) {
             log.error("Error getting a order by id", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.findById()", e);
         }
         return orderDto;
     }
 
     @Override
     @Transactional
-    public void addOrder(OrderRegisterDto orderDto) {
+    public void addOrder(OrderRegisterDto orderDto) throws ProductException, UserException {
         Order order = new Order();
         order.setUser(userRepository.findById(orderDto.getUser_id()));
         order.setAddress(addressRepository.findById(orderDto.getAddress_id()));
@@ -138,8 +145,10 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto> orderDtoList = null;
         try {
             orderDtoList = orderMapper.toDtoList(orderRepository.findByUserId(userId));
-        } catch (Exception e) {
+        } catch (OrderException e) {
             log.error("Error getting all orders by user id", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.findByUserId()", e);
         }
         return orderDtoList;
     }
@@ -147,23 +156,35 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void changePayment(long orderId) {
-        Order order = orderRepository.findById(orderId);
-        order.setPaymentType(PaymentType.CASH);
-        if (order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT) {
-            order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        try {
+            Order order = orderRepository.findById(orderId);
+            order.setPaymentType(PaymentType.CASH);
+            if (order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT) {
+                order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+            }
+            orderRepository.updateOrder(order);
+        } catch (OrderException e) {
+            log.error("Error updating payment type", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.changePayment()", e);
         }
-        orderRepository.updateOrder(order);
     }
 
     @Override
     @Transactional
     public void setPaid(long orderId) {
-        Order order = orderRepository.findById(orderId);
-        order.setPaymentStatus(PaymentStatus.PAID);
-        if (order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT) {
-            order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+        try {
+            Order order = orderRepository.findById(orderId);
+            order.setPaymentStatus(PaymentStatus.PAID);
+            if (order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT) {
+                order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+            }
+            orderRepository.updateOrder(order);
+        }catch (OrderException e) {
+            log.error("Error updating payment status", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.setPaid()", e);
         }
-        orderRepository.updateOrder(order);
     }
 
     @Override
@@ -171,8 +192,10 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto> orderDtoList = null;
         try {
             orderDtoList = orderMapper.toDtoList(orderRepository.findByAddressId(addressId));
-        } catch (Exception e) {
+        } catch (OrderException e) {
             log.error("Error getting all orders by address id", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.getOrdersByAddressId()", e);
         }
         return orderDtoList;
     }
@@ -180,26 +203,38 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void updatePaymentStatus(String paymentStatus, long orderId) {
-        Order order = orderRepository.findById(orderId);
-        if(order.getPaymentStatus().toString().equals(paymentStatus)){
-            return;
+        try {
+            Order order = orderRepository.findById(orderId);
+            if (order.getPaymentStatus().toString().equals(paymentStatus)) {
+                return;
+            }
+            order.setPaymentStatus(PaymentStatus.valueOf(paymentStatus));
+            if (order.getPaymentStatus() == PaymentStatus.PAID & order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT) {
+                order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
+            }
+            orderRepository.updateOrder(order);
+        } catch (OrderException e) {
+            log.error("Error updating payment status", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.updatePaymentStatus()", e);
         }
-        order.setPaymentStatus(PaymentStatus.valueOf(paymentStatus));
-        if(order.getPaymentStatus() == PaymentStatus.PAID & order.getOrderStatus() == OrderStatus.AWAITING_PAYMENT){
-            order.setOrderStatus(OrderStatus.WAITING_FOR_SHIPMENT);
-        }
-        orderRepository.updateOrder(order);
     }
 
     @Override
     @Transactional
     public void updateOrderStatus(String orderStatus, long orderId) {
-        Order order = orderRepository.findById(orderId);
-        if(order.getOrderStatus().toString().equals(orderStatus)){
-            return;
+        try {
+            Order order = orderRepository.findById(orderId);
+            if (order.getOrderStatus().toString().equals(orderStatus)) {
+                return;
+            }
+            order.setOrderStatus(OrderStatus.valueOf(orderStatus));
+            orderRepository.updateOrder(order);
+        } catch (OrderException e) {
+            log.error("Error updating order status", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.updateOrderStatus()", e);
         }
-        order.setOrderStatus(OrderStatus.valueOf(orderStatus));
-        orderRepository.updateOrder(order);
     }
 
     @Override
@@ -211,8 +246,10 @@ public class OrderServiceImpl implements OrderService {
             }else {
                 orderDtoList = orderMapper.toDtoList(orderRepository.findAllDeliveredByUserId(userId, false));
             }
-        } catch (Exception e) {
+        } catch (OrderException e) {
             log.error("Error getting all delivered orders by user id", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.findAllDeliveredForUser()", e);
         }
         return orderDtoList;
     }
@@ -220,9 +257,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void setOrderProductList(OrderDto orderDto) {
-        Order order = orderRepository.findById(orderDto.getId());
-        List<Product> products = new ArrayList<>(order.getProductList());
-        orderDto.setProductDtoList(productMapper.toDtoList(products));
+        try {
+            Order order = orderRepository.findById(orderDto.getId());
+            List<Product> products = new ArrayList<>(order.getProductList());
+            orderDto.setProductDtoList(productMapper.toDtoList(products));
+        }catch (OrderException e) {
+            log.error("Error getting all products for order", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.setOrderProductList()", e);
+        }
     }
 
     @Override
@@ -256,8 +299,10 @@ public class OrderServiceImpl implements OrderService {
             }else {
                 orderDtoList = orderMapper.toDtoList(orderRepository.findAllDelivered(false));
             }
-        } catch (Exception e) {
+        } catch (OrderException e) {
             log.error("Error getting all delivered orders", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.findAllDelivered()", e);
         }
         return orderDtoList;
     }
@@ -269,8 +314,10 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto> orderDtoList = new ArrayList<>();
         try {
             orderDtoListFromBd = orderMapper.toDtoList(orderRepository.findAll());
-        } catch (Exception e) {
-            log.error("Error getting all orders", e);
+        } catch (OrderException e) {
+            log.error("Error getting all orders for current month", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.getMonthOrders()", e);
         }
         int currentMonth = LocalDate.now().getMonthValue();
         for(OrderDto orderDto : orderDtoListFromBd){
@@ -291,8 +338,10 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto> orderDtoList = new ArrayList<>();
         try {
             orderDtoListFromBd = orderMapper.toDtoList(orderRepository.findAll());
-        } catch (Exception e) {
-            log.error("Error getting all orders", e);
+        } catch (OrderException e) {
+            log.error("Error getting all orders for current week", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.getWeekOrders()", e);
         }
         for(OrderDto orderDto : orderDtoListFromBd){
             if(orderDto.getDateOfPurchase().get(weekFields.weekOfWeekBasedYear()) == weekNumber){
@@ -310,8 +359,10 @@ public class OrderServiceImpl implements OrderService {
         List<ProductDto> productDtoList = new ArrayList<>();
         try {
             orderDtoListFromBd = orderMapper.toDtoList(orderRepository.findAll());
-        } catch (Exception e) {
-            log.error("Error getting all orders", e);
+        } catch (OrderException e) {
+            log.error("Error getting top products", e);
+        }catch (Exception e) {
+            log.error("Error at OrderService.getTopProducts()", e);
         }
         List<ProductStatisticDto> productStatistic = new ArrayList<>();
         boolean isEquals;
@@ -351,7 +402,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public List<UserStatisticDto> getTopUsers() {
+    public List<UserStatisticDto> getTopUsers() throws UserException {
         List<User> users = userRepository.findAll();
         List<UserStatisticDto> userStatisticDtos = new ArrayList<>();
         for (User user : users){

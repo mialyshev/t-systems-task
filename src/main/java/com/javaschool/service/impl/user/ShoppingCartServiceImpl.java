@@ -2,6 +2,7 @@ package com.javaschool.service.impl.user;
 
 import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.ProductMapperImpl;
 import com.javaschool.repository.product.ProductRepository;
 import com.javaschool.service.product.ProductService;
@@ -22,7 +23,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ProductMapperImpl productMapper;
 
     @Override
-    public void add(long productId, ArrayList<ProductBucketDto> bucket, float size) {
+    public void add(long productId, ArrayList<ProductBucketDto> bucket, float size) throws ProductException {
         List<ProductDto> productDtoList = null;
         ProductDto productDto = productMapper.toDto(productRepository.findById(productId));
         try {

@@ -1,6 +1,7 @@
 package com.javaschool.controller;
 
 import com.javaschool.dto.product.*;
+import com.javaschool.exception.ProductException;
 import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -190,7 +191,7 @@ public class ProductController {
     public String addNewProduct(@ModelAttribute("productForm") @Valid ProductDto productDto,
                                 BindingResult bindingResult,
                                 @RequestParam("size") float size,
-                                Model model){
+                                Model model) throws ProductException {
         if (bindingResult.hasErrors()){
             model.addAttribute("categories", categoryService.getAll());
             model.addAttribute("brands", brandService.getAll());

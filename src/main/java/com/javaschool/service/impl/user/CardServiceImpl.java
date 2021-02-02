@@ -5,6 +5,7 @@ import com.javaschool.dto.card.CardRegisterDto;
 import com.javaschool.dto.product.BrandDto;
 import com.javaschool.entity.Card;
 import com.javaschool.entity.User;
+import com.javaschool.exception.UserException;
 import com.javaschool.mapper.user.CardMapperImpl;
 import com.javaschool.repository.user.CardRepository;
 import com.javaschool.service.user.CardService;
@@ -41,8 +42,10 @@ public class CardServiceImpl implements CardService  {
         List<CardDto> cardDtos = null;
         try {
             cardDtos = cardMapper.toDtoList(cardRepository.findAllByUserId(userId));
-        } catch (Exception e) {
-            log.error("Error getting all saved card", e);
+        } catch (UserException e) {
+            log.error("Error getting all saved cards", e);
+        }catch (Exception e) {
+            log.error("Error at CardService.getAllByUserId()", e);
         }
         return cardDtos;
     }
@@ -52,8 +55,10 @@ public class CardServiceImpl implements CardService  {
         CardDto cardDto = null;
         try {
             cardDto = cardMapper.toDto(cardRepository.findById(id));
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a card by id", e);
+        }catch (Exception e) {
+            log.error("Error at CardService.getById()", e);
         }
         return cardDto;
     }

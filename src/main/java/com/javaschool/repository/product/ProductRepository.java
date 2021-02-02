@@ -1,6 +1,7 @@
 package com.javaschool.repository.product;
 
 
+import com.javaschool.exception.ProductException;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import com.javaschool.entity.Product;
 
@@ -8,13 +9,13 @@ import java.util.List;
 
 public interface ProductRepository {
 
-    List<Product> findAll();
+    List<Product> findAll() throws ProductException;
 
-    List<Product> findAllActive();
+    List<Product> findAllActive() throws ProductException;
 
-    List<Product> findAllActiveByModel(String model);
+    List<Product> findAllActiveByModel(String model) throws ProductException;
 
-    Product findById(long id);
+    Product findById(long id) throws ProductException;
 
     void save(Product product);
 
@@ -22,5 +23,5 @@ public interface ProductRepository {
 
     void updateProduct(Product product);
 
-    List<Product> findByParam(List<SearchCriteria> params);
+    List<Product> findByParam(List<SearchCriteria> params) throws ProductException;
 }

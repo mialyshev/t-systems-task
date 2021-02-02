@@ -9,6 +9,8 @@ import com.javaschool.dto.user.UserStatisticDto;
 import com.javaschool.entity.Address;
 import com.javaschool.entity.Product;
 import com.javaschool.entity.User;
+import com.javaschool.exception.ProductException;
+import com.javaschool.exception.UserException;
 
 import java.util.List;
 import java.util.Set;
@@ -19,7 +21,7 @@ public interface OrderService {
 
     OrderDto findById(long id);
 
-    void addOrder(OrderRegisterDto orderDto);
+    void addOrder(OrderRegisterDto orderDto) throws ProductException, UserException;
 
     void updateOrderStatus(OrderDto orderDto);
 
@@ -57,5 +59,5 @@ public interface OrderService {
 
     List<ProductDto> getTopProducts();
 
-    List<UserStatisticDto> getTopUsers();
+    List<UserStatisticDto> getTopUsers() throws UserException;
 }
