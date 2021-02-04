@@ -1,7 +1,6 @@
 package com.javaschool.repository.user;
 
 import com.javaschool.entity.Role;
-import com.javaschool.entity.User;
 import com.javaschool.exception.UserException;
 
 import java.util.Collection;

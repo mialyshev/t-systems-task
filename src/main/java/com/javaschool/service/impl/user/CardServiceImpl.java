@@ -2,7 +2,6 @@ package com.javaschool.service.impl.user;
 
 import com.javaschool.dto.card.CardDto;
 import com.javaschool.dto.card.CardRegisterDto;
-import com.javaschool.dto.product.BrandDto;
 import com.javaschool.entity.Card;
 import com.javaschool.entity.User;
 import com.javaschool.exception.UserException;
@@ -25,7 +24,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CardServiceImpl implements CardService  {
+public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final CardMapperImpl cardMapper;
@@ -50,7 +49,7 @@ public class CardServiceImpl implements CardService  {
             cardDtos = cardMapper.toDtoList(cardRepository.findAllByUserId(userId));
         } catch (UserException e) {
             log.error("Error getting all saved cards", e);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error at CardService.getAllByUserId()", e);
         }
         return cardDtos;
@@ -63,7 +62,7 @@ public class CardServiceImpl implements CardService  {
             cardDto = cardMapper.toDto(cardRepository.findById(id));
         } catch (UserException e) {
             log.error("Error getting a card by id", e);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error at CardService.getById()", e);
         }
         return cardDto;
@@ -78,14 +77,14 @@ public class CardServiceImpl implements CardService  {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         User userFromBd = null;
-        try{
+        try {
             userFromBd = userRepository.findByEmail(currentUser);
-        }catch (UserException e){
+        } catch (UserException e) {
             log.error("Error while getting user for register new card", e);
         }
 
         String[] ownerDate = cardRegisterDto.getOwner().split(" ");
-        if (ownerDate.length != 2){
+        if (ownerDate.length != 2) {
             model.addAttribute("ownerError", "Cardholder data must consist of first and last name");
             return "card-register";
         }
@@ -93,7 +92,7 @@ public class CardServiceImpl implements CardService  {
         return "redirect:/profile/cards";
     }
 
-    private LocalDate getDate(String date){
+    private LocalDate getDate(String date) {
         String[] nums = date.split("-");
         return LocalDate.of(Integer.parseInt(nums[0]), Integer.parseInt(nums[1]), 1);
     }

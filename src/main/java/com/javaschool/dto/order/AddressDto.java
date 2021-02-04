@@ -34,7 +34,7 @@ public class AddressDto {
     private String apartamentNumber;
 
     @Override
-    public String toString(){
+    public String toString() {
         return (this.getCountry() + ',' + this.getCity() + ',' + this.getStreet() + ',' + this.getHouseNumber() + ',' + this.getApartamentNumber());
     }
 }

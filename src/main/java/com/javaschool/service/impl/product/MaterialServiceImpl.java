@@ -30,7 +30,7 @@ public class MaterialServiceImpl implements MaterialService {
             materialDtoList = materialMapper.toDtoList(materialRepository.findAll());
         } catch (ProductException e) {
             log.error("Error getting all the materials", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at MaterialService.getAll()", e);
         }
         return materialDtoList;
@@ -43,7 +43,7 @@ public class MaterialServiceImpl implements MaterialService {
             materialDto = materialMapper.toDto(materialRepository.findById(id));
         } catch (ProductException e) {
             log.error("Error getting a material by id", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at MaterialService.getById()", e);
         }
         return materialDto;
@@ -57,7 +57,7 @@ public class MaterialServiceImpl implements MaterialService {
             materialDto = materialMapper.toDto(materialRepository.findByName(materialName));
         } catch (ProductException e) {
             log.error("Error getting a material by name", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at MaterialService.getByName()", e);
         }
         return materialDto;
@@ -79,12 +79,12 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     @Transactional
-    public String addNewMaterialController(BindingResult bindingResult,  MaterialDto materialDto, Model model) {
+    public String addNewMaterialController(BindingResult bindingResult, MaterialDto materialDto, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("materials", getAll());
             return "admin-material";
         }
-        if(getByName(materialDto.getMaterialName()) != null){
+        if (getByName(materialDto.getMaterialName()) != null) {
             model.addAttribute("materialError", "A material with the same name already exists");
             List<MaterialDto> materials = getAll();
             model.addAttribute("materials", materials);

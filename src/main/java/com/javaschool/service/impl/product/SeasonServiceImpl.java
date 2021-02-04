@@ -30,7 +30,7 @@ public class SeasonServiceImpl implements SeasonService {
             seasonDtoList = seasonMapper.toDtoList(seasonRepository.findAll());
         } catch (ProductException e) {
             log.error("Error getting all the seasons", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at SeasonService.getAll()", e);
         }
         return seasonDtoList;
@@ -43,7 +43,7 @@ public class SeasonServiceImpl implements SeasonService {
             seasonDto = seasonMapper.toDto(seasonRepository.findById(id));
         } catch (ProductException e) {
             log.error("Error getting a season by id", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at SeasonService.getById()", e);
         }
         return seasonDto;
@@ -57,7 +57,7 @@ public class SeasonServiceImpl implements SeasonService {
             seasonDto = seasonMapper.toDto(seasonRepository.findByName(seasonName));
         } catch (ProductException e) {
             log.error("Error getting a season by name", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at SeasonService.getByName()", e);
         }
         return seasonDto;
@@ -79,12 +79,12 @@ public class SeasonServiceImpl implements SeasonService {
 
     @Override
     @Transactional
-    public String addNewSeasonController(BindingResult bindingResult,  SeasonDto seasonDto, Model model) {
+    public String addNewSeasonController(BindingResult bindingResult, SeasonDto seasonDto, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("seasons", getAll());
             return "admin-season";
         }
-        if(getByName(seasonDto.getSeasonName()) != null){
+        if (getByName(seasonDto.getSeasonName()) != null) {
             model.addAttribute("seasonError", "A season with the same name already exists");
             List<SeasonDto> seasons = getAll();
             model.addAttribute("seasons", seasons);

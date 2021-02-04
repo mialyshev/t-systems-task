@@ -30,7 +30,7 @@ public class ColorServiceImpl implements ColorService {
             colorDtoList = colorMapper.toDtoList(colorRepository.findAll());
         } catch (ProductException e) {
             log.error("Error getting all the colors", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at ColorService.getAll()", e);
         }
         return colorDtoList;
@@ -43,7 +43,7 @@ public class ColorServiceImpl implements ColorService {
             colorDto = colorMapper.toDto(colorRepository.findById(id));
         } catch (ProductException e) {
             log.error("Error getting a color by id", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at ColorService.getById()", e);
         }
         return colorDto;
@@ -57,7 +57,7 @@ public class ColorServiceImpl implements ColorService {
             colorDto = colorMapper.toDto(colorRepository.findByName(colorName));
         } catch (ProductException e) {
             log.error("Error getting a color by name", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at ColorService.getByName()", e);
         }
         return colorDto;
@@ -79,12 +79,12 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     @Transactional
-    public String addNewColorController(BindingResult bindingResult,  ColorDto colorDto, Model model) {
+    public String addNewColorController(BindingResult bindingResult, ColorDto colorDto, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("colors", getAll());
             return "admin-color";
         }
-        if(getByName(colorDto.getColorName()) != null){
+        if (getByName(colorDto.getColorName()) != null) {
             model.addAttribute("colorError", "A color with the same name already exists");
             List<ColorDto> colors = getAll();
             model.addAttribute("colors", colors);

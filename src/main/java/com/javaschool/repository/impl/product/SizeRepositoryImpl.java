@@ -32,7 +32,7 @@ public class SizeRepositoryImpl implements SizeRepository {
             TypedQuery<Size> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all sizes");
         }
     }
@@ -41,7 +41,7 @@ public class SizeRepositoryImpl implements SizeRepository {
     public Size findById(long id) throws ProductException {
         try {
             return entityManager.find(Size.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting size with id: " + id);
         }
     }
@@ -59,7 +59,7 @@ public class SizeRepositoryImpl implements SizeRepository {
             TypedQuery<Size> selectByName = entityManager.createQuery(criteriaQuery);
 
             return selectByName.getSingleResult();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting size: " + size);
         }
     }

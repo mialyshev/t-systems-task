@@ -9,8 +9,6 @@ import com.javaschool.exception.ProductException;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +23,7 @@ public interface ProductService {
 
     void addProduct(ProductDto productDto) throws ProductException;
 
-    List<ProductBucketDto>getSelectedList(Integer[] selected, ArrayList<ProductBucketDto> bucket);
+    List<ProductBucketDto> getSelectedList(Integer[] selected, ArrayList<ProductBucketDto> bucket);
 
     boolean isAvailable(List<ProductBucketDto> productDtos);
 

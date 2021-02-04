@@ -3,9 +3,6 @@ package com.javaschool.controller;
 import com.javaschool.dto.user.UserRegistrationDto;
 import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,14 +20,14 @@ public class RegistrationController {
     private final UserService userService;
 
     @GetMapping
-    public String getRegistrationForm(Model model){
+    public String getRegistrationForm(Model model) {
         return userService.getRegistrationFormController(model);
     }
 
     @PostMapping
     public String registerNewUser(@ModelAttribute("userRegister") @Valid UserRegistrationDto userRegistrationDto,
                                   BindingResult bindingResult,
-                                  Model model){
+                                  Model model) {
         return userService.registerNewUserController(bindingResult, userRegistrationDto, model);
     }
 }

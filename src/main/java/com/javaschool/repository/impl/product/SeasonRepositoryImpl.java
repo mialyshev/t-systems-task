@@ -33,7 +33,7 @@ public class SeasonRepositoryImpl implements SeasonRepository {
             TypedQuery<Season> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all seasons");
         }
     }
@@ -42,7 +42,7 @@ public class SeasonRepositoryImpl implements SeasonRepository {
     public Season findById(long id) throws ProductException {
         try {
             return entityManager.find(Season.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting season with id: " + id);
         }
     }
@@ -60,7 +60,7 @@ public class SeasonRepositoryImpl implements SeasonRepository {
             TypedQuery<Season> selectByName = entityManager.createQuery(criteriaQuery);
 
             return selectByName.getSingleResult();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting season with name: " + seasonName);
         }
     }

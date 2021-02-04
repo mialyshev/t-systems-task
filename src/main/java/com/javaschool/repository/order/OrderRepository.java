@@ -1,7 +1,6 @@
 package com.javaschool.repository.order;
 
 import com.javaschool.entity.Order;
-import com.javaschool.entity.enums.OrderStatus;
 import com.javaschool.exception.OrderException;
 
 import java.util.List;

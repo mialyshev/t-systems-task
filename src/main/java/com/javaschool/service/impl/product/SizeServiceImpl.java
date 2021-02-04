@@ -30,7 +30,7 @@ public class SizeServiceImpl implements SizeService {
             sizeDtoList = sizeMapper.toDtoList(sizeRepository.findAll());
         } catch (ProductException e) {
             log.error("Error getting all the sizes", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at SizeService.getAll()", e);
         }
         return sizeDtoList;
@@ -43,7 +43,7 @@ public class SizeServiceImpl implements SizeService {
             sizeDto = sizeMapper.toDto(sizeRepository.findById(id));
         } catch (ProductException e) {
             log.error("Error getting a size by id", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at SizeService.getById()", e);
         }
         return sizeDto;
@@ -57,7 +57,7 @@ public class SizeServiceImpl implements SizeService {
             sizeDto = sizeMapper.toDto(sizeRepository.findBySize(size));
         } catch (ProductException e) {
             log.error("Error getting a size by name", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at SizeService.getByName()", e);
         }
         return sizeDto;
@@ -79,12 +79,12 @@ public class SizeServiceImpl implements SizeService {
 
     @Override
     @Transactional
-    public String addNewSizeController(BindingResult bindingResult,  SizeDto sizeDto, Model model) {
+    public String addNewSizeController(BindingResult bindingResult, SizeDto sizeDto, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("sizes", getAll());
             return "admin-size";
         }
-        if(getByName(sizeDto.getSize()) != null){
+        if (getByName(sizeDto.getSize()) != null) {
             model.addAttribute("sizeError", "A size with the same value already exists");
             List<SizeDto> sizes = getAll();
             model.addAttribute("sizes", sizes);

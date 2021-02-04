@@ -4,10 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = { "id", "quantity", "price", "model"})
+@ToString(of = {"id", "quantity", "price", "model"})
 @Entity
 @Table(name = "products")
 @Data

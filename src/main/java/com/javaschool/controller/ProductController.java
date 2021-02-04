@@ -1,7 +1,6 @@
 package com.javaschool.controller;
 
 import com.javaschool.dto.product.*;
-import com.javaschool.exception.ProductException;
 import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -10,7 +9,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/product")
@@ -26,7 +24,7 @@ public class ProductController {
 
 
     @GetMapping("/category")
-    public String getAllCategories(Model model){
+    public String getAllCategories(Model model) {
         categoryService.getAllCategoriesController(model);
         return "admin-category";
     }
@@ -34,12 +32,12 @@ public class ProductController {
     @PostMapping("/category")
     public String addNewCategory(@ModelAttribute("categoryForm") @Valid CategoryDto categoryDto,
                                  BindingResult bindingResult,
-                                 Model model){
+                                 Model model) {
         return categoryService.addNewCategoryController(bindingResult, categoryDto, model);
     }
 
     @GetMapping("/brand")
-    public String getAllBrands(Model model){
+    public String getAllBrands(Model model) {
         brandService.getAllBrandsController(model);
         return "admin-brand";
     }
@@ -47,12 +45,12 @@ public class ProductController {
     @PostMapping("/brand")
     public String addNewBrand(@ModelAttribute("brandForm") @Valid BrandDto brandDto,
                               BindingResult bindingResult,
-                              Model model){
+                              Model model) {
         return brandService.addNewBrandController(bindingResult, brandDto, model);
     }
 
     @GetMapping("/color")
-    public String getAllColors(Model model){
+    public String getAllColors(Model model) {
         colorService.getAllColorsController(model);
         return "admin-color";
     }
@@ -60,12 +58,12 @@ public class ProductController {
     @PostMapping("/color")
     public String addNewColor(@ModelAttribute("colorForm") @Valid ColorDto colorDto,
                               BindingResult bindingResult,
-                              Model model){
+                              Model model) {
         return colorService.addNewColorController(bindingResult, colorDto, model);
     }
 
     @GetMapping("/material")
-    public String getAllMaterials(Model model){
+    public String getAllMaterials(Model model) {
         materialService.getAllMaterialsController(model);
         return "admin-material";
     }
@@ -73,25 +71,25 @@ public class ProductController {
     @PostMapping("/material")
     public String addNewMaterial(@ModelAttribute("materialForm") @Valid MaterialDto materialDto,
                                  BindingResult bindingResult,
-                                 Model model){
+                                 Model model) {
         return materialService.addNewMaterialController(bindingResult, materialDto, model);
     }
 
     @GetMapping("/season")
-    public String getAllSeasons(Model model){
-       seasonService.getAllSeasonsController(model);
+    public String getAllSeasons(Model model) {
+        seasonService.getAllSeasonsController(model);
         return "admin-season";
     }
 
     @PostMapping("/season")
     public String addNewSeason(@ModelAttribute("seasonForm") @Valid SeasonDto seasonDto,
                                BindingResult bindingResult,
-                               Model model){
+                               Model model) {
         return seasonService.addNewSeasonController(bindingResult, seasonDto, model);
     }
 
     @GetMapping("/size")
-    public String getAllSizes(Model model){
+    public String getAllSizes(Model model) {
         sizeService.getAllSizesController(model);
         return "admin-size";
     }
@@ -99,13 +97,13 @@ public class ProductController {
 
     @PostMapping("/size")
     public String addNewSize(@ModelAttribute("sizeForm") @Valid SizeDto sizeDto,
-                              BindingResult bindingResult,
-                              Model model){
+                             BindingResult bindingResult,
+                             Model model) {
         return sizeService.addNewSizeController(bindingResult, sizeDto, model);
     }
 
     @GetMapping
-    public String addNewProductPage(Model model){
+    public String addNewProductPage(Model model) {
         productService.addNewProductPageController(model);
         return "admin-product-page";
     }
@@ -119,14 +117,14 @@ public class ProductController {
     }
 
     @GetMapping("/add-size-product")
-    public String addSizeOrQuantity(Model model){
+    public String addSizeOrQuantity(Model model) {
         model.addAttribute("products", productService.getAll());
         return "admin-add-size-or-quantity-list";
     }
 
     @GetMapping("/add-size-product/{id}")
     public String addSizeOrQuantityForProduct(@PathVariable("id") long id,
-                                    Model model){
+                                              Model model) {
         model.addAttribute("productInfo", productService.getById(id));
         return "admin-add-size-or-quantity";
     }
@@ -135,7 +133,7 @@ public class ProductController {
     public String addSizeOrQuantityForProduct(@PathVariable("id") long id,
                                               @RequestParam("size") float size,
                                               @RequestParam("quantityProduct") int quantity,
-                                              Model model){
-       return productService.addSizeOrQuantityForProductController(id, size, quantity, model);
+                                              Model model) {
+        return productService.addSizeOrQuantityForProductController(id, size, quantity, model);
     }
 }

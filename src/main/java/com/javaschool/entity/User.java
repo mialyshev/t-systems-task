@@ -3,7 +3,6 @@ package com.javaschool.entity;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.annotations.NamedQuery;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = { "id", "firstName", "lastName", "dob", "email"})
+@ToString(of = {"id", "firstName", "lastName", "dob", "email"})
 @Entity
 @Table(name = "users")
 @NoArgsConstructor

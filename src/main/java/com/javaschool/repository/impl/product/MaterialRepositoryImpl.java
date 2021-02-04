@@ -32,7 +32,7 @@ public class MaterialRepositoryImpl implements MaterialRepository {
             TypedQuery<Material> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all materials");
         }
     }
@@ -41,7 +41,7 @@ public class MaterialRepositoryImpl implements MaterialRepository {
     public Material findById(long id) throws ProductException {
         try {
             return entityManager.find(Material.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting material with id: " + id);
         }
     }
@@ -59,7 +59,7 @@ public class MaterialRepositoryImpl implements MaterialRepository {
             TypedQuery<Material> selectByName = entityManager.createQuery(criteriaQuery);
 
             return selectByName.getSingleResult();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting material with name: " + materialName);
         }
     }

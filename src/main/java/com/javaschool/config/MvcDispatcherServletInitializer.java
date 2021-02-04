@@ -9,17 +9,17 @@ public class MvcDispatcherServletInitializer extends AbstractAnnotationConfigDis
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {SecurityConfig.class};
+        return new Class[]{SecurityConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {WebMvcConfig.class};
+        return new Class[]{WebMvcConfig.class};
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[] {"/"};
+        return new String[]{"/"};
     }
 
     @Override

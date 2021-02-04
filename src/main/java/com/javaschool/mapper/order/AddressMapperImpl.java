@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class AddressMapperImpl {
 
-    public AddressDto toDto(Address address){
+    public AddressDto toDto(Address address) {
         if (address == null) {
             return null;
         }
@@ -41,7 +41,7 @@ public class AddressMapperImpl {
         return list;
     }
 
-    public AddressAdditionDto toAdditionDto(AddressDto addressDto){
+    public AddressAdditionDto toAdditionDto(AddressDto addressDto) {
         if (addressDto == null) {
             return null;
         }

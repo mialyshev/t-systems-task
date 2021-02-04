@@ -17,7 +17,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public void addRole(String name){
+    public void addRole(String name) {
         Role role = new Role();
         role.setName(name);
         roleRepository.add(role);

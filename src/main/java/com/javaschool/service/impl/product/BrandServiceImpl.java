@@ -30,7 +30,7 @@ public class BrandServiceImpl implements BrandService {
             brandDtoList = brandMapper.toDtoList(brandRepository.findAll());
         } catch (ProductException e) {
             log.error("Error getting all the brands", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at BrandService.getAll()", e);
         }
         return brandDtoList;
@@ -43,7 +43,7 @@ public class BrandServiceImpl implements BrandService {
             brandDto = brandMapper.toDto(brandRepository.findById(id));
         } catch (ProductException e) {
             log.error("Error getting a brand by id", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at BrandService.getById()", e);
         }
         return brandDto;
@@ -57,7 +57,7 @@ public class BrandServiceImpl implements BrandService {
             brandDto = brandMapper.toDto(brandRepository.findByName(brandName));
         } catch (ProductException e) {
             log.error("Error getting a category by name", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at BrandService.getByName()", e);
         }
         return brandDto;
@@ -79,12 +79,12 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     @Transactional
-    public String addNewBrandController(BindingResult bindingResult,  BrandDto brandDto, Model model) {
+    public String addNewBrandController(BindingResult bindingResult, BrandDto brandDto, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("brands", getAll());
             return "admin-brand";
         }
-        if(getByName(brandDto.getBrandName()) != null){
+        if (getByName(brandDto.getBrandName()) != null) {
             model.addAttribute("brandError", "A brand with the same name already exists");
             List<BrandDto> brands = getAll();
             model.addAttribute("brands", brands);

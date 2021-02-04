@@ -24,7 +24,7 @@ public class CardRepositoryImpl implements CardRepository {
     public Card findById(long id) throws UserException {
         try {
             return entityManager.find(Card.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting card with id: " + id);
         }
     }
@@ -35,7 +35,7 @@ public class CardRepositoryImpl implements CardRepository {
     }
 
     @Override
-    public List<Card> findAllByUserId(long userId) throws UserException{
+    public List<Card> findAllByUserId(long userId) throws UserException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Card> criteriaQuery = criteriaBuilder.createQuery(Card.class);
@@ -47,7 +47,7 @@ public class CardRepositoryImpl implements CardRepository {
             TypedQuery<Card> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting cards for user with id: " + userId);
         }
     }

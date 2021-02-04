@@ -1,7 +1,9 @@
 package com.javaschool.repository.impl.product;
 
-import com.javaschool.entity.*;
 import com.javaschool.entity.Order;
+import com.javaschool.entity.Order_;
+import com.javaschool.entity.Product;
+import com.javaschool.entity.Product_;
 import com.javaschool.exception.ProductException;
 import com.javaschool.repository.impl.product.filtration.ProductSearchQueryCriteriaConsumer;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
@@ -34,7 +36,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             TypedQuery<Product> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all products");
         }
     }
@@ -52,13 +54,13 @@ public class ProductRepositoryImpl implements ProductRepository {
             TypedQuery<Product> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all active products");
         }
     }
 
     @Override
-    public List<Product> findAllActiveByModel(String model) throws ProductException  {
+    public List<Product> findAllActiveByModel(String model) throws ProductException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
@@ -71,16 +73,16 @@ public class ProductRepositoryImpl implements ProductRepository {
             TypedQuery<Product> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all active products by model: " + model);
         }
     }
 
     @Override
-    public Product findById(long id) throws ProductException  {
+    public Product findById(long id) throws ProductException {
         try {
             return entityManager.find(Product.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting product with id: " + id);
         }
     }
@@ -112,7 +114,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> findByParam(List<SearchCriteria> params) throws ProductException  {
+    public List<Product> findByParam(List<SearchCriteria> params) throws ProductException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
@@ -132,7 +134,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             List<Product> result = entityManager.createQuery(criteriaQuery).getResultList();
 
             return result;
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting products with params");
         }
     }

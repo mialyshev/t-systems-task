@@ -1,9 +1,9 @@
 package com.javaschool.repository.product;
 
 
+import com.javaschool.entity.Product;
 import com.javaschool.exception.ProductException;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
-import com.javaschool.entity.Product;
 
 import java.util.List;
 

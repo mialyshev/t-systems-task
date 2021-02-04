@@ -33,7 +33,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         User client = null;
         try {
             client = userRepository.findByEmail(email);
-        }catch (UserException e){
+        } catch (UserException e) {
             log.error("Error getting user by email");
         }
 
@@ -52,7 +52,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
             roleEntityCollection = roleRepository.findRolesByUserEmail(email);
         } catch (UserException e) {
             log.error("Error getting role for user");
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error at UserDetailService.mapRolesToAuthorities()");
         }
         return roleEntityCollection.stream()

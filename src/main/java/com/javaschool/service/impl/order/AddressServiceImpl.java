@@ -42,7 +42,7 @@ public class AddressServiceImpl implements AddressService {
             address.setSaved(addressAdditionDto.isSaved());
             address.setUser(user);
             addressRepository.save(address);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error saved new address", e);
         }
     }
@@ -54,7 +54,7 @@ public class AddressServiceImpl implements AddressService {
             addressDtoList = addressMapper.toDtoList(addressRepository.findAllSavedByUserId(userId));
         } catch (UserException e) {
             log.error("Error getting all saved address", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at AddressService.getAllSaved()", e);
         }
         return addressDtoList;
@@ -67,7 +67,7 @@ public class AddressServiceImpl implements AddressService {
             addressDto = addressMapper.toDto(addressRepository.findById(id));
         } catch (UserException e) {
             log.error("Error getting a address by id", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at AddressService.getById()", e);
         }
         return addressDto;
@@ -81,7 +81,7 @@ public class AddressServiceImpl implements AddressService {
             addressDto = addressMapper.toDto(addressRepository.getLastByUserId(userId));
         } catch (UserException e) {
             log.error("Error getting a last address by user id", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at AddressService.getLastByUserId()", e);
         }
         return addressDto;
@@ -94,7 +94,7 @@ public class AddressServiceImpl implements AddressService {
             addressDtoList = addressMapper.toDtoList(addressRepository.findAll());
         } catch (UserException e) {
             log.error("Error getting all address", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at AddressService.getAll()", e);
         }
         return addressDtoList;
@@ -113,9 +113,9 @@ public class AddressServiceImpl implements AddressService {
             address.setApartamentNumber(addressDto.getApartamentNumber());
             address.setPostalCode(addressDto.getPostalCode());
             addressRepository.update(address);
-        }catch (UserException e) {
+        } catch (UserException e) {
             log.error("Error update address", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at AddressService.updateAddress()", e);
         }
 
@@ -126,7 +126,7 @@ public class AddressServiceImpl implements AddressService {
     public void addUpdateAddress(AddressDto addressDto, User user) {
         try {
             addAddress(addressMapper.toAdditionDto(addressDto), user);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error add update address", e);
         }
 
@@ -139,9 +139,9 @@ public class AddressServiceImpl implements AddressService {
             Address address = addressRepository.findById(addressId);
             address.setSaved(false);
             addressRepository.update(address);
-        }catch (UserException e) {
+        } catch (UserException e) {
             log.error("Error update saved address", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at AddressService.updateSavedAddress()", e);
         }
 
@@ -154,9 +154,9 @@ public class AddressServiceImpl implements AddressService {
             Address address = addressRepository.findById(addressId);
             address.setSaved(false);
             addressRepository.update(address);
-        }catch (UserException e) {
+        } catch (UserException e) {
             log.error("Error delete address", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at AddressService.deleteAddress()", e);
         }
 
@@ -171,9 +171,9 @@ public class AddressServiceImpl implements AddressService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         User userFromBd = null;
-        try{
+        try {
             userFromBd = userRepository.findByEmail(currentUser);
-        }catch (UserException e){
+        } catch (UserException e) {
             log.error("Error while getting user", e);
         }
         addressAdditionDto.setSaved(true);

@@ -38,13 +38,13 @@ public class RoleRepositoryImpl implements RoleRepository {
             TypedQuery<Role> selectByName = entityManager.createQuery(criteriaQuery);
 
             return selectByName.getSingleResult();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting role with name: " + name);
         }
     }
 
     @Override
-    public Collection<Role> findRolesByUserEmail(String email) throws UserException{
+    public Collection<Role> findRolesByUserEmail(String email) throws UserException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Role> criteriaQuery = criteriaBuilder.createQuery(Role.class);
@@ -58,7 +58,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             TypedQuery<Role> selectByUserLogin = entityManager.createQuery(criteriaQuery);
 
             return selectByUserLogin.getResultStream().collect(Collectors.toSet());
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting roles for user with email: " + email);
         }
     }

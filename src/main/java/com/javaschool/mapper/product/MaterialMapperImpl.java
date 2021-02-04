@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public class MaterialMapperImpl {
-    public MaterialDto toDto(Material material){
+    public MaterialDto toDto(Material material) {
 
         if (material == null) {
             return null;

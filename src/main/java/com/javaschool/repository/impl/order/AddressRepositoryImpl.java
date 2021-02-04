@@ -2,7 +2,6 @@ package com.javaschool.repository.impl.order;
 
 import com.javaschool.entity.Address;
 import com.javaschool.entity.Address_;
-import com.javaschool.entity.Season;
 import com.javaschool.exception.UserException;
 import com.javaschool.repository.order.AddressRepository;
 import org.springframework.stereotype.Repository;
@@ -36,16 +35,16 @@ public class AddressRepositoryImpl implements AddressRepository {
             TypedQuery<Address> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting saved address for user with id: " + userId);
         }
     }
 
     @Override
-    public Address findById(long id) throws UserException{
+    public Address findById(long id) throws UserException {
         try {
             return entityManager.find(Address.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting address with id: " + id);
         }
     }
@@ -56,7 +55,7 @@ public class AddressRepositoryImpl implements AddressRepository {
     }
 
     @Override
-    public Address getLastByUserId(long userId) throws UserException{
+    public Address getLastByUserId(long userId) throws UserException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Address> criteriaQuery = criteriaBuilder.createQuery(Address.class);
@@ -67,13 +66,13 @@ public class AddressRepositoryImpl implements AddressRepository {
                     .where(criteriaBuilder.equal(root.get(Address_.user).get("id"), userId));
             TypedQuery<Address> findAllAddressByUserId = entityManager.createQuery(criteriaQuery);
             return findAllAddressByUserId.getResultStream().findFirst().orElse(null);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting last saved address for user with id: " + userId);
         }
     }
 
     @Override
-    public List<Address> findAll() throws UserException{
+    public List<Address> findAll() throws UserException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Address> criteriaQuery = criteriaBuilder.createQuery(Address.class);
@@ -84,7 +83,7 @@ public class AddressRepositoryImpl implements AddressRepository {
             TypedQuery<Address> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting all address");
         }
     }

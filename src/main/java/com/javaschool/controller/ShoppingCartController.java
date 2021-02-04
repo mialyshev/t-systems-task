@@ -1,9 +1,6 @@
 package com.javaschool.controller;
 
 import com.javaschool.dto.product.ProductBucketDto;
-import com.javaschool.dto.product.ProductDto;
-import com.javaschool.exception.ProductException;
-import com.javaschool.service.product.ProductService;
 import com.javaschool.service.user.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,18 +21,18 @@ public class ShoppingCartController {
                                      @RequestParam("size") float size,
                                      @PathVariable("id") long id) {
         shoppingCartService.add(id, bucket, size);
-        return "redirect:/catalog/product/" +id;
+        return "redirect:/catalog/product/" + id;
     }
 
     @GetMapping()
     public String getBucketForm(Model model,
-                                @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket){
+                                @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket) {
         return shoppingCartService.getBucketFormController(model, bucket);
     }
 
     @GetMapping("/delete/{id}")
     public String deleteProductFromBucket(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
-                                          @PathVariable("id") long id){
+                                          @PathVariable("id") long id) {
         shoppingCartService.delete(id, bucket);
         return "redirect:/bucket";
     }

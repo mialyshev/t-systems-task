@@ -1,7 +1,6 @@
 package com.javaschool.dto.order;
 
 import com.javaschool.dto.product.ProductBucketDto;
-import com.javaschool.dto.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -10,8 +10,8 @@ import java.util.List;
 @Component
 public class CardMapperImpl {
 
-    public CardDto toDto(Card card){
-        if(card == null){
+    public CardDto toDto(Card card) {
+        if (card == null) {
             return null;
         }
 

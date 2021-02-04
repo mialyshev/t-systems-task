@@ -22,7 +22,7 @@ public class ColorRepositoryImpl implements ColorRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Color> findAll() throws ProductException   {
+    public List<Color> findAll() throws ProductException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Color> criteriaQuery = criteriaBuilder.createQuery(Color.class);
@@ -33,16 +33,16 @@ public class ColorRepositoryImpl implements ColorRepository {
             TypedQuery<Color> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all colors");
         }
     }
 
     @Override
-    public Color findById(long id) throws ProductException  {
+    public Color findById(long id) throws ProductException {
         try {
             return entityManager.find(Color.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting color with id: " + id);
         }
     }
@@ -60,7 +60,7 @@ public class ColorRepositoryImpl implements ColorRepository {
             TypedQuery<Color> selectByName = entityManager.createQuery(criteriaQuery);
 
             return selectByName.getSingleResult();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting color with name: " + colorName);
         }
     }

@@ -8,7 +8,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @EqualsAndHashCode(of = {"id"})
 @Entity
@@ -46,7 +45,7 @@ public class Order {
     @Column(name = "date")
     private LocalDate dateOfPurchase;
 
-        @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(
             name = "product_order",
             joinColumns = {

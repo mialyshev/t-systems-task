@@ -1,15 +1,12 @@
 package com.javaschool.entity;
 
 import lombok.*;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = { "id", "name"})
+@ToString(of = {"id", "name"})
 @Entity
 @Table(name = "roles")
 @Data

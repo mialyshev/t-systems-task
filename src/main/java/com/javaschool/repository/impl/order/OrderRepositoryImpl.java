@@ -1,12 +1,9 @@
 package com.javaschool.repository.impl.order;
 
-import com.javaschool.entity.Address;
-import com.javaschool.entity.Address_;
 import com.javaschool.entity.Order;
 import com.javaschool.entity.Order_;
 import com.javaschool.entity.enums.OrderStatus;
 import com.javaschool.exception.OrderException;
-import com.javaschool.exception.UserException;
 import com.javaschool.repository.order.OrderRepository;
 import org.springframework.stereotype.Repository;
 
@@ -37,16 +34,16 @@ public class OrderRepositoryImpl implements OrderRepository {
             TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new OrderException("Error all orders");
         }
     }
 
     @Override
-    public Order findById(long id) throws OrderException{
+    public Order findById(long id) throws OrderException {
         try {
             return entityManager.find(Order.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new OrderException("Error get order with id: " + id);
         }
     }
@@ -62,7 +59,7 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public List<Order> findByUserId(long userId) throws OrderException{
+    public List<Order> findByUserId(long userId) throws OrderException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
@@ -74,13 +71,13 @@ public class OrderRepositoryImpl implements OrderRepository {
             TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new OrderException("Error get all orders for user with id: " + userId);
         }
     }
 
     @Override
-    public List<Order> findByAddressId(long addressId) throws OrderException{
+    public List<Order> findByAddressId(long addressId) throws OrderException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
@@ -92,14 +89,14 @@ public class OrderRepositoryImpl implements OrderRepository {
             TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new OrderException("Error get all orders with address id: " + addressId);
         }
     }
 
     @Override
     public List<Order> findAllDeliveredByUserId(long userId, boolean isDelivered) throws OrderException {
-        try{
+        try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
             Root<Order> root = criteriaQuery.from(Order.class);
@@ -117,13 +114,13 @@ public class OrderRepositoryImpl implements OrderRepository {
             TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new OrderException("Error get all delivered orders for user with id: " + userId);
         }
     }
 
     @Override
-    public List<Order> findAllDelivered(boolean isDelivered) throws OrderException{
+    public List<Order> findAllDelivered(boolean isDelivered) throws OrderException {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Order> criteriaQuery = criteriaBuilder.createQuery(Order.class);
@@ -140,7 +137,7 @@ public class OrderRepositoryImpl implements OrderRepository {
             TypedQuery<Order> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new OrderException("Error get all delivered orders");
         }
     }

@@ -4,11 +4,10 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 
 
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = { "id", "number", "validatyDate", "owner", "code"})
+@ToString(of = {"id", "number", "validatyDate", "owner", "code"})
 @Entity
 @Table(name = "cards")
 @Data

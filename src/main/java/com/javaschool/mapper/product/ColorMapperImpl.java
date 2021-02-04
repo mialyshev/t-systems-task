@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class ColorMapperImpl {
 
-    public ColorDto toDto(Color color){
+    public ColorDto toDto(Color color) {
 
         if (color == null) {
             return null;

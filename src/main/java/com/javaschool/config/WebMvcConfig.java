@@ -28,7 +28,7 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
     }
 
     @Bean
-    public ThymeleafViewResolver viewResolver(){
+    public ThymeleafViewResolver viewResolver() {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
         viewResolver.setContentType("text/html");

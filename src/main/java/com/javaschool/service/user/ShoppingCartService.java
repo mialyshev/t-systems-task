@@ -1,10 +1,7 @@
 package com.javaschool.service.user;
 
-import com.javaschool.dto.order.OrderRegisterDto;
 import com.javaschool.dto.product.ProductBucketDto;
-import com.javaschool.exception.ProductException;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.ArrayList;
 import java.util.List;

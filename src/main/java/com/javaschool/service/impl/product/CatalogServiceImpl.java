@@ -3,10 +3,6 @@ package com.javaschool.service.impl.product;
 import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
 import com.javaschool.dto.product.SelectedParams;
-import com.javaschool.exception.ProductException;
-import com.javaschool.repository.product.BrandRepository;
-import com.javaschool.repository.product.CategoryRepository;
-import com.javaschool.repository.product.ProductRepository;
 import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +33,7 @@ public class CatalogServiceImpl implements CatalogService {
         if (session.getAttribute("params") == null) {
             session.setAttribute("params", new SelectedParams());
         }
-        SelectedParams selectedParams = (SelectedParams)session.getAttribute("params");
+        SelectedParams selectedParams = (SelectedParams) session.getAttribute("params");
         List<ProductDto> products = productService.getProductsByParamList(selectedParams);
         model.addAttribute("products", products);
         model.addAttribute("categories", categoryService.getAll());
@@ -59,7 +55,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public void clearParams(HttpSession session) {
-        SelectedParams selectedParams = (SelectedParams)session.getAttribute("params");
+        SelectedParams selectedParams = (SelectedParams) session.getAttribute("params");
         selectedParams.setCategory(null);
         selectedParams.setBrand(null);
         selectedParams.setColor(null);

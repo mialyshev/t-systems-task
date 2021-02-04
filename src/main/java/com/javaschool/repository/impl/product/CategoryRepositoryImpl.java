@@ -33,7 +33,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             TypedQuery<Category> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all categories");
         }
     }
@@ -42,7 +42,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public Category findById(long id) throws ProductException {
         try {
             return entityManager.find(Category.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting category with id: " + id);
         }
     }
@@ -60,7 +60,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             TypedQuery<Category> selectByName = entityManager.createQuery(criteriaQuery);
 
             return selectByName.getSingleResult();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting category with name: " + categoryName);
         }
     }

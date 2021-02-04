@@ -1,5 +1,4 @@
-
-$(function() {
+$(function () {
     $('input[type=checkbox]').change(function () {
         var totalPriceNow = 0;
         //loop through checked checkboxes

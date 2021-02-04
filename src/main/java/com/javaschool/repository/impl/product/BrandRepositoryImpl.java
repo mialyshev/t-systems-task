@@ -31,7 +31,7 @@ public class BrandRepositoryImpl implements BrandRepository {
                     .select(root);
             TypedQuery<Brand> selectAll = entityManager.createQuery(criteriaQuery);
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting all entities");
         }
     }
@@ -40,7 +40,7 @@ public class BrandRepositoryImpl implements BrandRepository {
     public Brand findById(long id) throws ProductException {
         try {
             return entityManager.find(Brand.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting brand with id: " + id);
         }
     }
@@ -58,7 +58,7 @@ public class BrandRepositoryImpl implements BrandRepository {
             TypedQuery<Brand> selectByName = entityManager.createQuery(criteriaQuery);
 
             return selectByName.getSingleResult();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Error getting brand with name: " + brandName);
         }
     }

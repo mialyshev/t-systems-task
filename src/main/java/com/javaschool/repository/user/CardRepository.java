@@ -1,6 +1,5 @@
 package com.javaschool.repository.user;
 
-import com.javaschool.entity.Address;
 import com.javaschool.entity.Card;
 import com.javaschool.exception.UserException;
 

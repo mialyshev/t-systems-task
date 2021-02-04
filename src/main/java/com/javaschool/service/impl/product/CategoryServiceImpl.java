@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryDtoList = categoryMapper.toDtoList(categoryRepository.findAll());
         } catch (ProductException e) {
             log.error("Error getting all the categories", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at CategoryService.getAll()", e);
         }
         return categoryDtoList;
@@ -43,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryDto = categoryMapper.toDto(categoryRepository.findById(id));
         } catch (ProductException e) {
             log.error("Error getting a category by id", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at CategoryService.getById()", e);
         }
         return categoryDto;
@@ -57,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryDto = categoryMapper.toDto(categoryRepository.findByName(categoryName));
         } catch (ProductException e) {
             log.error("Error getting a category by name", e);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error at CategoryService.getByName()", e);
         }
         return categoryDto;
@@ -84,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
             model.addAttribute("categories", getAll());
             return "admin-category";
         }
-        if(getByName(categoryDto.getCategoryName()) != null){
+        if (getByName(categoryDto.getCategoryName()) != null) {
             model.addAttribute("categoryError", "A category with the same name already exists");
             List<CategoryDto> categories = getAll();
             model.addAttribute("categories", categories);

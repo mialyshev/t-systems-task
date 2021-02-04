@@ -2,7 +2,6 @@ package com.javaschool.repository.impl.user;
 
 import com.javaschool.entity.User;
 import com.javaschool.entity.User_;
-import com.javaschool.exception.ProductException;
 import com.javaschool.exception.UserException;
 import com.javaschool.repository.user.UserRepository;
 import org.springframework.stereotype.Repository;
@@ -36,7 +35,7 @@ public class UserRepositoryImpl implements UserRepository {
             TypedQuery<User> selectAll = entityManager.createQuery(criteriaQuery);
 
             return selectAll.getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting all users");
         }
     }
@@ -45,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User findById(long id) throws UserException {
         try {
             return entityManager.find(User.class, id);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting user with id: " + id);
         }
     }
@@ -63,7 +62,7 @@ public class UserRepositoryImpl implements UserRepository {
             TypedQuery<User> selectByEmail = entityManager.createQuery(criteriaQuery);
 
             return selectByEmail.getResultStream().findFirst().orElse(null);
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new UserException("Error getting user with email: " + email);
         }
     }
