@@ -6,7 +6,8 @@ import com.javaschool.entity.enums.PaymentType;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.List;
 
 @EqualsAndHashCode(of = {"id"})
 @Entity
@@ -41,7 +42,10 @@ public class Order {
     @Column(name = "payment_type")
     private PaymentType paymentType;
 
-        @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @Column(name = "date")
+    private LocalDate dateOfPurchase;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(
             name = "product_order",
             joinColumns = {
@@ -51,5 +55,5 @@ public class Order {
                     @JoinColumn(name = "product_id", referencedColumnName = "id")
             }
     )
-    private Set<Product> productSet;
+    private List<Product> productList;
 }

@@ -2,12 +2,15 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.SizeDto;
 import com.javaschool.entity.Size;
+import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.SizeMapperImpl;
 import com.javaschool.repository.product.SizeRepository;
 import com.javaschool.service.product.SizeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -25,8 +28,10 @@ public class SizeServiceImpl implements SizeService {
         List<SizeDto> sizeDtoList = null;
         try {
             sizeDtoList = sizeMapper.toDtoList(sizeRepository.findAll());
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the sizes", e);
+        } catch (Exception e) {
+            log.error("Error at SizeService.getAll()", e);
         }
         return sizeDtoList;
     }
@@ -36,8 +41,10 @@ public class SizeServiceImpl implements SizeService {
         SizeDto sizeDto = null;
         try {
             sizeDto = sizeMapper.toDto(sizeRepository.findById(id));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a size by id", e);
+        } catch (Exception e) {
+            log.error("Error at SizeService.getById()", e);
         }
         return sizeDto;
     }
@@ -48,8 +55,10 @@ public class SizeServiceImpl implements SizeService {
         SizeDto sizeDto = null;
         try {
             sizeDto = sizeMapper.toDto(sizeRepository.findBySize(size));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a size by name", e);
+        } catch (Exception e) {
+            log.error("Error at SizeService.getByName()", e);
         }
         return sizeDto;
     }
@@ -60,5 +69,28 @@ public class SizeServiceImpl implements SizeService {
         Size size = new Size();
         size.setSize(sizeDto.getSize());
         sizeRepository.save(size);
+    }
+
+    @Override
+    public void getAllSizesController(Model model) {
+        model.addAttribute("sizes", getAll());
+        model.addAttribute("sizeForm", new SizeDto());
+    }
+
+    @Override
+    @Transactional
+    public String addNewSizeController(BindingResult bindingResult, SizeDto sizeDto, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("sizes", getAll());
+            return "admin-size";
+        }
+        if (getByName(sizeDto.getSize()) != null) {
+            model.addAttribute("sizeError", "A size with the same value already exists");
+            List<SizeDto> sizes = getAll();
+            model.addAttribute("sizes", sizes);
+            return "admin-size";
+        }
+        addSize(sizeDto);
+        return "redirect:/product/size";
     }
 }

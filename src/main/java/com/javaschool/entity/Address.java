@@ -1,15 +1,12 @@
 package com.javaschool.entity;
 
 import lombok.*;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.List;
 
 
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = { "id", "country", "city", "postalCode", "street", "houseNumber", "apartamentNumber"})
+@ToString(of = {"id", "country", "city", "postalCode", "street", "houseNumber", "apartamentNumber"})
 @Entity
 @Table(name = "addresses")
 @Data

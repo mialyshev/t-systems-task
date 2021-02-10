@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = { "id", "materialName"})
+@ToString(of = {"id", "materialName"})
 @Entity
 @Table(name = "materials")
 @Data

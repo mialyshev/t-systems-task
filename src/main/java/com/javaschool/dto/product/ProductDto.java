@@ -1,9 +1,6 @@
 package com.javaschool.dto.product;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -14,6 +11,7 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"price", "model", "url", "categoryName", "brandName", "seasonName", "colorName", "materialName"})
 public class ProductDto {
 
     private long id;

@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class BrandMapperImpl {
 
-    public BrandDto toDto(Brand brand){
+    public BrandDto toDto(Brand brand) {
 
         if (brand == null) {
             return null;

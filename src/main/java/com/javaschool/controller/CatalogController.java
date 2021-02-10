@@ -1,37 +1,50 @@
 package com.javaschool.controller;
 
-import com.javaschool.dto.product.ProductDto;
-import com.javaschool.repository.impl.product.filtration.SearchCriteria;
-import com.javaschool.service.product.ProductService;
+import com.javaschool.dto.product.SelectedParams;
+import com.javaschool.service.product.CatalogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/catalog")
 @RequiredArgsConstructor
 public class CatalogController {
 
-    private final ProductService productService;
+    private final CatalogService catalogService;
 
-    @GetMapping
-    public String getAllProducts(Model model){
-        List<ProductDto> products = productService.getAllActive();
-        model.addAttribute("products", products);
-        return "product";
+    @GetMapping("/")
+    public String getAllProducts(Model model,
+                                 HttpSession session) {
+        catalogService.getAllProducts(model, session);
+        return "products";
     }
 
-    @GetMapping("/param")
-    public String getProductByParam(){
-        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
-        params.add(new SearchCriteria("season_id", ":", "3"));
+    @PostMapping("/")
+    public String getProductsByParam(Model model,
+                                     @RequestParam(value = "radioCategory", required = false) String categoryName,
+                                     @RequestParam(value = "radioBrand", required = false) String brandName,
+                                     @RequestParam(value = "radioColor", required = false) String colorName,
+                                     @RequestParam(value = "radioMaterial", required = false) String materialName,
+                                     @RequestParam(value = "radioSeason", required = false) String seasonName,
+                                     @SessionAttribute("params") SelectedParams params) {
+        catalogService.getProductsByParam(model, categoryName, brandName, colorName, materialName, seasonName, params);
+        return "products";
+    }
 
-        List<ProductDto> productDtoList = productService.getProductsByParam(params);
-        return "index";
+
+    @GetMapping("/clear-params")
+    public String clearParams(HttpSession session) {
+        catalogService.clearParams(session);
+        return "redirect:/";
+    }
+
+    @GetMapping("/catalog/product/{id}")
+    public String getProduct(@PathVariable("id") long id,
+                             Model model) {
+        catalogService.getProduct(id, model);
+        return "product";
     }
 }

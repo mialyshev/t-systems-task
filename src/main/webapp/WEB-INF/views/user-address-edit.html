@@ -1,31 +1,120 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Address update</title>
+    <title>User page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/styles/signin.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="/js/bucketSize.js"></script>
 </head>
 <body>
-<form th:method="POST" th:action="@{/profile/address/edit}" th:object="${addressForm}">
-    <input type="hidden" th:field="*{id}">
-    <label for="country">Enter country: </label>
-    <input type="text" th:field="*{country}" id="country"/>
-    <br>
-    <label for="city">Enter city: </label>
-    <input type="text" th:field="*{city}" id="city"/>
-    <br>
-    <label for="postalCode">Enter postal code: </label>
-    <input type="text" th:field="*{postalCode}" id="postalCode"/>
-    <br>
-    <label for="street">Enter street: </label>
-    <input type="text" th:field="*{street}" id="street"/>
-    <br>
-    <label for="houseNumber">Enter house number: </label>
-    <input type="text" th:field="*{houseNumber}" id="houseNumber"/>
-    <br>
-    <label for="apartamentNumber">Enter apartment number: </label>
-    <input type="text" th:field="*{apartamentNumber}" id="apartamentNumber"/>
-    <br>
-    <input name="submit" type="submit" value="Update!" />
-</form>
+<div class="container">
+    <div id="bucketCount" th:attr="data-bucket=${session.bucket}"></div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/" role="button">Catalog</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link btn btn-primary" href="/admin">Admin panel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/bucket">Shopping cart <span id="quantity" class="badge badge-light"></span></a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link btn btn-primary" href="/login">Sign in</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link btn btn-primary" href="/registration">Sign up</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link active btn btn-primary" href="/profile">User page</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post">
+                            <input type="submit" class="btn btn-primary" value="Log out"/>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile">About user</a>
+                </li>
+                <li class="nav-item active" style="margin: 5px">
+                    <a class="nav-link active btn btn-primary" href="#">My addresses</a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile/cards">My cards</a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile/orders">My orders</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <form class="form-horizontal" role="form" th:method="POST" th:action="@{/profile/address/edit}" th:object="${addressForm}">
+        <input type="hidden" th:field="*{id}">
+        <h2>Update address info</h2>
+        <div class="form-group">
+            <label for="country" class="col-sm-3 control-label">Country:</label>
+            <div class="col-sm-9">
+                <input type="text" id="country" th:field="*{country}" class="form-control" autofocus>
+            </div>
+            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('country')}" th:errors="*{country}" ></div>
+        </div>
+        <div class="form-group">
+            <label for="city" class="col-sm-3 control-label">City:</label>
+            <div class="col-sm-9">
+                <input type="text" id="city" th:field="*{city}" class="form-control" autofocus>
+            </div>
+            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('city')}" th:errors="*{city}" ></div>
+        </div>
+        <div class="form-group">
+            <label for="postalCode" class="col-sm-3 control-label">Postal code:</label>
+            <div class="col-sm-9">
+                <input type="text" id="postalCode" th:field="*{postalCode}" class="form-control" autofocus>
+            </div>
+            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" ></div>
+        </div>
+        <div class="form-group">
+            <label for="street" class="col-sm-3 control-label">Street:</label>
+            <div class="col-sm-9">
+                <input type="text" id="street" th:field="*{street}" class="form-control" autofocus>
+            </div>
+            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('street')}" th:errors="*{street}" ></div>
+        </div>
+        <div class="form-group">
+            <label for="houseNumber" class="col-sm-3 control-label">House number:</label>
+            <div class="col-sm-9">
+                <input type="text" id="houseNumber" th:field="*{houseNumber}" class="form-control" autofocus>
+            </div>
+            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('houseNumber')}" th:errors="*{houseNumber}" ></div>
+        </div>
+        <div class="form-group">
+            <label for="apartamentNumber" class="col-sm-3 control-label">Apartment number:</label>
+            <div class="col-sm-9">
+                <input type="text" id="apartamentNumber" th:field="*{apartamentNumber}" class="form-control" autofocus>
+            </div>
+            <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('apartamentNumber')}" th:errors="*{apartamentNumber}" ></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Update</button>
+    </form>
+</div>
 </body>
 </html>

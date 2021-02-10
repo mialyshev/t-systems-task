@@ -57,7 +57,7 @@ public class UserMapperImpl {
         return userDtoBuilder.build();
     }
 
-    public UserUpdatePassDto toUpdatePassDto(UserDto userDto){
+    public UserUpdatePassDto toUpdatePassDto(UserDto userDto) {
         if (userDto == null) {
             return null;
         }

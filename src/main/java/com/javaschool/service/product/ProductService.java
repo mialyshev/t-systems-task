@@ -1,10 +1,15 @@
 package com.javaschool.service.product;
 
 
+import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.product.SelectedParams;
+import com.javaschool.dto.product.SizeDto;
+import com.javaschool.exception.ProductException;
 import com.javaschool.repository.impl.product.filtration.SearchCriteria;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,15 +21,31 @@ public interface ProductService {
 
     ProductDto getById(long id);
 
-    void addProduct(ProductDto productDto);
+    void addProduct(ProductDto productDto) throws ProductException;
 
-    List<ProductDto>getSelectedList(Integer[] selected);
+    List<ProductBucketDto> getSelectedList(Integer[] selected, ArrayList<ProductBucketDto> bucket);
 
-    boolean isAvailable(List<ProductDto> productDtos);
+    boolean isAvailable(List<ProductBucketDto> productDtos);
 
-    void updateBucket(ArrayList<ProductDto> productDtos);
+    int calcPrice(List<ProductBucketDto> productDtos);
 
-    void updateProductQuantity(List<ProductDto> productDtoList);
+    void updateProductQuantity(List<ProductBucketDto> productDtoList);
 
     List<ProductDto> getProductsByParam(List<SearchCriteria> params);
+
+    void addProductBySizeQuantity(float size, int quantity, long productId);
+
+    List<SizeDto> getAvailableSizesForProduct(long productId);
+
+    void addProductToBucket(long productId, float size, ArrayList<ProductDto> bucket);
+
+    List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams);
+
+    List<ProductDto> getProductsByParamList(SelectedParams selectedParams);
+
+    void addNewProductPageController(Model model);
+
+    String addNewProductController(ProductDto productDto, BindingResult bindingResult, float size, Model model);
+
+    String addSizeOrQuantityForProductController(long id, float size, int quantity, Model model);
 }

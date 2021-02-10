@@ -28,7 +28,7 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
     }
 
     @Bean
-    public ThymeleafViewResolver viewResolver(){
+    public ThymeleafViewResolver viewResolver() {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
         viewResolver.setContentType("text/html");
@@ -64,13 +64,15 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("index");
+        registry.addViewController("/").setViewName("products");
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/styles/**")
                 .addResourceLocations("/WEB-INF/resources/css/");
+        registry.addResourceHandler("/js/**")
+                .addResourceLocations("/WEB-INF/resources/js/");
     }
 
 }

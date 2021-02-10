@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public class SizeMapperImpl {
-    public SizeDto toDto(Size size){
+    public SizeDto toDto(Size size) {
 
         if (size == null) {
             return null;

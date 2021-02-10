@@ -3,9 +3,6 @@ package com.javaschool.controller;
 import com.javaschool.dto.user.UserRegistrationDto;
 import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,39 +20,14 @@ public class RegistrationController {
     private final UserService userService;
 
     @GetMapping
-    public String getRegistrationForm(Model model){
-        model.addAttribute("userRegister", new UserRegistrationDto());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return "/registration";
-        }
-        return "redirect:/";
+    public String getRegistrationForm(Model model) {
+        return userService.getRegistrationFormController(model);
     }
 
     @PostMapping
     public String registerNewUser(@ModelAttribute("userRegister") @Valid UserRegistrationDto userRegistrationDto,
                                   BindingResult bindingResult,
-                                  Model model){
-        if (bindingResult.hasErrors()) {
-            return "registration";
-        }
-
-        if(userService.getByEmail(userRegistrationDto.getEmail()) != null){
-            model.addAttribute("userError", "User with this email is already registered");
-            return "registration";
-        }
-
-        if(!userRegistrationDto.getEmail().equals(userRegistrationDto.getConfirmEmail())){
-            model.addAttribute("emailError", "Email does not match");
-            return "registration";
-        }
-
-        if(!userRegistrationDto.getPassword().equals(userRegistrationDto.getConfirmPassword())){
-            model.addAttribute("passwordError", "Password does not match");
-            return "registration";
-        }
-
-        userService.registerUser(userRegistrationDto);
-        return "index";
+                                  Model model) {
+        return userService.registerNewUserController(bindingResult, userRegistrationDto, model);
     }
 }

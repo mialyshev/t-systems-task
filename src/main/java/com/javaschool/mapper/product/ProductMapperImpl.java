@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class ProductMapperImpl {
 
-    public ProductDto toDto(Product product){
+    public ProductDto toDto(Product product) {
         if (product == null) {
             return null;
         }

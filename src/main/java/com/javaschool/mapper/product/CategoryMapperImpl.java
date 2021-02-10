@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public class CategoryMapperImpl {
-    public CategoryDto toDto(Category category){
+    public CategoryDto toDto(Category category) {
 
         if (category == null) {
             return null;

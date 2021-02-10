@@ -2,12 +2,15 @@ package com.javaschool.service.impl.product;
 
 import com.javaschool.dto.product.ColorDto;
 import com.javaschool.entity.Color;
+import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.ColorMapperImpl;
 import com.javaschool.repository.product.ColorRepository;
 import com.javaschool.service.product.ColorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -25,8 +28,10 @@ public class ColorServiceImpl implements ColorService {
         List<ColorDto> colorDtoList = null;
         try {
             colorDtoList = colorMapper.toDtoList(colorRepository.findAll());
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting all the colors", e);
+        } catch (Exception e) {
+            log.error("Error at ColorService.getAll()", e);
         }
         return colorDtoList;
     }
@@ -36,8 +41,10 @@ public class ColorServiceImpl implements ColorService {
         ColorDto colorDto = null;
         try {
             colorDto = colorMapper.toDto(colorRepository.findById(id));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a color by id", e);
+        } catch (Exception e) {
+            log.error("Error at ColorService.getById()", e);
         }
         return colorDto;
     }
@@ -48,8 +55,10 @@ public class ColorServiceImpl implements ColorService {
         ColorDto colorDto = null;
         try {
             colorDto = colorMapper.toDto(colorRepository.findByName(colorName));
-        } catch (Exception e) {
+        } catch (ProductException e) {
             log.error("Error getting a color by name", e);
+        } catch (Exception e) {
+            log.error("Error at ColorService.getByName()", e);
         }
         return colorDto;
     }
@@ -60,5 +69,28 @@ public class ColorServiceImpl implements ColorService {
         Color color = new Color();
         color.setColorName(colorDto.getColorName());
         colorRepository.save(color);
+    }
+
+    @Override
+    public void getAllColorsController(Model model) {
+        model.addAttribute("colors", getAll());
+        model.addAttribute("colorForm", new ColorDto());
+    }
+
+    @Override
+    @Transactional
+    public String addNewColorController(BindingResult bindingResult, ColorDto colorDto, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("colors", getAll());
+            return "admin-color";
+        }
+        if (getByName(colorDto.getColorName()) != null) {
+            model.addAttribute("colorError", "A color with the same name already exists");
+            List<ColorDto> colors = getAll();
+            model.addAttribute("colors", colors);
+            return "admin-color";
+        }
+        addColor(colorDto);
+        return "redirect:/product/color";
     }
 }

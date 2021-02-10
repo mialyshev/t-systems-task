@@ -57,17 +57,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/order").authenticated()
                 .antMatchers("/profile").authenticated()
-//                .anyRequest()
-//                    .authenticated()
                 .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/")
-                    .permitAll()
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .permitAll()
                 .and()
-                    .logout()
-                    .logoutSuccessUrl("/")
-                    .permitAll();
+                .logout()
+                .logoutSuccessUrl("/")
+                .permitAll()
+                .and()
+                .exceptionHandling().accessDeniedPage("/access-denied");
     }
 
 }

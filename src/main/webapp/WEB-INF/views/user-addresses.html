@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>User page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/styles/signin.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="/js/bucketSize.js"></script>
+</head>
+<body>
+<div class="container">
+    <div id="bucketCount" th:attr="data-bucket=${session.bucket}"></div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/" role="button">Catalog</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a class="nav-link btn btn-primary" href="/admin">Admin panel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/bucket">Shopping cart <span id="quantity" class="badge badge-light"></span></a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link btn btn-primary" href="/login">Sign in</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a class="nav-link btn btn-primary" href="/registration">Sign up</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link active btn btn-primary" href="/profile">User page</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post">
+                            <input type="submit" class="btn btn-primary" value="Log out"/>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile">About user</a>
+                </li>
+                <li class="nav-item active" style="margin: 5px">
+                    <a class="nav-link active btn btn-primary" href="#">My addresses</a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile/cards">My cards</a>
+                </li>
+                <li class="nav-item" style="margin: 5px">
+                    <a class="nav-link btn btn-primary" href="/profile/orders">My orders</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row mt-2 mr-2">
+            <div class="col-3" th:each="address : ${savedAddress}">
+                <div class="card" style="width: 17rem; height: 27rem">
+                    <div class="card-body">
+                        <h5 class="card-title">Address #<span th:text="${addressStat.index + 1}"></span></h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Country: <span th:text="*{address.country}"></span></li>
+                        <li class="list-group-item">City: <span th:text="*{address.city}"></span></li>
+                        <li class="list-group-item">Street: <span th:text="*{address.street}"></span></li>
+                        <li class="list-group-item">House number: <span th:text="*{address.houseNumber}"></span></li>
+                        <li class="list-group-item">Apartment number: <span th:text="*{address.apartamentNumber}"></span></li>
+                    </ul>
+                    <div class="card-body">
+                        <a class="card-link" style="margin: 5px" th:href="@{/profile/address/edit/{id}(id=${address.id})}">Edit address</a>
+                        <a class="card-link" style="margin: 5px" th:href="@{/profile/address/delete/{id}(id=${address.id})}">Delete address</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p><a class="btn btn-primary" href="/profile/add-address" style="margin-top: 5px">Add new address</a></p>
+    </div>
+</div>
+</body>
+</html>

@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = { "id", "seasonName"})
+@ToString(of = {"id", "seasonName"})
 @Entity
 @Table(name = "seasons")
 @Data

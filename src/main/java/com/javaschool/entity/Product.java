@@ -3,10 +3,10 @@ package com.javaschool.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @EqualsAndHashCode(of = {"id"})
-@ToString(of = { "id", "quantity", "price", "model"})
+@ToString(of = {"id", "quantity", "price", "model"})
 @Entity
 @Table(name = "products")
 @Data
@@ -57,7 +57,7 @@ public class Product {
     @JoinColumn(name = "size_id")
     private Size size;
 
-    @ManyToMany(mappedBy = "productSet", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Order> orderSet;
+    @ManyToMany(mappedBy = "productList", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Order> orderList;
 }
 

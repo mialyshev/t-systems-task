@@ -1,21 +1,32 @@
 package com.javaschool.service.impl.user;
 
+import com.javaschool.dto.card.CardRegisterDto;
+import com.javaschool.dto.order.AddressDto;
+import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.user.UserDto;
 import com.javaschool.dto.user.UserRegistrationDto;
 import com.javaschool.dto.user.UserUpdateInfoDto;
 import com.javaschool.dto.user.UserUpdatePassDto;
 import com.javaschool.entity.User;
+import com.javaschool.exception.UserException;
 import com.javaschool.mapper.user.UserMapperImpl;
 import com.javaschool.repository.user.RoleRepository;
 import com.javaschool.repository.user.UserRepository;
+import com.javaschool.service.order.AddressService;
+import com.javaschool.service.order.OrderService;
+import com.javaschool.service.user.CardService;
 import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -32,14 +43,19 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserMapperImpl userMapper;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private final AddressService addressService;
+    private final OrderService orderService;
+    private final CardService cardService;
 
     @Override
     public List<UserDto> getAll() {
         List<UserDto> userDtoList = null;
         try {
             userDtoList = userMapper.toDtoList(userRepository.findAll());
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting all the users", e);
+        } catch (Exception e) {
+            log.error("Error at UserService.getAll()", e);
         }
         return userDtoList;
     }
@@ -50,20 +66,24 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = null;
         try {
             userDto = userMapper.toDto(userRepository.findByEmail(email));
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a user by email", e);
+        } catch (Exception e) {
+            log.error("Error at UserService.getDtoByEmail()", e);
         }
         return userDto;
     }
 
     @Override
     @Transactional
-    public User getByEmail(String email){
+    public User getByEmail(String email) {
         User user = null;
         try {
             user = userRepository.findByEmail(email);
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a user by email", e);
+        } catch (Exception e) {
+            log.error("Error at UserService.getByEmail()", e);
         }
         return user;
     }
@@ -73,8 +93,10 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = null;
         try {
             userDto = userMapper.toDto(userRepository.findById(id));
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a user by id", e);
+        } catch (Exception e) {
+            log.error("Error at UserService.getById()", e);
         }
         return userDto;
     }
@@ -84,8 +106,10 @@ public class UserServiceImpl implements UserService {
         User user = null;
         try {
             user = userRepository.findById(id);
-        } catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error getting a user by id", e);
+        } catch (Exception e) {
+            log.error("Error at UserService.getUserById()", e);
         }
         return user;
     }
@@ -99,13 +123,19 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void registerUser(UserRegistrationDto userRegistrationDto) {
         User user = new User();
-        user.setFirstName(userRegistrationDto.getFirstName());
-        user.setLastName(userRegistrationDto.getLastName());
-        user.setDob(getDate(userRegistrationDto.getDob()));
-        user.setEmail(userRegistrationDto.getEmail());
-        user.setRoleSet(Collections.singleton(roleRepository.findByName("ROLE_USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()));
-        userRepository.save(user);
+        try {
+            user.setFirstName(userRegistrationDto.getFirstName());
+            user.setLastName(userRegistrationDto.getLastName());
+            user.setDob(getDate(userRegistrationDto.getDob()));
+            user.setEmail(userRegistrationDto.getEmail());
+            user.setRoleSet(Collections.singleton(roleRepository.findByName("ROLE_USER")));
+            user.setPassword(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()));
+            userRepository.save(user);
+        } catch (UserException e) {
+            log.error("Error while register user", e);
+        } catch (Exception e) {
+            log.error("Error at UserService.registerUser()");
+        }
     }
 
     @Override
@@ -114,30 +144,31 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-    private LocalDate getDate(String date){
+    private LocalDate getDate(String date) {
         String[] nums = date.split("-");
         return LocalDate.of(Integer.parseInt(nums[0]), Integer.parseInt(nums[1]), Integer.parseInt(nums[2]));
     }
 
     @Override
     @Transactional
-    public void updateUserInfo(UserUpdateInfoDto userUpdateDto){
+    public void updateUserInfo(UserUpdateInfoDto userUpdateDto) {
         try {
             User user = userRepository.findById(userUpdateDto.getId());
             user.setFirstName(userUpdateDto.getFirstName());
             user.setLastName(userUpdateDto.getLastName());
             user.setDob(getDate(userUpdateDto.getDob()));
             user.setEmail(userUpdateDto.getEmail());
-            Collection<SimpleGrantedAuthority> nowAuthorities =(Collection<SimpleGrantedAuthority>)SecurityContextHolder
+            Collection<SimpleGrantedAuthority> nowAuthorities = (Collection<SimpleGrantedAuthority>) SecurityContextHolder
                     .getContext().getAuthentication().getAuthorities();
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.getEmail(),
                     user.getPassword(),
                     nowAuthorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             userRepository.update(user);
-        }catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error updating user info", e);
+        } catch (Exception e) {
+            log.error("Error at UserService.updateUserInfo()", e);
         }
     }
 
@@ -151,23 +182,227 @@ public class UserServiceImpl implements UserService {
     public boolean updateUserPass(UserUpdatePassDto userUpdatePassDto) {
         try {
             User user = userRepository.findById(userUpdatePassDto.getId());
-            if(userUpdatePassDto.getPassword().equals(userUpdatePassDto.getConfirmPassword())){
+            if (userUpdatePassDto.getPassword().equals(userUpdatePassDto.getConfirmPassword())) {
                 user.setPassword(bCryptPasswordEncoder.encode(userUpdatePassDto.getPassword()));
                 SecurityContextHolder.getContext().setAuthentication(null);
                 userRepository.update(user);
                 return true;
             }
-        }catch (Exception e) {
+        } catch (UserException e) {
             log.error("Error updating user pass", e);
+        } catch (Exception e) {
+            log.error("Error at UserService.updateUserPass()", e);
         }
         return false;
     }
 
     @Override
-    public boolean checkMatch(UserUpdatePassDto userUpdatePassDto, String password){
-        if(bCryptPasswordEncoder.matches(userUpdatePassDto.getOldPassword(), password)){
+    public boolean checkMatch(UserUpdatePassDto userUpdatePassDto, String password) {
+        if (bCryptPasswordEncoder.matches(userUpdatePassDto.getOldPassword(), password)) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String getRegistrationFormController(Model model) {
+        model.addAttribute("userRegister", new UserRegistrationDto());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return "/registration";
+        }
+        return "redirect:/";
+    }
+
+    @Override
+    @Transactional
+    public String registerNewUserController(BindingResult bindingResult, UserRegistrationDto userRegistrationDto, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
+        if (getByEmail(userRegistrationDto.getEmail()) != null) {
+            model.addAttribute("userError", "User with this email is already registered");
+            return "registration";
+        }
+
+        if (!userRegistrationDto.getEmail().equals(userRegistrationDto.getConfirmEmail())) {
+            model.addAttribute("emailError", "Email does not match");
+            return "registration";
+        }
+
+        if (!userRegistrationDto.getPassword().equals(userRegistrationDto.getConfirmPassword())) {
+            model.addAttribute("passwordError", "Password does not match");
+            return "registration";
+        }
+
+        registerUser(userRegistrationDto);
+        return "redirect:/";
+    }
+
+    @Override
+    public void getAllUserInfoController(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = getDtoByEmail(currentUser);
+        model.addAttribute("userInfo", userFromBd);
+    }
+
+    @Override
+    public void getEditInfoPageController(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = getDtoByEmail(currentUser);
+        model.addAttribute("userForm", getUserUpdateDto(userFromBd));
+    }
+
+    @Override
+    @Transactional
+    public String updateUserInfoController(UserUpdateInfoDto userUpdateDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "user-update";
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        if (!currentUser.equals(userUpdateDto.getEmail())) {
+            if (getByEmail(userUpdateDto.getEmail()) != null) {
+                model.addAttribute("userError", "User with this email is already registered");
+                return "user-update";
+            }
+        }
+        if (!userUpdateDto.getEmail().equals(userUpdateDto.getConfirmEmail())) {
+            model.addAttribute("emailError", "Email does not match");
+            return "user-update";
+        }
+        updateUserInfo(userUpdateDto);
+        return "redirect:/profile";
+    }
+
+    @Override
+    public void getEditPassPageController(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = getDtoByEmail(currentUser);
+        model.addAttribute("userForm", getUserUpdatePass(userFromBd));
+    }
+
+    @Override
+    @Transactional
+    public String updateUserPassController(UserUpdatePassDto userUpdatePassDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "user-update-password";
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        User userFromBd = getByEmail(currentUser);
+        if (!checkMatch(userUpdatePassDto, userFromBd.getPassword())) {
+            model.addAttribute("userForm", getUserUpdatePass(toDto(userFromBd)));
+            model.addAttribute("oldPassError", "Old password is incorrect");
+            return "user-update-password";
+        }
+
+        if (!updateUserPass(userUpdatePassDto)) {
+            model.addAttribute("userForm", getUserUpdatePass(toDto(userFromBd)));
+            model.addAttribute("passwordError", "Password does not match");
+            return "user-update-password";
+        }
+        return "redirect:/login";
+    }
+
+    @Override
+    public void getAllAddressesController(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = getDtoByEmail(currentUser);
+        model.addAttribute("savedAddress", addressService.getAllSaved(userFromBd.getId()));
+    }
+
+    @Override
+    public void getAllOrdersController(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        User userFromBd = getByEmail(currentUser);
+        model.addAttribute("orders", orderService.findAllDeliveredForUser(userFromBd.getId(), false));
+    }
+
+    @Override
+    public void getOrderController(long id, Model model) {
+        OrderDto orderDto = orderService.findById(id);
+        orderService.setOrderProductList(orderDto);
+        model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
+        model.addAttribute("order", orderDto);
+        model.addAttribute("price", orderService.getAllPriceForOrder(orderDto));
+    }
+
+    @Override
+    public void getPayForOrderPageController(long id, Model model) {
+        OrderDto orderDto = orderService.findById(id);
+        model.addAttribute("orderForm", orderDto);
+        model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
+        model.addAttribute("cardForm", new CardRegisterDto());
+    }
+
+    @Override
+    public void getCardsController(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = getDtoByEmail(currentUser);
+        model.addAttribute("savedCards", cardService.getAllByUserId(userFromBd.getId()));
+    }
+
+    @Override
+    @Transactional
+    public String payOrderByCardController(long id, CardRegisterDto cardRegisterDto, BindingResult bindingResult, String isSaved, Model model) {
+        if (bindingResult.hasErrors()) {
+            OrderDto orderDto = orderService.findById(id);
+            model.addAttribute("orderForm", orderDto);
+            model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
+            return "user-pay-order";
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        User userFromBd = getByEmail(currentUser);
+        String[] ownerDate = cardRegisterDto.getOwner().split(" ");
+        if (ownerDate.length != 2) {
+            model.addAttribute("ownerError", "Cardholder data must consist of first and last name");
+            return "card-register";
+        }
+        if (isSaved != null) {
+            cardService.addCard(cardRegisterDto, userFromBd);
+        }
+        orderService.setPaid(id);
+        return "redirect:/profile/order/" + id;
+    }
+
+    @Override
+    public void getPageForEditAddressController(long id, Model model) {
+        AddressDto addressDto = addressService.getById(id);
+        model.addAttribute("addressForm", addressDto);
+    }
+
+    @Override
+    @Transactional
+    public String editAddressController(AddressDto addressDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "user-address-edit";
+        }
+        if (orderService.getOrdersByAddressId(addressDto.getId()).size() == 0) {
+            addressService.updateAddress(addressDto);
+        } else {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentUser = authentication.getName();
+            User userFromBd = getByEmail(currentUser);
+            addressService.updateSavedAddress(addressDto.getId());
+            addressService.addUpdateAddress(addressDto, userFromBd);
+        }
+        return "redirect:/profile/addresses";
+    }
+
+    @Override
+    public void getDeliveredOrdersController(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUser = authentication.getName();
+        UserDto userFromBd = getDtoByEmail(currentUser);
+        model.addAttribute("orders", orderService.findAllDeliveredForUser(userFromBd.getId(), true));
     }
 }
