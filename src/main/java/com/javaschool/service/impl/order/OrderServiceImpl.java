@@ -24,6 +24,7 @@ import com.javaschool.repository.order.AddressRepository;
 import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.ProductRepository;
 import com.javaschool.repository.user.UserRepository;
+import com.javaschool.service.impl.MessageSender;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.product.ProductService;
@@ -50,6 +51,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
+
     private final OrderRepository orderRepository;
     private final OrderMapperImpl orderMapper;
     private final AddressRepository addressRepository;
@@ -61,6 +63,7 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartService shoppingCartService;
     private final ProductMapperImpl productMapper;
     private final UserMapperImpl userMapper;
+
 
     @Override
     public List<OrderDto> findAll() {
@@ -379,9 +382,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public List<ProductDto> getTopProducts() {
+    public List<ProductStatisticDto> getTopProducts() {
         List<OrderDto> orderDtoListFromBd = null;
-        List<ProductDto> productDtoList = new ArrayList<>();
         try {
             orderDtoListFromBd = orderMapper.toDtoList(orderRepository.findAll());
         } catch (OrderException e) {
@@ -410,6 +412,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
+        List<ProductStatisticDto> productDtoList = new ArrayList<>();
         while (productDtoList.size() != 10 & !productStatistic.isEmpty()) {
             int max = 0;
             ProductStatisticDto productStatisticDtoMax = null;
@@ -419,7 +422,7 @@ public class OrderServiceImpl implements OrderService {
                     productStatisticDtoMax = productStatisticDto;
                 }
             }
-            productDtoList.add(productStatisticDtoMax.getProductDto());
+            productDtoList.add(productStatisticDtoMax);
             productStatistic.remove(productStatisticDtoMax);
         }
         return productDtoList;
@@ -558,14 +561,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public String addNewOrderController(OrderRegisterDto orderDto, ArrayList<ProductBucketDto> bucket, SessionStatus status) {
+    public void addNewOrderController(OrderRegisterDto orderDto, ArrayList<ProductBucketDto> bucket, SessionStatus status) {
         status.setComplete();
+        addOrder(orderDto);
+        shoppingCartService.deleteSelectedProduct(bucket, orderDto.getProductDtoList());
+    }
+
+    @Override
+    public boolean isAvailable(OrderRegisterDto orderDto){
         if (productService.isAvailable(orderDto.getProductDtoList())) {
-            addOrder(orderDto);
-            shoppingCartService.deleteSelectedProduct(bucket, orderDto.getProductDtoList());
-        } else {
-            return "redirect:/bucket";
+            return true;
         }
-        return "redirect:/";
+        return false;
     }
 }

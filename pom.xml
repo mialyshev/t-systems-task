@@ -11,7 +11,7 @@
 
   <name>untitled Maven Webapp</name>
   <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>http://localhost:8080</url>
 
   <properties>
     <junit.version>4.13</junit.version>

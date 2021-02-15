@@ -4,6 +4,7 @@ import com.javaschool.dto.card.CardRegisterDto;
 import com.javaschool.dto.order.AddressAdditionDto;
 import com.javaschool.dto.order.OrderRegisterDto;
 import com.javaschool.dto.product.ProductBucketDto;
+import com.javaschool.service.impl.MessageSender;
 import com.javaschool.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 @SessionAttributes(types = {OrderRegisterDto.class})
 public class OrderController {
     private final OrderService orderService;
+    private final MessageSender messageSender;
 
     @GetMapping
     public String getOrderForm(Model model,
@@ -85,7 +87,12 @@ public class OrderController {
     public String addNewOrder(@ModelAttribute("orderForm") OrderRegisterDto orderDto,
                               @SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
                               SessionStatus status) {
-        return orderService.addNewOrderController(orderDto, bucket, status);
+        if(orderService.isAvailable(orderDto)){
+            orderService.addNewOrderController(orderDto, bucket, status);
+            messageSender.sendMessage();
+            return "redirect:/";
+        }
+        return "redirect:/bucket";
     }
 
 }

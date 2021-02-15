@@ -6,6 +6,7 @@ import com.javaschool.dto.order.OrderDto;
 import com.javaschool.dto.order.OrderRegisterDto;
 import com.javaschool.dto.product.ProductBucketDto;
 import com.javaschool.dto.product.ProductDto;
+import com.javaschool.dto.product.ProductStatisticDto;
 import com.javaschool.dto.user.UserStatisticDto;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,7 +57,7 @@ public interface OrderService {
 
     List<OrderDto> getWeekOrders();
 
-    List<ProductDto> getTopProducts();
+    List<ProductStatisticDto> getTopProducts();
 
     List<UserStatisticDto> getTopUsers();
 
@@ -74,5 +75,7 @@ public interface OrderService {
 
     void getLaterPayController(OrderRegisterDto orderDto, Model model);
 
-    String addNewOrderController(OrderRegisterDto orderDto, ArrayList<ProductBucketDto> bucket, SessionStatus status);
+    void addNewOrderController(OrderRegisterDto orderDto, ArrayList<ProductBucketDto> bucket, SessionStatus status);
+
+    boolean isAvailable(OrderRegisterDto orderDto);
 }

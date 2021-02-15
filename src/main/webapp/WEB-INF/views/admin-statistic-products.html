@@ -90,12 +90,13 @@
             <div class="col-3" th:each="product : ${products}">
                 <div class="card mt-2" style="width: 17rem; height: 35rem">
                     <div class="view overlay">
-                        <img class="card-img-top" th:src="*{product.url}">
+                        <img class="card-img-top" th:src="*{product.productDto.url}">
                     </div>
                     <div class="card-body text-center">
-                        <p class="card-text"><span th:text="${product.brandName}"></span></p>
-                        <p class="card-text"><span th:text="*{product.model}"></span></p>
-                        <p class="card-text"><span th:text="*{product.price}"></span>$</p>
+                        <p class="card-text"><span th:text="${product.productDto.brandName}"></span></p>
+                        <p class="card-text"><span th:text="*{product.productDto.model}"></span></p>
+                        <p class="card-text"><span th:text="*{product.productDto.price}"></span>$</p>
+                        <p class="card-text">Count of purchase:<span th:text="*{product.count}"></span></p>
                     </div>
                 </div>
             </div>
