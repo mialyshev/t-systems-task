@@ -32,6 +32,9 @@
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     <hibernate-jpamodelgen.version>5.4.27.Final</hibernate-jpamodelgen.version>
     <activemq-spring.version>5.16.1</activemq-spring.version>
+    <spring-jms.version>5.3.3</spring-jms.version>
+    <junit-jupiter-api.version>5.7.1</junit-jupiter-api.version>
+    <mockito-all.version>1.10.19</mockito-all.version>
   </properties>
 
   <dependencies>
@@ -175,7 +178,21 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
-      <version>5.3.3</version>
+      <version>${spring-jms.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>3.7.7</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.7.1</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -186,6 +203,16 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>${maven-war-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.2</version>
+        <configuration>
+          <skipTests>false</skipTests>
+          <testFailureIgnore>true</testFailureIgnore>
+          <forkMode>once</forkMode>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
