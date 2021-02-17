@@ -5,22 +5,18 @@ import com.javaschool.entity.Brand;
 import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.BrandMapperImpl;
 import com.javaschool.repository.product.BrandRepository;
-
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,7 +56,7 @@ public class BrandServiceImplTest {
 
     @Test
     public void getByIdTest() throws ProductException {
-        when(brandRepository.findById(anyInt())).thenReturn(getTestBrandEntity());
+        lenient().when(brandRepository.findById(anyInt())).thenReturn(getTestBrandEntity());
         when(brandMapper.toDto(any())).thenReturn(getTestBrandDto());
         BrandDto result = brandService.getById(1);
         assertEquals(getTestBrandEntity().getBrandName(), result.getBrandName());
