@@ -14,10 +14,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrandServiceImplTest {
@@ -31,7 +30,7 @@ public class BrandServiceImplTest {
     @Mock
     BrandMapperImpl brandMapper;
 
-    private Brand getTestBrandEntity(){
+    private Brand getTestBrandEntity() {
         return Brand.builder()
                 .id(1)
                 .brandName("test")
@@ -68,5 +67,11 @@ public class BrandServiceImplTest {
         when(brandMapper.toDto(any())).thenReturn(getTestBrandDto());
         BrandDto result = brandService.getByName("Adsa");
         assertEquals(getTestBrandEntity().getBrandName(), result.getBrandName());
+    }
+
+    @Test
+    public void addBrandTest() {
+        brandService.addBrand(getTestBrandDto());
+        verify(brandRepository, only()).save(any(Brand.class));
     }
 }

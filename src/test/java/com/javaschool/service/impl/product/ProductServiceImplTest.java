@@ -1,11 +1,10 @@
 package com.javaschool.service.impl.product;
 
-import com.javaschool.dto.product.*;
+import com.javaschool.dto.product.ProductDto;
 import com.javaschool.entity.*;
 import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.ProductMapperImpl;
 import com.javaschool.repository.product.*;
-import com.javaschool.service.product.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,64 +17,82 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductServiceImplTest {
 
     @Mock
-    private  ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Mock
-    private  ProductMapperImpl productMapper;
+    private ProductMapperImpl productMapper;
+
+    @Mock
+    private BrandRepository brandRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private ColorRepository colorRepository;
+
+    @Mock
+    private MaterialRepository materialRepository;
+
+    @Mock
+    private SeasonRepository seasonRepository;
+
+    @Mock
+    private SizeRepository sizeRepository;
+
 
     @InjectMocks
     ProductServiceImpl productService;
 
-    private Brand getTestBrandEntity(){
+    private Brand getTestBrandEntity() {
         return Brand.builder()
                 .id(1)
                 .brandName("test")
                 .build();
     }
 
-    private Category getTestCategoryEntity(){
+    private Category getTestCategoryEntity() {
         return Category.builder()
                 .id(1)
                 .categoryName("test")
                 .build();
     }
 
-    private Color getTestColorEntity(){
+    private Color getTestColorEntity() {
         return Color.builder()
                 .id(1)
                 .colorName("test")
                 .build();
     }
 
-    private Material getTestMaterialEntity(){
+    private Material getTestMaterialEntity() {
         return Material.builder()
                 .id(1)
                 .materialName("test")
                 .build();
     }
 
-    private Season getTestSeasonEntity(){
+    private Season getTestSeasonEntity() {
         return Season.builder()
                 .id(1)
                 .seasonName("test")
                 .build();
     }
 
-    private Size getTestSizeEntity(){
+    private Size getTestSizeEntity() {
         return Size.builder()
                 .id(1)
                 .size(1)
                 .build();
     }
 
-    private Product getTestProductEntity(){
+    private Product getTestProductEntity() {
         return Product.builder()
                 .id(1)
                 .quantity(1)
@@ -92,7 +109,7 @@ public class ProductServiceImplTest {
                 .build();
     }
 
-    private ProductDto getTestProductDto(){
+    private ProductDto getTestProductDto() {
         return ProductDto.builder()
                 .id(1)
                 .quantity(1)
@@ -135,5 +152,17 @@ public class ProductServiceImplTest {
         when(productMapper.toDto(any())).thenReturn(getTestProductDto());
         ProductDto result = productService.getById(1);
         assertEquals(getTestProductDto(), result);
+    }
+
+    @Test
+    public void addProductTest() throws ProductException {
+        when(brandRepository.findByName(anyString())).thenReturn(getTestBrandEntity());
+        when(categoryRepository.findByName(anyString())).thenReturn(getTestCategoryEntity());
+        when(colorRepository.findByName(anyString())).thenReturn(getTestColorEntity());
+        when(materialRepository.findByName(anyString())).thenReturn(getTestMaterialEntity());
+        when(seasonRepository.findByName(anyString())).thenReturn(getTestSeasonEntity());
+        when(sizeRepository.findBySize(anyFloat())).thenReturn(getTestSizeEntity());
+        productService.addProduct(getTestProductDto());
+        verify(productRepository, only()).save(any(Product.class));
     }
 }

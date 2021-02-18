@@ -14,10 +14,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CategoryServiceImplTest {
@@ -31,7 +30,7 @@ public class CategoryServiceImplTest {
     @InjectMocks
     CategoryServiceImpl categoryService;
 
-    private Category getTestCategoryEntity(){
+    private Category getTestCategoryEntity() {
         return Category.builder()
                 .id(1)
                 .categoryName("test")
@@ -69,5 +68,11 @@ public class CategoryServiceImplTest {
         when(categoryMapper.toDto(any())).thenReturn(getTestCategoryDto());
         CategoryDto result = categoryService.getByName("test");
         assertEquals(getTestCategoryEntity().getCategoryName(), result.getCategoryName());
+    }
+
+    @Test
+    public void addCategoryTest() {
+        categoryService.addCategory(getTestCategoryDto());
+        verify(categoryRepository, only()).save(any(Category.class));
     }
 }

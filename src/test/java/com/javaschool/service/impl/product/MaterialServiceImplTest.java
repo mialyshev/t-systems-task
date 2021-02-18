@@ -14,10 +14,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MaterialServiceImplTest {
@@ -31,7 +30,7 @@ public class MaterialServiceImplTest {
     @InjectMocks
     MaterialServiceImpl materialService;
 
-    private Material getTestMaterialEntity(){
+    private Material getTestMaterialEntity() {
         return Material.builder()
                 .id(1)
                 .materialName("test")
@@ -69,6 +68,12 @@ public class MaterialServiceImplTest {
         when(materialMapper.toDto(any())).thenReturn(getTestMaterialDto());
         MaterialDto result = materialService.getByName("test");
         assertEquals(getTestMaterialEntity().getMaterialName(), result.getMaterialName());
+    }
+
+    @Test
+    public void addMaterialTest() {
+        materialService.addMaterial(getTestMaterialDto());
+        verify(materialRepository, only()).save(any(Material.class));
     }
 
 }

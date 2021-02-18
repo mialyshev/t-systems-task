@@ -14,10 +14,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SeasonServiceImplTest {
@@ -31,7 +30,7 @@ public class SeasonServiceImplTest {
     @InjectMocks
     SeasonServiceImpl seasonService;
 
-    private Season getTestSeasonEntity(){
+    private Season getTestSeasonEntity() {
         return Season.builder()
                 .id(1)
                 .seasonName("test")
@@ -69,5 +68,11 @@ public class SeasonServiceImplTest {
         when(seasonMapper.toDto(any())).thenReturn(getTestSeasonDto());
         SeasonDto result = seasonService.getByName("test");
         assertEquals(getTestSeasonEntity().getSeasonName(), result.getSeasonName());
+    }
+
+    @Test
+    public void addSeasonTest() {
+        seasonService.addSeason(getTestSeasonDto());
+        verify(seasonRepository, only()).save(any(Season.class));
     }
 }

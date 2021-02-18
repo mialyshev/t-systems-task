@@ -118,7 +118,6 @@ public class AddressServiceImpl implements AddressService {
         } catch (Exception e) {
             log.error("Error at AddressService.updateAddress()", e);
         }
-
     }
 
     @Override

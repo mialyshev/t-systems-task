@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             order.setAddress(addressRepository.findById(orderDto.getAddress_id()));
         } catch (UserException e) {
-            log.error("Error while ser address for order", e);
+            log.error("Error while set address for order", e);
         }
         order.setPaymentType(PaymentType.valueOf(orderDto.getPaymentType()));
         if (orderDto.getPaymentType().equals("CARD")) {

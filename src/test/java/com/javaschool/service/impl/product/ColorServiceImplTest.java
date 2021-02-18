@@ -14,10 +14,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ColorServiceImplTest {
@@ -31,7 +30,7 @@ public class ColorServiceImplTest {
     @InjectMocks
     ColorServiceImpl colorService;
 
-    private Color getTestColorEntity(){
+    private Color getTestColorEntity() {
         return Color.builder()
                 .id(1)
                 .colorName("test")
@@ -69,5 +68,11 @@ public class ColorServiceImplTest {
         when(colorMapper.toDto(any())).thenReturn(getTestColorDto());
         ColorDto result = colorService.getByName("test");
         assertEquals(getTestColorEntity().getColorName(), result.getColorName());
+    }
+
+    @Test
+    public void addColorTest() {
+        colorService.addColor(getTestColorDto());
+        verify(colorRepository, only()).save(any(Color.class));
     }
 }
