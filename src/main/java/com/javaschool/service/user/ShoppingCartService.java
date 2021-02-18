@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ShoppingCartService {
 
-    void add(long productId, ArrayList<ProductBucketDto> bucket, float size);
+    void add(long productId, ArrayList<ProductBucketDto> bucket, float size, String quantity);
 
     void delete(long productId, ArrayList<ProductBucketDto> bucket);
 

@@ -23,9 +23,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ProductMapperImpl productMapper;
 
     @Override
-    public void add(long productId, ArrayList<ProductBucketDto> bucket, float size) {
+    public void add(long productId, ArrayList<ProductBucketDto> bucket, float size, String quantity) {
         List<ProductDto> productDtoList = null;
         ProductDto productDto = null;
+        int quantityInteger = Integer.parseInt(quantity);
         try {
             productDto = productMapper.toDto(productRepository.findById(productId));
             productDtoList = productMapper.toDtoList(productRepository.findAllActiveByModel(productDto.getModel()));
@@ -34,7 +35,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
         for (ProductBucketDto productBucket : bucket) {
             if (productBucket.getProductDto().equals(productDto) && productBucket.getProductDto().getSize() == size) {
-                productBucket.setQuantityInBucket(productBucket.getQuantityInBucket() + 1);
+                productBucket.setQuantityInBucket(productBucket.getQuantityInBucket() + quantityInteger);
                 return;
             }
         }
@@ -44,7 +45,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 productBucketDto.setProductDto(productDto1);
             }
         }
-        productBucketDto.setQuantityInBucket(1);
+        productBucketDto.setQuantityInBucket(quantityInteger);
         productBucketDto.setAvailable(true);
         bucket.add(productBucketDto);
     }
