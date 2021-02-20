@@ -101,7 +101,7 @@
             <div class="form-group">
                 <label for="brandName" class="col-sm-3 control-label"></label>
                 <div class="col-md-3 col-lg-3">
-                    <input type="text" id="brandName" th:field="*{brandName}" placeholder="Brand name" class="form-control" autofocus required>
+                    <input type="text" id="brandName" th:field="*{brandName}" placeholder="Brand name" class="form-control" minlength="1" maxlength="100" autofocus required>
                 </div>
                 <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${brandError}" th:text="${brandError}"></div>
                 <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('brandName')}" th:errors="*{brandName}" ></div>
