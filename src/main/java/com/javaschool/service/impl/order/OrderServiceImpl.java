@@ -136,10 +136,6 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
-    @Override
-    public void updateOrderStatus(OrderDto orderDto) {
-
-    }
 
     @Override
     public List<String> getOrderStatusList() {
@@ -166,19 +162,6 @@ public class OrderServiceImpl implements OrderService {
             strings.add(paymentType.name());
         }
         return strings;
-    }
-
-    @Override
-    public List<OrderDto> findByUserId(long userId) {
-        List<OrderDto> orderDtoList = null;
-        try {
-            orderDtoList = orderMapper.toDtoList(orderRepository.findByUserId(userId));
-        } catch (OrderException e) {
-            log.error("Error getting all orders by user id", e);
-        } catch (Exception e) {
-            log.error("Error at OrderService.findByUserId()", e);
-        }
-        return orderDtoList;
     }
 
     @Override

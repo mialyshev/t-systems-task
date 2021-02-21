@@ -46,6 +46,14 @@ public interface ProductRepository {
     Product findById(long id) throws ProductException;
 
     /**
+     * Find all products for order.
+     *
+     * @param orderId the order id
+     * @return the list
+     */
+    List<Product> getProductByOrderId(long orderId);
+
+    /**
      * Add product entity.
      *
      * @param product the product entity

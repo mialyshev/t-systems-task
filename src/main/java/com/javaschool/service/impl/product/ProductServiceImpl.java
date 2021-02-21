@@ -54,18 +54,6 @@ public class ProductServiceImpl implements ProductService {
         return productDtoList;
     }
 
-    @Override
-    public List<ProductDto> getAllActive() {
-        List<ProductDto> productDtoListFromRepo = null;
-        try {
-            productDtoListFromRepo = getUnique(productMapper.toDtoList(productRepository.findAllActive()));
-        } catch (ProductException e) {
-            log.error("Error getting all the active products", e);
-        } catch (Exception e) {
-            log.error("Error at ProductService.getAllActive()", e);
-        }
-        return productDtoListFromRepo;
-    }
 
     private List<ProductDto> getUnique(List<ProductDto> productDtos) {
         List<ProductDto> productDtoList = new ArrayList<>();
@@ -186,19 +174,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @Override
-    @Transactional
-    public List<ProductDto> getProductsByParam(List<SearchCriteria> params) {
-        List<ProductDto> productDtoList = null;
-        try {
-            productDtoList = productMapper.toDtoList(productRepository.findByParam(params));
-        } catch (ProductException e) {
-            log.error("Error getting all the products by param", e);
-        } catch (Exception e) {
-            log.error("Error at ProductService.getProductsByParam()", e);
-        }
-        return productDtoList;
-    }
 
     @Override
     @Transactional
@@ -260,34 +235,6 @@ public class ProductServiceImpl implements ProductService {
         return sizeDtos;
     }
 
-    @Override
-    public void addProductToBucket(long productId, float size, ArrayList<ProductDto> bucket) {
-        try {
-            ProductDto product = productMapper.toDto(productRepository.findById(productId));
-            if (product.getSize() == size) {
-                bucket.add(product);
-                return;
-            }
-            List<ProductDto> products = null;
-            try {
-                products = productMapper.toDtoList(productRepository.findAllActiveByModel(product.getModel()));
-            } catch (ProductException e) {
-                log.error("Error getting all the active products for add to bucket", e);
-            }
-            for (ProductDto productDto : products) {
-                if (productDto.equals(product)) {
-                    if (productDto.getSize() == size) {
-                        bucket.add(productDto);
-                        return;
-                    }
-                }
-            }
-        } catch (ProductException e) {
-            log.error("Error while add product to bucket", e);
-        } catch (Exception e) {
-            log.error("Error at ProductService.addProductToBucket()", e);
-        }
-    }
 
     @Override
     public List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams) {
