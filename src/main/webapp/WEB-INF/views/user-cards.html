@@ -71,15 +71,11 @@
     <div class="container">
         <div class="row mt-2 mr-2">
             <div class="col-3" th:each="card : ${savedCards}">
-                <div class="card" style="width: 17rem; height: 20rem">
+                <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Card #<span th:text="${cardStat.index + 1}"></span></h5>
+                        <p class="card-text">Number: ****-<span th:text="*{card.lastNumbers}"></span>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Number: <span th:text="*{card.number}"></span></li>
-                        <li class="list-group-item">Validate date: <span th:text="*{card.validatyDate}"></span></li>
-                        <li class="list-group-item">Owner: <span th:text="*{card.owner}"></span></li>
-                    </ul>
                 </div>
             </div>
         </div>

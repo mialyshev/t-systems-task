@@ -32,6 +32,9 @@ public class Card {
     @Column(name = "code")
     private String code;
 
+    @Column(name = "last_numbers")
+    private String lastNumbers;
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id")
     private User user;

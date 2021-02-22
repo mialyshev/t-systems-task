@@ -2,6 +2,7 @@ package com.javaschool.service.impl.user;
 
 import com.javaschool.dto.card.CardDto;
 import com.javaschool.dto.card.CardRegisterDto;
+import com.javaschool.entity.Address;
 import com.javaschool.entity.Card;
 import com.javaschool.entity.User;
 import com.javaschool.exception.UserException;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +33,7 @@ public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final CardMapperImpl cardMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
     private static Logger log = LoggerFactory.getLogger(CardServiceImpl.class);
 
@@ -39,11 +42,12 @@ public class CardServiceImpl implements CardService {
     public void addCard(CardRegisterDto cardDto, User userOwner) {
         log.info("Add new card in card service");
         Card card = new Card();
-        card.setNumber(cardDto.getNumber());
-        card.setCode(cardDto.getCode());
-        card.setOwner(cardDto.getOwner());
+        card.setNumber(bCryptPasswordEncoder.encode(cardDto.getNumber()));
+        card.setCode(bCryptPasswordEncoder.encode(cardDto.getCode()));
+        card.setOwner(bCryptPasswordEncoder.encode(cardDto.getOwner()));
         card.setValidatyDate(getDate(cardDto.getValidatyDate()));
         card.setUser(userOwner);
+        card.setLastNumbers(cardDto.getNumber().substring(cardDto.getNumber().length() - 4));
         cardRepository.save(card);
     }
 

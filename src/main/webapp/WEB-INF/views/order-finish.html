@@ -90,24 +90,6 @@
                 <h3 class="mt-2">Payment info</h3>
                 <div th:if="${orderForm.paymentType == 'CARD'}">
                     <h3>Card payment</h3>
-                    <div th:if="${orderForm.paid}">
-                        <table class="table">
-                            <tbody>
-                            <tr>
-                                <td>Number:</td>
-                                <td th:text="${card.number}"></td>
-                            </tr>
-                            <tr>
-                                <td>Validate date:</td>
-                                <td th:text="${card.validatyDate}"></td>
-                            </tr>
-                            <tr>
-                                <td>Owner:</td>
-                                <td th:text="${card.owner}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
                 <div th:if="${orderForm.paymentType == 'CASH'}">
                     <h3 class="mt-2">Cash payment</h3>

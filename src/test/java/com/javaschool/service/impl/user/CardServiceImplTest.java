@@ -50,10 +50,8 @@ public class CardServiceImplTest {
     private CardDto getCardDto(){
         return CardDto.builder()
                 .id(1)
-                .code("111")
-                .number("1111222233334444")
-                .owner("Test User")
                 .validatyDate("2000-01-01")
+                .lastNumbers("4444")
                 .build();
     }
 
