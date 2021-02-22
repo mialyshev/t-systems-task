@@ -13,6 +13,8 @@ import com.javaschool.repository.product.*;
 import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
@@ -41,8 +42,11 @@ public class ProductServiceImpl implements ProductService {
     private final SeasonService seasonService;
     private final SizeService sizeService;
 
+    private static Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+
     @Override
     public List<ProductDto> getAll() {
+        log.info("Get all products");
         List<ProductDto> productDtoList = null;
         try {
             productDtoList = getUnique(productMapper.toDtoList(productRepository.findAll()));
@@ -56,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     private List<ProductDto> getUnique(List<ProductDto> productDtos) {
+        log.info("Getting unique product entities");
         List<ProductDto> productDtoList = new ArrayList<>();
         for (ProductDto productDto : productDtos) {
             if (isUnique(productDtoList, productDto)) {
@@ -76,6 +81,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getById(long id) {
+        log.info("Get product with id: " + id);
         ProductDto productDto = null;
         try {
             productDto = productMapper.toDto(productRepository.findById(id));
@@ -90,6 +96,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void addProduct(ProductDto productDto) {
+        log.info("Save new product");
         Product product = new Product();
         try {
             product.setActive(true);
@@ -113,6 +120,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductBucketDto> getSelectedList(Integer[] selected, ArrayList<ProductBucketDto> bucket) {
+        log.info("Retrieving the entities of the selected products from the cart");
         List<ProductBucketDto> productDtos = new ArrayList<>();
         for (Integer id : selected) {
             productDtos.add(findByProductId(bucket, id));
@@ -131,6 +139,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean isAvailable(List<ProductBucketDto> productDtos) {
+        log.info("Checking for the availability of goods");
         try {
             for (ProductBucketDto productBucketDto : productDtos) {
                 Product product = productRepository.findById(productBucketDto.getProductDto().getId());
@@ -148,6 +157,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public int calcPrice(List<ProductBucketDto> productDtos) {
+        log.info("Calculating the cost of products");
         int price = 0;
         for (ProductBucketDto productBucketDto : productDtos) {
             price += (productBucketDto.getProductDto().getPrice() * productBucketDto.getQuantityInBucket());
@@ -158,6 +168,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateProductQuantity(List<ProductBucketDto> productDtoList) {
+        log.info("Product quantity update");
         try {
             for (ProductBucketDto productDto : productDtoList) {
                 Product product = productRepository.findById(productDto.getProductDto().getId());
@@ -178,6 +189,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void addProductBySizeQuantity(float size, int quantity, long productId) {
+        log.info("Adding the size or quantity of an existing item");
         try {
             Size sizeFromRepo = sizeRepository.findBySize(size);
             Product product = new Product();
@@ -211,6 +223,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<SizeDto> getAvailableSizesForProduct(long productId) {
+        log.info("Obtaining available sizes for a product");
         List<SizeDto> sizeDtos = new ArrayList<>();
         try {
             List<ProductDto> products = null;
@@ -238,6 +251,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProductsByParam(String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams selectedParams) {
+        log.info("Receiving products according to new parameters");
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
         List<ProductDto> productDtoListFromRepo = null;
         try {
@@ -273,6 +287,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProductsByParamList(SelectedParams selectedParams) {
+        log.info("Receiving products according to old parameters");
         List<SearchCriteria> params = new ArrayList<SearchCriteria>();
         List<ProductDto> productDtoListFromRepo = null;
         try {
@@ -302,6 +317,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addNewProductPageController(Model model) {
+        log.info("Getting a page to add a new product");
         model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("brands", brandService.getAll());
         model.addAttribute("colors", colorService.getAll());
@@ -313,6 +329,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public String addNewProductController(ProductDto productDto, BindingResult bindingResult, float size, Model model) {
+        log.info("Retrieving information about a new product to save it");
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAll());
             model.addAttribute("brands", brandService.getAll());
@@ -328,6 +345,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public String addSizeOrQuantityForProductPageController(long id, Model model) {
+        log.info("Getting a page to add a new size or quantity for exist product");
         ProductDto productDto = getById(id);
         if(productDto == null){
             return "404";
@@ -339,6 +357,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public String addSizeOrQuantityForProductController(long id, float size, int quantity, Model model) {
+        log.info("Retrieving information about a new size or quantity of exist product to save it");
         if (quantity <= 0) {
             model.addAttribute("quantityError", "Quantity must be greater than 0");
             model.addAttribute("productInfo", getById(id));

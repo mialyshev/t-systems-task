@@ -6,6 +6,8 @@ import com.javaschool.dto.product.SelectedParams;
 import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -14,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class CatalogServiceImpl implements CatalogService {
 
@@ -25,8 +26,11 @@ public class CatalogServiceImpl implements CatalogService {
     private final MaterialService materialService;
     private final SeasonService seasonService;
 
+    private static Logger log = LoggerFactory.getLogger(CatalogServiceImpl.class);
+
     @Override
     public void getAllProducts(Model model, HttpSession session) {
+        log.info("Get all products");
         if (session.getAttribute("bucket") == null) {
             session.setAttribute("bucket", new ArrayList<ProductBucketDto>());
         }
@@ -45,6 +49,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public void getProductsByParam(Model model, String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams params) {
+        log.info("Getting all products by parameters to display on the model");
         model.addAttribute("products", productService.getProductsByParam(categoryName, brandName, colorName, materialName, seasonName, params));
         model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("brands", brandService.getAll());
@@ -55,6 +60,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public void clearParams(HttpSession session) {
+        log.info("Clear all parameters");
         SelectedParams selectedParams = (SelectedParams) session.getAttribute("params");
         selectedParams.setCategory(null);
         selectedParams.setBrand(null);
@@ -65,6 +71,7 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public String getProduct(long id, Model model) {
+        log.info("Getting product to display on the model");
         ProductDto productDto = productService.getById(id);
         if(productDto == null){
             return "404";
