@@ -132,6 +132,16 @@ public interface ProductService {
     String addNewProductController(ProductDto productDto, BindingResult bindingResult, float size, Model model);
 
     /**
+     * Controller to get a page for adding size or quantity for an existing item.
+     *
+     * @param id product id
+     * @param model the model on which we put the required data
+     *
+     * @return the title of the html page to display
+     */
+    String addSizeOrQuantityForProductPageController(long id, Model model);
+
+    /**
      * Controller for adding size or quantity for an existing item.
      *
      * @param id product id

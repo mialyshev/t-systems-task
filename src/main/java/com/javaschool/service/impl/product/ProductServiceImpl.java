@@ -327,6 +327,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public String addSizeOrQuantityForProductPageController(long id, Model model) {
+        ProductDto productDto = getById(id);
+        if(productDto == null){
+            return "404";
+        }
+        model.addAttribute("productInfo", productDto);
+        return "admin-add-size-or-quantity";
+    }
+
+    @Override
     @Transactional
     public String addSizeOrQuantityForProductController(long id, float size, int quantity, Model model) {
         if (quantity <= 0) {

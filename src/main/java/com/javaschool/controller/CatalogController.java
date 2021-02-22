@@ -44,7 +44,6 @@ public class CatalogController {
     @GetMapping("/catalog/product/{id}")
     public String getProduct(@PathVariable("id") long id,
                              Model model) {
-        catalogService.getProduct(id, model);
-        return "product";
+        return catalogService.getProduct(id, model);
     }
 }

@@ -39,8 +39,8 @@
                     <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="nav-link btn btn-primary" href="/registration">Sign up</a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link active btn btn-primary" href="/profile">User page</a>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href="/profile">User page</a>
                     </li>
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <form th:action="@{/logout}" method="post">
@@ -64,7 +64,7 @@
                             <h3 class="h2">
                                 Look like you're lost
                             </h3>
-                            <p>the page you are looking for not avaible!</p>
+                            <p>the page you are looking for not available!</p>
                         </div>
                     </div>
                 </div>

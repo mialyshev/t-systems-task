@@ -64,8 +64,13 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
-    public void getProduct(long id, Model model) {
+    public String getProduct(long id, Model model) {
+        ProductDto productDto = productService.getById(id);
+        if(productDto == null){
+            return "404";
+        }
         model.addAttribute("product", productService.getById(id));
         model.addAttribute("sizes", productService.getAvailableSizesForProduct(id));
+        return "product";
     }
 }

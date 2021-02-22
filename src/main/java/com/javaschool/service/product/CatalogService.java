@@ -42,6 +42,8 @@ public interface CatalogService {
      *
      * @param id the product id
      * @param model the model on which we put the required data
+     *
+     * @return the title of the html page to display
      */
-    void getProduct(long id, Model model);
+    String getProduct(long id, Model model);
 }
