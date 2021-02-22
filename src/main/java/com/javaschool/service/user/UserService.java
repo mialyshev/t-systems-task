@@ -11,6 +11,7 @@ import com.javaschool.exception.ProductException;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -187,8 +188,10 @@ public interface UserService {
      *
      * @param id the order id
      * @param model the model on which we put the required data
+     *
+     * @return the title of the html page to display
      */
-    void getOrderController(long id, Model model);
+    String getOrderController(long id, Model model);
 
     /**
      * Controller for receiving the order payment page.
@@ -213,6 +216,8 @@ public interface UserService {
      * @param id the order id
      * @param isSaved card save option
      * @param model the model on which we put the required data
+     *
+     * @return the title of the html page to display
      */
     String payOrderByCardController(long id, CardRegisterDto cardRegisterDto, BindingResult bindingResult, String isSaved, Model model);
 
@@ -221,8 +226,10 @@ public interface UserService {
      *
      * @param id the address id
      * @param model the model on which we put the required data
+     *
+     * @return the title of the html page to display
      */
-    void getPageForEditAddressController(long id, Model model);
+    String getPageForEditAddressController(long id, Model model);
 
     /**
      * Controller for editing user address.

@@ -86,8 +86,7 @@ public class UserController {
     @GetMapping("/order/{id}")
     public String getOrder(@PathVariable("id") long id,
                            Model model) {
-        userService.getOrderController(id, model);
-        return "user-order";
+        return userService.getOrderController(id, model);
     }
 
     @GetMapping("/order/payment/{id}")
@@ -124,8 +123,7 @@ public class UserController {
     @GetMapping("/address/edit/{id}")
     public String getPageForEditAddress(@PathVariable("id") long id,
                                         Model model) {
-        userService.getPageForEditAddressController(id, model);
-        return "user-address-edit";
+        return userService.getPageForEditAddressController(id, model);
     }
 
     @PostMapping("/address/edit")

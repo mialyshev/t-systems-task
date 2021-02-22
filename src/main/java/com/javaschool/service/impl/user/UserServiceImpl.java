@@ -312,12 +312,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getOrderController(long id, Model model) {
+    public String getOrderController(long id, Model model) {
         OrderDto orderDto = orderService.findById(id);
+        if(orderDto == null){
+            return "404";
+        }
         orderService.setOrderProductList(orderDto);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
         model.addAttribute("order", orderDto);
         model.addAttribute("price", orderService.getAllPriceForOrder(orderDto));
+        return "user-order";
     }
 
     @Override
@@ -362,9 +366,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getPageForEditAddressController(long id, Model model) {
+    public String getPageForEditAddressController(long id, Model model) {
         AddressDto addressDto = addressService.getById(id);
+        if(addressDto == null){
+            return "404";
+        }
         model.addAttribute("addressForm", addressDto);
+        return "user-address-edit";
     }
 
     @Override
