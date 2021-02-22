@@ -24,6 +24,7 @@ import com.javaschool.repository.order.AddressRepository;
 import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.ProductRepository;
 import com.javaschool.repository.user.UserRepository;
+import com.javaschool.service.impl.product.BrandServiceImpl;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.product.ProductService;
@@ -31,6 +32,8 @@ import com.javaschool.service.user.CardService;
 import com.javaschool.service.user.ShoppingCartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -46,10 +49,8 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-
 
     private final OrderRepository orderRepository;
     private final OrderMapperImpl orderMapper;
@@ -63,9 +64,11 @@ public class OrderServiceImpl implements OrderService {
     private final ProductMapperImpl productMapper;
     private final UserMapperImpl userMapper;
 
+    private static Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Override
     public List<OrderDto> findAll() {
+        log.info("Get all orders");
         List<OrderDto> orderDtoList = null;
         try {
             orderDtoList = orderMapper.toDtoList(orderRepository.findAll());
@@ -79,6 +82,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto findById(long id) {
+        log.info("Get order with id: " + id);
         OrderDto orderDto = null;
         try {
             orderDto = orderMapper.toDto(orderRepository.findById(id));
@@ -93,6 +97,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void addOrder(OrderRegisterDto orderDto) {
+        log.info("Save new order");
         Order order = new Order();
         try {
             order.setUser(userRepository.findById(orderDto.getUser_id()));
@@ -166,6 +171,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void changePayment(long orderId) {
+        log.info("Changing the payment method for an order");
         try {
             Order order = orderRepository.findById(orderId);
             order.setPaymentType(PaymentType.CASH);
@@ -183,6 +189,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void setPaid(long orderId) {
+        log.info("Change payment status");
         try {
             Order order = orderRepository.findById(orderId);
             order.setPaymentStatus(PaymentStatus.PAID);
@@ -199,6 +206,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getOrdersByAddressId(long addressId) {
+        log.info("Receiving orders at");
         List<OrderDto> orderDtoList = null;
         try {
             orderDtoList = orderMapper.toDtoList(orderRepository.findByAddressId(addressId));
@@ -213,6 +221,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void updatePaymentStatus(String paymentStatus, long orderId) {
+        log.info("Change order payment status");
         try {
             Order order = orderRepository.findById(orderId);
             if (order.getPaymentStatus().toString().equals(paymentStatus)) {
@@ -233,6 +242,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void updateOrderStatus(String orderStatus, long orderId) {
+        log.info("Change order status");
         try {
             Order order = orderRepository.findById(orderId);
             if (order.getOrderStatus().toString().equals(orderStatus)) {
@@ -249,6 +259,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findAllDeliveredForUser(long userId, boolean isDelivered) {
+        log.info("Search for all user orders");
         List<OrderDto> orderDtoList = null;
         try {
             if (isDelivered) {
@@ -302,6 +313,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findAllDelivered(boolean isDelivered) {
+        log.info("Search for all completed orders");
         List<OrderDto> orderDtoList = null;
         try {
             if (isDelivered) {
@@ -320,6 +332,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<OrderDto> getMonthOrders() {
+        log.info("Receiving all orders for this month");
         List<OrderDto> orderDtoListFromBd = null;
         List<OrderDto> orderDtoList = new ArrayList<>();
         try {
@@ -342,6 +355,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<OrderDto> getWeekOrders() {
+        log.info("Receiving all orders for this week");
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         int weekNumber = LocalDate.now().get(weekFields.weekOfWeekBasedYear());
         List<OrderDto> orderDtoListFromBd = null;
@@ -365,6 +379,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<ProductStatisticDto> getTopProducts() {
+        log.info("Getting a list of top products");
         List<OrderDto> orderDtoListFromBd = null;
         try {
             orderDtoListFromBd = orderMapper.toDtoList(orderRepository.findAll());
@@ -413,6 +428,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<UserStatisticDto> getTopUsers() {
+        log.info("Getting a list of top users");
         List<User> users = null;
         try {
             users = userRepository.findAll();
@@ -446,6 +462,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String getOrderFormController(Model model, Integer[] selected, ArrayList<ProductBucketDto> bucket, OrderRegisterDto orderDto) {
+        log.info("Receiving an order form");
         if (selected == null) {
             model.addAttribute("orderError", "Please select at least one product");
             return "bucket";
@@ -467,6 +484,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String addAddressController(BindingResult bindingResult, OrderRegisterDto orderDto, AddressAdditionDto addressAdditionDto, String isSaved, Model model) {
+        log.info("Obtaining information about a new ordering address");
         if (bindingResult.hasErrors()) {
             model.addAttribute("savedAddress", addressService.getAllSaved(orderDto.getUser_id()));
             return "order-address";
@@ -488,6 +506,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void addSavedAddressController(OrderRegisterDto orderDto, long addressId, Model model) {
+        log.info("Setting an existing ordering address");
         orderDto.setAddress_id(addressId);
         model.addAttribute("paymentType", getPaymentTypeList());
     }
@@ -506,6 +525,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String addCardController(BindingResult bindingResult, OrderRegisterDto orderDto, CardRegisterDto cardRegisterDto, String isSaved, Model model) {
+        log.info("Obtaining information about a new ordering card");
         if (bindingResult.hasErrors()) {
             model.addAttribute("savedCard", cardService.getAllByUserId(orderDto.getUser_id()));
             return "order-card";
@@ -532,6 +552,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void addSavedCardController(OrderRegisterDto orderDto, long cardId, Model model) {
+        log.info("Setting an existing ordering card");
         orderDto.setPaid(true);
         model.addAttribute("card", cardService.getById(cardId));
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
@@ -548,6 +569,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void addNewOrderController(OrderRegisterDto orderDto, ArrayList<ProductBucketDto> bucket, SessionStatus status) {
+        log.info("Retrieving information about a new order to save it");
         status.setComplete();
         addOrder(orderDto);
         shoppingCartService.deleteSelectedProduct(bucket, orderDto.getProductDtoList());
