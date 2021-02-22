@@ -142,7 +142,7 @@ public interface OrderService {
      * @return the cost
      *
      */
-    int getAllPriceForOrderS(List<OrderDto> orderDtoList);
+    int getAllPriceForOrders(List<OrderDto> orderDtoList);
 
     /**
      * Search for all completed orders.

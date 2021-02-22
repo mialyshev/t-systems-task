@@ -289,7 +289,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public int getAllPriceForOrderS(List<OrderDto> orderDtoList) {
+    public int getAllPriceForOrders(List<OrderDto> orderDtoList) {
         int fullPrice = 0;
         for (OrderDto orderDto : orderDtoList) {
             if (orderDto.getProductDtoList() == null) {
@@ -423,7 +423,11 @@ public class OrderServiceImpl implements OrderService {
         for (User user : users) {
             UserStatisticDto userStatisticDto = new UserStatisticDto();
             userStatisticDto.setUserDto(userMapper.toDto(user));
-            userStatisticDto.setPriceForOrders(getAllPriceForOrderS(orderMapper.toDtoList(user.getOrders())));
+            int allPrice = getAllPriceForOrders(orderMapper.toDtoList(user.getOrders()));
+            if (allPrice == 0){
+                continue;
+            }
+            userStatisticDto.setPriceForOrders(allPrice);
             userStatisticDtos.add(userStatisticDto);
         }
         while (userStatisticDtos.size() > 10) {
