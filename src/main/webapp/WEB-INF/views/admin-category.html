@@ -101,7 +101,7 @@
             <div class="form-group">
                 <label for="categoryName" class="col-sm-3 control-label"></label>
                 <div class="col-md-3 col-lg-3">
-                    <input type="text" id="categoryName" th:field="*{categoryName}" placeholder="Category name" class="form-control" autofocus required>
+                    <input type="text" id="categoryName" th:field="*{categoryName}" placeholder="Category name" class="form-control" minlength="1" maxlength="100" autofocus required>
                 </div>
                 <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${categoryError}" th:text="${categoryError}"></div>
                 <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}" ></div>

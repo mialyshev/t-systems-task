@@ -27,7 +27,6 @@ public class CardController {
     public String registerNewCard(@ModelAttribute("cardForm") @Valid CardRegisterDto cardRegisterDto,
                                   BindingResult bindingResult,
                                   Model model) {
-
         return cardService.registerNewCardController(bindingResult, cardRegisterDto, model);
     }
 }

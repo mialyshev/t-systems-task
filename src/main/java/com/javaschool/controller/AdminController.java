@@ -41,21 +41,18 @@ public class AdminController {
     @GetMapping("/order/{id}")
     public String getOrder(@PathVariable("id") long id,
                            Model model) {
-        adminService.getOrder(id, model);
-        return "admin-order";
+        return adminService.getOrder(id, model);
     }
 
     @GetMapping("/order/edit/pay/{id}")
     public String getPageEditPaymentStatus(@PathVariable("id") long id,
                                            Model model) {
-        adminService.getPageEditPaymentStatus(id, model);
-        return "admin-order-edit-payment";
+        return adminService.getPageEditPaymentStatus(id, model);
     }
 
     @PostMapping("/order/edit/pay/{id}")
     public String editPaymentStatus(@PathVariable("id") long id,
-                                    @RequestParam(value = "paymentStatus", required = false) String paymentStatus,
-                                    Model model) {
+                                    @RequestParam(value = "paymentStatus", required = false) String paymentStatus) {
         orderService.updatePaymentStatus(paymentStatus, id);
         return "redirect:/admin/orders";
     }
@@ -63,8 +60,7 @@ public class AdminController {
     @GetMapping("/order/edit/status/{id}")
     public String getPageEditStatus(@PathVariable("id") long id,
                                     Model model) {
-        adminService.getPageEditStatus(id, model);
-        return "admin-order-edit-status";
+        return adminService.getPageEditStatus(id, model);
     }
 
     @PostMapping("/order/edit/status/{id}")

@@ -19,8 +19,9 @@ public class ShoppingCartController {
     @PostMapping("/add/{id}")
     public String addProductToBucket(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
                                      @RequestParam("size") float size,
+                                     @RequestParam("quantity") String quantity,
                                      @PathVariable("id") long id) {
-        shoppingCartService.add(id, bucket, size);
+        shoppingCartService.add(id, bucket, size, quantity);
         return "redirect:/catalog/product/" + id;
     }
 
@@ -30,7 +31,7 @@ public class ShoppingCartController {
         return shoppingCartService.getBucketFormController(model, bucket);
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping ("/delete/{id}")
     public String deleteProductFromBucket(@SessionAttribute("bucket") ArrayList<ProductBucketDto> bucket,
                                           @PathVariable("id") long id) {
         shoppingCartService.delete(id, bucket);

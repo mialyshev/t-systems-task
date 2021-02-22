@@ -1,2 +1,4 @@
 /mms.iml
 /.idea/
+/src/main/resources/jms.properties
+/src/main/resources/persistence.properties

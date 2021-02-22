@@ -8,9 +8,12 @@ import com.javaschool.exception.UserException;
 import com.javaschool.mapper.order.AddressMapperImpl;
 import com.javaschool.repository.order.AddressRepository;
 import com.javaschool.repository.user.UserRepository;
+import com.javaschool.service.impl.admin.AdminServiceImpl;
 import com.javaschool.service.order.AddressService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
 
@@ -28,9 +30,12 @@ public class AddressServiceImpl implements AddressService {
     private final AddressMapperImpl addressMapper;
     private final UserRepository userRepository;
 
+    private static Logger log = LoggerFactory.getLogger(AddressServiceImpl.class);
+
     @Override
     @Transactional
     public void addAddress(AddressAdditionDto addressAdditionDto, User user) {
+        log.info("Add new address in address service");
         Address address = new Address();
         try {
             address.setCountry(addressAdditionDto.getCountry());
@@ -49,6 +54,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressDto> getAllSaved(long userId) {
+        log.info("Get all saved address for user with id: " + userId);
         List<AddressDto> addressDtoList = null;
         try {
             addressDtoList = addressMapper.toDtoList(addressRepository.findAllSavedByUserId(userId));
@@ -62,6 +68,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressDto getById(long id) {
+        log.info("Get address with id: " + id);
         AddressDto addressDto = null;
         try {
             addressDto = addressMapper.toDto(addressRepository.findById(id));
@@ -76,6 +83,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public AddressDto getLastByUserId(long userId) {
+        log.info("Get the last added user address with id: " + userId);
         AddressDto addressDto = null;
         try {
             addressDto = addressMapper.toDto(addressRepository.getLastByUserId(userId));
@@ -89,6 +97,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressDto> getAll() {
+        log.info("Get list with all addresses");
         List<AddressDto> addressDtoList = null;
         try {
             addressDtoList = addressMapper.toDtoList(addressRepository.findAll());
@@ -103,6 +112,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public void updateAddress(AddressDto addressDto) {
+        log.info("Update address");
         Address address = null;
         try {
             address = addressRepository.findById(addressDto.getId());
@@ -118,12 +128,12 @@ public class AddressServiceImpl implements AddressService {
         } catch (Exception e) {
             log.error("Error at AddressService.updateAddress()", e);
         }
-
     }
 
     @Override
     @Transactional
     public void addUpdateAddress(AddressDto addressDto, User user) {
+        log.info("Saving the updated address");
         try {
             addAddress(addressMapper.toAdditionDto(addressDto), user);
         } catch (Exception e) {
@@ -135,6 +145,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public void updateSavedAddress(long addressId) {
+        log.info("Updating a saved address");
         try {
             Address address = addressRepository.findById(addressId);
             address.setSaved(false);
@@ -150,6 +161,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public void deleteAddress(long addressId) {
+        log.info("Deleting address with id: " + addressId);
         try {
             Address address = addressRepository.findById(addressId);
             address.setSaved(false);
@@ -165,6 +177,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public String addAddressController(BindingResult bindingResult, AddressAdditionDto addressAdditionDto) {
+        log.info("Retrieving information about a new address to save it");
         if (bindingResult.hasErrors()) {
             return "address";
         }

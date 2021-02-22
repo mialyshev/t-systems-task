@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Card {
 
     @Id
@@ -30,6 +31,9 @@ public class Card {
 
     @Column(name = "code")
     private String code;
+
+    @Column(name = "last_numbers")
+    private String lastNumbers;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id")

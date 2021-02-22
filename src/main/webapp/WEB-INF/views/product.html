@@ -90,13 +90,23 @@
                 </table>
 
                 <form th:method="POST" th:action="@{/bucket/add/{id}(id=${product.id})}">
-                    <strong>Available sizes:</strong>
-                    <select class="form-select" name="size">
-                        <option th:each="size : ${sizes}"
-                                th:value="${size.size}"
-                                th:text="${size.size}"></option>
-                    </select>
-                    <p><button type="submit" class="btn btn-primary">Buy</button></p>
+                    <div class="container">
+                        <div class="col-12 mt-2">
+                            <strong>Available sizes:</strong>
+                            <select class="form-select" name="size">
+                                <option th:each="size : ${sizes}"
+                                        th:value="${size.size}"
+                                        th:text="${size.size}"></option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <strong>Amount:</strong>
+                            <input type="text" id="quantity_c" class="col-3" name="quantity" value="1">
+                        </div>
+                        <div class="col-12 mt-2">
+                            <p><button type="submit" class="btn btn-primary">Buy</button></p>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

@@ -119,21 +119,21 @@
         <div class="form-group">
             <label for="model" class="col-sm-3 control-label">Model</label>
             <div class="col-sm-9">
-                <input type="text" id="model" th:field="*{model}" placeholder="Model" class="form-control" autofocus required>
+                <input type="text" id="model" th:field="*{model}" placeholder="Model" class="form-control" minlength="2" maxlength="100" autofocus required>
             </div>
             <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('model')}" th:errors="*{model}" ></div>
         </div>
         <div class="form-group">
             <label for="price" class="col-sm-3 control-label">Price</label>
             <div class="col-sm-9">
-                <input type="text" id="price" th:field="*{price}" placeholder="Price" class="form-control" autofocus required>
+                <input type="text" id="price" th:field="*{price}" placeholder="Price" class="form-control" pattern="^[0-9]+$" title="Only numbers" autofocus required>
             </div>
             <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('price')}" th:errors="*{price}" ></div>
         </div>
         <div class="form-group">
             <label for="quantity" class="col-sm-3 control-label">Quantity</label>
             <div class="col-sm-9">
-                <input type="text" id="quantity" th:field="*{quantity}" placeholder="Quantity" class="form-control" autofocus required>
+                <input type="text" id="quantity" th:field="*{quantity}" placeholder="Quantity" class="form-control" pattern="[0-9]" title="Only numbers" autofocus required>
             </div>
             <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" ></div>
         </div>

@@ -60,12 +60,8 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Card #<span th:text="${cardStat.index + 1}"></span></h5>
+                        <p class="card-text">Number: ****-<span th:text="*{card.lastNumbers}"></span>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Number: <span th:text="*{card.number}"></span></li>
-                        <li class="list-group-item">Validate date: <span th:text="*{card.validatyDate}"></span></li>
-                        <li class="list-group-item">Owner: <span th:text="*{card.owner}"></span></li>
-                    </ul>
                     <div class="card-body">
                         <a class="card-link" style="margin: 5px" th:href="@{/order/savedcard/{id}(id=${card.id})}">Pay with this card</a>
                     </div>
@@ -91,7 +87,7 @@
                                 <div class="card-body" style="height: 350px">
                                     <div class="form-group">
                                         <label for="cc-number" class="control-label">CARD NUMBER</label>
-                                        <input id="cc-number" th:field="*{number}" placeholder="16 DIGITS WITHOUT SPACE" type="text" class="input-lg form-control cc-number" required>
+                                        <input id="cc-number" th:field="*{number}" placeholder="16 DIGITS WITHOUT SPACE" type="text" class="input-lg form-control cc-number" title="Enter 16 digits" pattern="[0-9]{16}" required>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -103,13 +99,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="cc-cvc" class="control-label">CARD CVC</label>
-                                                <input id="cc-cvc" type="text" th:field="*{code}" class="input-lg form-control cc-cvc"  required>
+                                                <input id="cc-cvc" type="text" th:field="*{code}" class="input-lg form-control cc-cvc" pattern="[0-9]{3}" title="Enter 3 digits" required>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="numeric" class="control-label">CARD HOLDER NAME</label>
-                                        <input id="numeric" type="text" th:field="*{owner}" class="input-lg form-control">
+                                        <input id="numeric" type="text" th:field="*{owner}" class="input-lg form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary btn-block">Pay</button>

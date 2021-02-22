@@ -101,7 +101,7 @@
             <div class="form-group">
                 <label for="materialName" class="col-sm-3 control-label"></label>
                 <div class="col-md-3 col-lg-3">
-                    <input type="text" id="materialName" th:field="*{materialName}" placeholder="Material name" class="form-control" autofocus required>
+                    <input type="text" id="materialName" th:field="*{materialName}" placeholder="Material name" class="form-control" minlength="1" maxlength="100" autofocus required>
                 </div>
                 <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${materialError}" th:text="${materialError}"></div>
                 <div class="alert alert-danger" role="alert" style="margin: 10px" th:if="${#fields.hasErrors('materialName')}" th:errors="*{materialName}" ></div>

@@ -2,17 +2,22 @@ package com.javaschool.service.impl.user;
 
 import com.javaschool.dto.card.CardDto;
 import com.javaschool.dto.card.CardRegisterDto;
+import com.javaschool.entity.Address;
 import com.javaschool.entity.Card;
 import com.javaschool.entity.User;
 import com.javaschool.exception.UserException;
 import com.javaschool.mapper.user.CardMapperImpl;
 import com.javaschool.repository.user.CardRepository;
 import com.javaschool.repository.user.UserRepository;
+import com.javaschool.service.impl.order.AddressServiceImpl;
 import com.javaschool.service.user.CardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,28 +27,33 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final CardMapperImpl cardMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder bCryptPasswordEncoder;
+
+    private static Logger log = LoggerFactory.getLogger(CardServiceImpl.class);
 
     @Override
     @Transactional
     public void addCard(CardRegisterDto cardDto, User userOwner) {
+        log.info("Add new card in card service");
         Card card = new Card();
-        card.setNumber(cardDto.getNumber());
-        card.setCode(cardDto.getCode());
-        card.setOwner(cardDto.getOwner());
+        card.setNumber(bCryptPasswordEncoder.encode(cardDto.getNumber()));
+        card.setCode(bCryptPasswordEncoder.encode(cardDto.getCode()));
+        card.setOwner(bCryptPasswordEncoder.encode(cardDto.getOwner()));
         card.setValidatyDate(getDate(cardDto.getValidatyDate()));
         card.setUser(userOwner);
+        card.setLastNumbers(cardDto.getNumber().substring(cardDto.getNumber().length() - 4));
         cardRepository.save(card);
     }
 
     @Override
     public List<CardDto> getAllByUserId(long userId) {
+        log.info("Get all saved cards for user with id: " + userId);
         List<CardDto> cardDtos = null;
         try {
             cardDtos = cardMapper.toDtoList(cardRepository.findAllByUserId(userId));
@@ -57,6 +67,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardDto getById(long id) {
+        log.info("Get card with id: " + id);
         CardDto cardDto = null;
         try {
             cardDto = cardMapper.toDto(cardRepository.findById(id));
@@ -71,6 +82,7 @@ public class CardServiceImpl implements CardService {
     @Override
     @Transactional
     public String registerNewCardController(BindingResult bindingResult, CardRegisterDto cardRegisterDto, Model model) {
+        log.info("Retrieving information about a new card to save it");
         if (bindingResult.hasErrors()) {
             return "card-register";
         }

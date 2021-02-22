@@ -8,6 +8,8 @@ import com.javaschool.repository.product.MaterialRepository;
 import com.javaschool.service.product.MaterialService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,15 +18,17 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class MaterialServiceImpl implements MaterialService {
 
     private final MaterialRepository materialRepository;
     private final MaterialMapperImpl materialMapper;
 
+    private static Logger log = LoggerFactory.getLogger(MaterialServiceImpl.class);
+
     @Override
     public List<MaterialDto> getAll() {
+        log.info("Get all materials");
         List<MaterialDto> materialDtoList = null;
         try {
             materialDtoList = materialMapper.toDtoList(materialRepository.findAll());
@@ -38,6 +42,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public MaterialDto getById(long id) {
+        log.info("Get material with id: " + id);
         MaterialDto materialDto = null;
         try {
             materialDto = materialMapper.toDto(materialRepository.findById(id));
@@ -52,6 +57,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional
     public MaterialDto getByName(String materialName) {
+        log.info("Get material with name: " + materialName);
         MaterialDto materialDto = null;
         try {
             materialDto = materialMapper.toDto(materialRepository.findByName(materialName));
@@ -66,6 +72,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional
     public void addMaterial(MaterialDto materialDto) {
+        log.info("Save new material");
         Material material = new Material();
         material.setMaterialName(materialDto.getMaterialName());
         materialRepository.save(material);
@@ -73,6 +80,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void getAllMaterialsController(Model model) {
+        log.info("Getting all materials to display on the model");
         model.addAttribute("materials", getAll());
         model.addAttribute("materialForm", new MaterialDto());
     }
@@ -80,6 +88,7 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     @Transactional
     public String addNewMaterialController(BindingResult bindingResult, MaterialDto materialDto, Model model) {
+        log.info("Retrieving information about a new material to save it");
         if (bindingResult.hasErrors()) {
             model.addAttribute("materials", getAll());
             return "admin-material";

@@ -123,10 +123,9 @@ public class ProductController {
     }
 
     @GetMapping("/add-size-product/{id}")
-    public String addSizeOrQuantityForProduct(@PathVariable("id") long id,
+    public String addSizeOrQuantityForProductPage(@PathVariable("id") long id,
                                               Model model) {
-        model.addAttribute("productInfo", productService.getById(id));
-        return "admin-add-size-or-quantity";
+        return productService.addSizeOrQuantityForProductPageController(id, model);
     }
 
     @PostMapping("/add-size-product/{id}")

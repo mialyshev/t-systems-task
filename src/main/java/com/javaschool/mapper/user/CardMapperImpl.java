@@ -17,10 +17,8 @@ public class CardMapperImpl {
 
         CardDto.CardDtoBuilder cardDto = CardDto.builder();
         cardDto.id(card.getId());
-        cardDto.code(card.getCode());
-        cardDto.owner(card.getOwner());
         cardDto.validatyDate(String.valueOf(card.getValidatyDate().getYear()) + '-' + card.getValidatyDate().getMonthValue());
-        cardDto.number(card.getNumber());
+        cardDto.lastNumbers(card.getLastNumbers());
 
         return cardDto.build();
     }

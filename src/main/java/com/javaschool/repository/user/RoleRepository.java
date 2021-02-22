@@ -5,6 +5,11 @@ import com.javaschool.exception.UserException;
 
 import java.util.Collection;
 
+/**
+ * The interface Role repository.
+ *
+ * @author Marat Ialyshev
+ */
 public interface RoleRepository {
 
     /**

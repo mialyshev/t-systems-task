@@ -8,6 +8,8 @@ import com.javaschool.repository.product.ColorRepository;
 import com.javaschool.service.product.ColorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,15 +18,17 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ColorServiceImpl implements ColorService {
 
     private final ColorRepository colorRepository;
     private final ColorMapperImpl colorMapper;
 
+    private static Logger log = LoggerFactory.getLogger(ColorServiceImpl.class);
+
     @Override
     public List<ColorDto> getAll() {
+        log.info("Get all colors");
         List<ColorDto> colorDtoList = null;
         try {
             colorDtoList = colorMapper.toDtoList(colorRepository.findAll());
@@ -38,6 +42,7 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     public ColorDto getById(long id) {
+        log.info("Get color with id: " + id);
         ColorDto colorDto = null;
         try {
             colorDto = colorMapper.toDto(colorRepository.findById(id));
@@ -52,6 +57,7 @@ public class ColorServiceImpl implements ColorService {
     @Override
     @Transactional
     public ColorDto getByName(String colorName) {
+        log.info("Get color with name: " + colorName);
         ColorDto colorDto = null;
         try {
             colorDto = colorMapper.toDto(colorRepository.findByName(colorName));
@@ -66,6 +72,7 @@ public class ColorServiceImpl implements ColorService {
     @Override
     @Transactional
     public void addColor(ColorDto colorDto) {
+        log.info("Save new color");
         Color color = new Color();
         color.setColorName(colorDto.getColorName());
         colorRepository.save(color);
@@ -73,6 +80,7 @@ public class ColorServiceImpl implements ColorService {
 
     @Override
     public void getAllColorsController(Model model) {
+        log.info("Getting all colors to display on the model");
         model.addAttribute("colors", getAll());
         model.addAttribute("colorForm", new ColorDto());
     }
@@ -80,6 +88,7 @@ public class ColorServiceImpl implements ColorService {
     @Override
     @Transactional
     public String addNewColorController(BindingResult bindingResult, ColorDto colorDto, Model model) {
+        log.info("Retrieving information about a new color to save it");
         if (bindingResult.hasErrors()) {
             model.addAttribute("colors", getAll());
             return "admin-color";
