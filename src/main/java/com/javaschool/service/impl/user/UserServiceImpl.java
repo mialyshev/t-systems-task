@@ -12,12 +12,15 @@ import com.javaschool.exception.UserException;
 import com.javaschool.mapper.user.UserMapperImpl;
 import com.javaschool.repository.user.RoleRepository;
 import com.javaschool.repository.user.UserRepository;
+import com.javaschool.service.impl.product.BrandServiceImpl;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.user.CardService;
 import com.javaschool.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,7 +38,6 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -47,8 +49,11 @@ public class UserServiceImpl implements UserService {
     private final OrderService orderService;
     private final CardService cardService;
 
+    private static Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Override
     public List<UserDto> getAll() {
+        log.info("Get all users");
         List<UserDto> userDtoList = null;
         try {
             userDtoList = userMapper.toDtoList(userRepository.findAll());
@@ -63,6 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto getDtoByEmail(String email) {
+        log.info("Get user dto by email: " + email);
         UserDto userDto = null;
         try {
             userDto = userMapper.toDto(userRepository.findByEmail(email));
@@ -77,6 +83,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User getByEmail(String email) {
+        log.info("Get user by email: " + email);
         User user = null;
         try {
             user = userRepository.findByEmail(email);
@@ -90,6 +97,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(long id) {
+        log.info("Get user with id: " + id);
         UserDto userDto = null;
         try {
             userDto = userMapper.toDto(userRepository.findById(id));
@@ -109,6 +117,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void registerUser(UserRegistrationDto userRegistrationDto) {
+        log.info("Registering new user");
         User user = new User();
         try {
             user.setFirstName(userRegistrationDto.getFirstName());
@@ -139,6 +148,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUserInfo(UserUpdateInfoDto userUpdateDto) {
+        log.info("Updating user info");
         try {
             User user = userRepository.findById(userUpdateDto.getId());
             user.setFirstName(userUpdateDto.getFirstName());
@@ -167,6 +177,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean updateUserPass(UserUpdatePassDto userUpdatePassDto) {
+        log.info("Updating user password");
         try {
             User user = userRepository.findById(userUpdatePassDto.getId());
             if (userUpdatePassDto.getPassword().equals(userUpdatePassDto.getConfirmPassword())) {
@@ -193,6 +204,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getRegistrationFormController(Model model) {
+        log.info("Getting a user registration form");
         model.addAttribute("userRegister", new UserRegistrationDto());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
@@ -204,6 +216,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String registerNewUserController(BindingResult bindingResult, UserRegistrationDto userRegistrationDto, Model model) {
+        log.info("Retrieving information about a new user to save it");
         if (bindingResult.hasErrors()) {
             return "registration";
         }
@@ -228,6 +241,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void getAllUserInfoController(Model model) {
+        log.info("Getting all user info to display on the model");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         UserDto userFromBd = getDtoByEmail(currentUser);
@@ -245,6 +259,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String updateUserInfoController(UserUpdateInfoDto userUpdateDto, BindingResult bindingResult, Model model) {
+        log.info("Retrieving information about updated user data to save them");
         if (bindingResult.hasErrors()) {
             return "user-update";
         }
@@ -275,6 +290,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String updateUserPassController(UserUpdatePassDto userUpdatePassDto, BindingResult bindingResult, Model model) {
+        log.info("Retrieving information about updated user password to save them");
         if (bindingResult.hasErrors()) {
             return "user-update-password";
         }
@@ -297,6 +313,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void getAllAddressesController(Model model) {
+        log.info("Getting all saved addresses to display on the model");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         UserDto userFromBd = getDtoByEmail(currentUser);
@@ -305,6 +322,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void getAllOrdersController(Model model) {
+        log.info("Getting all orders for user to display on the model");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         User userFromBd = getByEmail(currentUser);
@@ -313,6 +331,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getOrderController(long id, Model model) {
+        log.info("Getting order to display on the model");
         OrderDto orderDto = orderService.findById(id);
         if(orderDto == null){
             return "404";
@@ -334,6 +353,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void getCardsController(Model model) {
+        log.info("Getting all saved cards to display on the model");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = authentication.getName();
         UserDto userFromBd = getDtoByEmail(currentUser);
@@ -343,6 +363,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String payOrderByCardController(long id, CardRegisterDto cardRegisterDto, BindingResult bindingResult, String isSaved, Model model) {
+        log.info("Retrieving information about payment for order to save them");
         if (bindingResult.hasErrors()) {
             OrderDto orderDto = orderService.findById(id);
             model.addAttribute("orderForm", orderDto);
@@ -367,6 +388,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getPageForEditAddressController(long id, Model model) {
+        log.info("Getting a form to update the address");
         AddressDto addressDto = addressService.getById(id);
         if(addressDto == null){
             return "404";
@@ -378,6 +400,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String editAddressController(AddressDto addressDto, BindingResult bindingResult) {
+        log.info("Retrieving information about updated user address to save them");
         if (bindingResult.hasErrors()) {
             return "user-address-edit";
         }
