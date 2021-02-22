@@ -8,6 +8,8 @@ import com.javaschool.repository.product.SeasonRepository;
 import com.javaschool.service.product.SeasonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,15 +18,17 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class SeasonServiceImpl implements SeasonService {
 
     private final SeasonRepository seasonRepository;
     private final SeasonMapperImpl seasonMapper;
 
+    private static Logger log = LoggerFactory.getLogger(SeasonServiceImpl.class);
+
     @Override
     public List<SeasonDto> getAll() {
+        log.info("Get all seasons");
         List<SeasonDto> seasonDtoList = null;
         try {
             seasonDtoList = seasonMapper.toDtoList(seasonRepository.findAll());
@@ -38,6 +42,7 @@ public class SeasonServiceImpl implements SeasonService {
 
     @Override
     public SeasonDto getById(long id) {
+        log.info("Get season with id: " + id);
         SeasonDto seasonDto = null;
         try {
             seasonDto = seasonMapper.toDto(seasonRepository.findById(id));
@@ -52,6 +57,7 @@ public class SeasonServiceImpl implements SeasonService {
     @Override
     @Transactional
     public SeasonDto getByName(String seasonName) {
+        log.info("Get season with name: " + seasonName);
         SeasonDto seasonDto = null;
         try {
             seasonDto = seasonMapper.toDto(seasonRepository.findByName(seasonName));
@@ -66,6 +72,7 @@ public class SeasonServiceImpl implements SeasonService {
     @Override
     @Transactional
     public void addSeason(SeasonDto seasonDto) {
+        log.info("Save new season");
         Season season = new Season();
         season.setSeasonName(seasonDto.getSeasonName());
         seasonRepository.save(season);
@@ -73,6 +80,7 @@ public class SeasonServiceImpl implements SeasonService {
 
     @Override
     public void getAllSeasonsController(Model model) {
+        log.info("Getting all seasons to display on the model");
         model.addAttribute("seasons", getAll());
         model.addAttribute("seasonForm", new SeasonDto());
     }
@@ -80,6 +88,7 @@ public class SeasonServiceImpl implements SeasonService {
     @Override
     @Transactional
     public String addNewSeasonController(BindingResult bindingResult, SeasonDto seasonDto, Model model) {
+        log.info("Retrieving information about a new season to save it");
         if (bindingResult.hasErrors()) {
             model.addAttribute("seasons", getAll());
             return "admin-season";

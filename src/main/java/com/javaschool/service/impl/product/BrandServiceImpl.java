@@ -5,9 +5,12 @@ import com.javaschool.entity.Brand;
 import com.javaschool.exception.ProductException;
 import com.javaschool.mapper.product.BrandMapperImpl;
 import com.javaschool.repository.product.BrandRepository;
+import com.javaschool.service.impl.admin.AdminServiceImpl;
 import com.javaschool.service.product.BrandService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,15 +19,17 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
 
     private final BrandRepository brandRepository;
     private final BrandMapperImpl brandMapper;
 
+    private static Logger log = LoggerFactory.getLogger(BrandServiceImpl.class);
+
     @Override
     public List<BrandDto> getAll() {
+        log.info("Get all brands");
         List<BrandDto> brandDtoList = null;
         try {
             brandDtoList = brandMapper.toDtoList(brandRepository.findAll());
@@ -38,6 +43,7 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public BrandDto getById(long id) {
+        log.info("Get brand with id: " + id);
         BrandDto brandDto = null;
         try {
             brandDto = brandMapper.toDto(brandRepository.findById(id));
@@ -52,6 +58,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public BrandDto getByName(String brandName) {
+        log.info("Get brand with name: " + brandName);
         BrandDto brandDto = null;
         try {
             brandDto = brandMapper.toDto(brandRepository.findByName(brandName));
@@ -66,6 +73,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public void addBrand(BrandDto brandDto) {
+        log.info("Save new brand");
         Brand brand = new Brand();
         brand.setBrandName(brandDto.getBrandName());
         brandRepository.save(brand);
@@ -73,6 +81,7 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public void getAllBrandsController(Model model) {
+        log.info("Getting all brands to display on the model");
         model.addAttribute("brands", getAll());
         model.addAttribute("brandForm", new BrandDto());
     }
@@ -80,6 +89,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     @Transactional
     public String addNewBrandController(BindingResult bindingResult, BrandDto brandDto, Model model) {
+        log.info("Retrieving information about a new brand to save it");
         if (bindingResult.hasErrors()) {
             model.addAttribute("brands", getAll());
             return "admin-brand";
