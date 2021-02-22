@@ -35,24 +35,30 @@ public interface AdminService {
      *
      * @param id the order id
      * @param model the model on which we put the required data
+     *
+     * @return the title of the html page to display
      */
-    void getOrder(long id, Model model);
+    String getOrder(long id, Model model);
 
     /**
      * Controller for editing order payment status.
      *
      * @param id the order id
      * @param model the model on which we put the required data
+     *
+     * @return the title of the html page to display
      */
-    void getPageEditPaymentStatus(long id, Model model);
+    String getPageEditPaymentStatus(long id, Model model);
 
     /**
      * Controller for editing order status.
      *
      * @param id the order id
      * @param model the model on which we put the required data
+     *
+     * @return the title of the html page to display
      */
-    void getPageEditStatus(long id, Model model);
+    String getPageEditStatus(long id, Model model);
 
     /**
      * Controller for getting the statistics page.

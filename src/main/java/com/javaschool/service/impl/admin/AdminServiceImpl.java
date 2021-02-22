@@ -40,25 +40,39 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void getOrder(long id, Model model) {
+    public String getOrder(long id, Model model) {
         OrderDto orderDto = orderService.findById(id);
+        if(orderDto == null){
+            return "404";
+        }
         orderService.setOrderProductList(orderDto);
         model.addAttribute("address", addressService.getById(orderDto.getAddress_id()));
         model.addAttribute("email", userService.getById(orderDto.getUser_id()).getEmail());
         model.addAttribute("order", orderDto);
         model.addAttribute("price", orderService.getAllPriceForOrder(orderDto));
+        return "admin-order";
     }
 
     @Override
-    public void getPageEditPaymentStatus(long id, Model model) {
-        model.addAttribute("order", orderService.findById(id));
+    public String getPageEditPaymentStatus(long id, Model model) {
+        OrderDto orderDto = orderService.findById(id);
+        if(orderDto == null){
+            return "404";
+        }
+        model.addAttribute("order", orderDto);
         model.addAttribute("paymentStatuses", orderService.getPaymentStatusList());
+        return "admin-order-edit-payment";
     }
 
     @Override
-    public void getPageEditStatus(long id, Model model) {
-        model.addAttribute("order", orderService.findById(id));
+    public String getPageEditStatus(long id, Model model) {
+        OrderDto orderDto = orderService.findById(id);
+        if(orderDto == null){
+            return "404";
+        }
+        model.addAttribute("order", orderDto);
         model.addAttribute("orderStatuses", orderService.getOrderStatusList());
+        return "admin-order-edit-status";
     }
 
     @Override

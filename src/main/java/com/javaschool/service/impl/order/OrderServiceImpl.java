@@ -24,7 +24,6 @@ import com.javaschool.repository.order.AddressRepository;
 import com.javaschool.repository.order.OrderRepository;
 import com.javaschool.repository.product.ProductRepository;
 import com.javaschool.repository.user.UserRepository;
-import com.javaschool.service.impl.MessageSender;
 import com.javaschool.service.order.AddressService;
 import com.javaschool.service.order.OrderService;
 import com.javaschool.service.product.ProductService;
