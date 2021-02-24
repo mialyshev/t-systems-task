@@ -166,6 +166,18 @@
             </div>
         </div>
     </div>
+        <ul class="pagination justify-content-center font-weight-bold mt-2">
+            <div th:each="page: ${pages}" class="m-2">
+                <li class="page-item active" th:if="${page == current_page}">
+                    <a class="page-link" th:href="@{/{id}(id=${page})}" th:text="${page}"
+                       th:title="${'Page '+ page}" data-toggle="tooltip"></a>
+                </li>
+                <li class="page-item" th:unless="${page == current_page}">
+                    <a class="page-link" th:href="@{/{id}(id=${page})}" th:text="${page}"
+                       th:title="${'Page '+ page}" data-toggle="tooltip"></a>
+                </li>
+            </div>
+        </ul>
     </div>
 </body>
 </html>

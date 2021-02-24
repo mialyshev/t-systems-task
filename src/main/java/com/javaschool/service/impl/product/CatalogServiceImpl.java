@@ -1,8 +1,6 @@
 package com.javaschool.service.impl.product;
 
-import com.javaschool.dto.product.ProductBucketDto;
-import com.javaschool.dto.product.ProductDto;
-import com.javaschool.dto.product.SelectedParams;
+import com.javaschool.dto.product.*;
 import com.javaschool.service.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +27,7 @@ public class CatalogServiceImpl implements CatalogService {
     private static Logger log = LoggerFactory.getLogger(CatalogServiceImpl.class);
 
     @Override
-    public void getAllProducts(Model model, HttpSession session) {
+    public void getAllProducts(Model model, HttpSession session, int pageId) {
         log.info("Get all products");
         if (session.getAttribute("bucket") == null) {
             session.setAttribute("bucket", new ArrayList<ProductBucketDto>());
@@ -38,24 +36,62 @@ public class CatalogServiceImpl implements CatalogService {
             session.setAttribute("params", new SelectedParams());
         }
         SelectedParams selectedParams = (SelectedParams) session.getAttribute("params");
-        List<ProductDto> products = productService.getProductsByParamList(selectedParams);
-        model.addAttribute("products", products);
-        model.addAttribute("categories", categoryService.getAll());
-        model.addAttribute("brands", brandService.getAll());
-        model.addAttribute("colors", colorService.getAll());
-        model.addAttribute("materials", materialService.getAll());
-        model.addAttribute("seasons", seasonService.getAll());
+        List<ProductDto> productsFromRepo = productService.getProductsByParamList(selectedParams);
+        int pageSize = 20;
+        List<ProductDto> products = new ArrayList<>();
+        for(int i = pageSize * pageId; i < pageSize * (pageId + 1); i++){
+            if(i == productsFromRepo.size()){
+                break;
+            }
+            products.add(productsFromRepo.get(i));
+        }
+        List<Integer>pages = getPagesNumber(pageSize, productsFromRepo.size());
+        addAttributesToModel(model, products, pages, pageId + 1);
     }
 
     @Override
     public void getProductsByParam(Model model, String categoryName, String brandName, String colorName, String materialName, String seasonName, SelectedParams params) {
         log.info("Getting all products by parameters to display on the model");
-        model.addAttribute("products", productService.getProductsByParam(categoryName, brandName, colorName, materialName, seasonName, params));
+        List<ProductDto> productDtos = productService.getProductsByParam(categoryName, brandName, colorName, materialName, seasonName, params);
+        int pageSize = 20;
+        List<ProductDto> products = new ArrayList<>();
+        List<Integer>pages = getPagesNumber(pageSize, productDtos.size());
+        for(int i = 0; i < pageSize; i++){
+            if(i == productDtos.size()){
+                break;
+            }
+            products.add(productDtos.get(i));
+        }
+        addAttributesToModel(model, products, pages, 1);
+    }
+
+    private List<Integer> getPagesNumber(int pageSize,
+                                              int productListSize){
+        List<Integer> pages = new ArrayList<>();
+        double pageCount = 0;
+        if(productListSize % pageSize == 0){
+            pageCount = (productListSize / pageSize) - 1;
+        }else {
+            pageCount = Math.ceil(productListSize / pageSize);
+        }
+        for(int i = 1; i <= pageCount + 1; i++){
+            pages.add(i);
+        }
+        return pages;
+    }
+
+    private void addAttributesToModel(Model model,
+                                      List<ProductDto> productDtoList,
+                                      List<Integer> pages,
+                                      int currentPage){
+        model.addAttribute("products", productDtoList);
         model.addAttribute("categories", categoryService.getAll());
         model.addAttribute("brands", brandService.getAll());
         model.addAttribute("colors", colorService.getAll());
         model.addAttribute("materials", materialService.getAll());
         model.addAttribute("seasons", seasonService.getAll());
+        model.addAttribute("pages", pages);
+        model.addAttribute("current_page", currentPage);
     }
 
     @Override
