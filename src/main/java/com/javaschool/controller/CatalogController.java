@@ -18,7 +18,7 @@ public class CatalogController {
     @GetMapping("/")
     public String getAllProducts(Model model,
                                  HttpSession session) {
-        catalogService.getAllProducts(model, session);
+        catalogService.getAllProducts(model, session, 0);
         return "products";
     }
 
@@ -34,6 +34,13 @@ public class CatalogController {
         return "products";
     }
 
+    @GetMapping("/{id}")
+    public String getAllProductsByPageId(Model model,
+                                 @PathVariable("id") int id,
+                                 HttpSession session) {
+        catalogService.getAllProducts(model, session, id - 1);
+        return "products";
+    }
 
     @GetMapping("/clear-params")
     public String clearParams(HttpSession session) {

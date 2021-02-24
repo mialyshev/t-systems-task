@@ -116,7 +116,6 @@ public interface ProductService {
      * Controller for adding a new product.
      *
      * @param model the model on which we put the required data
-     * @return list
      */
     void addNewProductPageController(Model model);
 

@@ -15,7 +15,7 @@ public interface CatalogService {
     /**
      * Find all products.
      */
-    void getAllProducts(Model model, HttpSession session);
+    void getAllProducts(Model model, HttpSession session, int pageId);
 
     /**
      * Find all products by params.
